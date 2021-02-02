@@ -161,6 +161,14 @@ div.menu div.section.tabs .active {
 }
 
 
+div.button-update-ix button {
+  color: #4ECDC4;
+}
+
+div.button-update-ix span {
+  background-color: #4ECDC4;
+}
+
 table thead tr th {
   color: #bcbec0;
   opacity: 0.4;
