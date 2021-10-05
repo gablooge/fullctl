@@ -4,10 +4,10 @@ from fullctl.service_bridge.client import Bridge
 
 CACHE = {}
 
-class PeeringDBEntity:
 
+class PeeringDBEntity:
     def __init__(self, **kwargs):
-        for k,v in kwargs.items():
+        for k, v in kwargs.items():
             if isinstance(v, dict):
                 setattr(self, k, PeeringDBEntity(**v))
             else:
@@ -28,12 +28,7 @@ class Pdbctl(Bridge):
         kwargs.setdefault("cache_duration", 5)
         kwargs.setdefault("cache", CACHE)
 
-        super().__init__(
-            settings.PDBCTL_HOST,
-            key,
-            org,
-            **kwargs
-        )
+        super().__init__(settings.PDBCTL_HOST, key, org, **kwargs)
 
     def model_args(self, data):
         data.pop("grainy", None)
@@ -41,7 +36,7 @@ class Pdbctl(Bridge):
 
     def object(self, id, raise_on_notfound=True, join=None):
         url = f"{self.ref_tag}/{id}/"
-        data = self.get(url, params={"join":join})
+        data = self.get(url, params={"join": join})
         try:
             return PeeringDBEntity(**data[0])
         except IndexError:
@@ -51,7 +46,7 @@ class Pdbctl(Bridge):
 
     def objects(self, **kwargs):
         url = f"{self.ref_tag}"
-        for k,v in kwargs.items():
+        for k, v in kwargs.items():
             if isinstance(v, list):
                 kwargs[k] = ",".join([str(a) for a in v])
         data = self.get(url, params=kwargs)
@@ -70,8 +65,10 @@ class InternetExchange(Pdbctl):
 class Network(Pdbctl):
     ref_tag = "net"
 
+
 class NetworkIXLan(Pdbctl):
     ref_tag = "netixlan"
+
 
 class NetworkContact(Pdbctl):
     ref_tag = "poc"

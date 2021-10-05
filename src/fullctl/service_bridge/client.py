@@ -1,5 +1,6 @@
 import json
 import time
+
 import requests
 
 
@@ -23,6 +24,7 @@ class ServiceBridgeError(IOError):
 
 class AuthError(ServiceBridgeError):
     pass
+
 
 class Bridge:
 
