@@ -6,6 +6,10 @@ CACHE = {}
 
 
 class PeeringDBEntity:
+    @property
+    def pk(self):
+        return self.id
+
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
             if isinstance(v, dict):
