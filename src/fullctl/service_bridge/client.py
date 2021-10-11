@@ -1,5 +1,5 @@
-import os
 import json
+import os
 import time
 import urllib.parse
 
@@ -84,7 +84,7 @@ class Bridge:
         else:
             param_str = ""
         file_path = os.path.join(TEST_DATA_PATH, f"{path.rstrip('/')}{param_str}.json")
-        with open(file_path, "r") as fh:
+        with open(file_path) as fh:
             return json.load(fh)["data"]
 
     def get(self, endpoint, **kwargs):
