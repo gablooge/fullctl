@@ -40,7 +40,10 @@ class Pdbctl(Bridge):
 
     def object(self, id, raise_on_notfound=True, join=None):
         url = f"{self.ref_tag}/{id}/"
-        data = self.get(url, params={"join": join})
+        params = {}
+        if join:
+            params.update(join=join)
+        data = self.get(url, params=params)
         try:
             return PeeringDBEntity(**data[0])
         except IndexError:
