@@ -33,11 +33,16 @@ class AuthError(ServiceBridgeError):
 
 class DataObject:
 
+    source = "__undefined__"
     description = "Object"
 
     @property
     def pk(self):
         return self.id
+
+    @property
+    def ref_id(self):
+        return f"{self.source}:{self.id}"
 
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
@@ -154,7 +159,7 @@ class Bridge:
             params.update(join=join)
         data = self.get(url, params=params)
         try:
-            return self.data_object_cls(**data[0])
+            return self.data_object_cls(ref_tag=self.ref_tag, **data[0])
         except IndexError:
             if raise_on_notfound:
                 raise KeyError(f"{self.data_object_cls.description} does not exist")
@@ -167,7 +172,7 @@ class Bridge:
                 kwargs[k] = ",".join([str(a) for a in v])
         data = self.get(url, params=kwargs)
         for row in data:
-            yield self.data_object_cls(**row)
+            yield self.data_object_cls(ref_tag=self.ref_tag, **row)
 
     def first(self, **kwargs):
         for o in self.objects(**kwargs):

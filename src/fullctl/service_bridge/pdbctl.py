@@ -1,4 +1,8 @@
-from django.conf import settings
+try:
+    from django.conf import settings
+    DEFAULT_SERVICE_KEY = settings.SERVICE_KEY
+except ImportError:
+    DEFAULT_SERVICE_KEY = ""
 
 from fullctl.service_bridge.client import Bridge, DataObject
 
@@ -7,6 +11,7 @@ CACHE = {}
 
 class PeeringDBEntity(DataObject):
     description = "PeeringDB Object"
+    source = "pdbctl"
 
 
 class Pdbctl(Bridge):
@@ -16,26 +21,35 @@ class Pdbctl(Bridge):
     retrieval
     """
 
+    class Meta:
+        service = "pdbctl"
+        ref_tag = "base"
+        data_object_cls = PeeringDBEntity
+
     def __init__(self, key=None, org=None, **kwargs):
         if not key:
-            key = settings.SERVICE_KEY
+            key = DEFAULT_SERVICE_KEY
 
         kwargs.setdefault("cache_duration", 5)
         kwargs.setdefault("cache", CACHE)
 
         super().__init__(settings.PDBCTL_HOST, key, org, **kwargs)
+        self.url = f"{self.url}/service-bridge/data"
 
 
 class InternetExchange(Pdbctl):
-    ref_tag = "ix"
+    class Meta(Pdbctl.Meta):
+        ref_tag = "ix"
 
 
 class Network(Pdbctl):
-    ref_tag = "net"
+    class Meta(Pdbctl.Meta):
+        ref_tag = "net"
 
 
 class NetworkIXLan(Pdbctl):
-    ref_tag = "netixlan"
+    class Meta(Pdbctl.Meta):
+        ref_tag = "netixlan"
 
 
 class NetworkContact(Pdbctl):
