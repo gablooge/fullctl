@@ -1,8 +1,10 @@
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
 from fullctl.django.rest.core import BadRequest
+from fullctl.django.rest.decorators import grainy_endpoint
 from rest_framework import viewsets
 from rest_framework.response import Response
+
 
 class MethodFilter:
     def __init__(self, name):
@@ -19,11 +21,14 @@ class DataViewSet(viewsets.ModelViewSet):
     join_xl = {}
     autocomplete = None
     allow_unfiltered = False
+    allowed_http_methods = ["GET"]
+    path_prefix = "/data"
 
     @property
     def filtered(self):
         return getattr(self, "_filtered", False)
 
+    @grainy_endpoint("service_bridge")
     def retrieve(self, request, pk):
         qset = self.get_queryset()
         qset, joins = self.join_relations(qset, request)
@@ -34,6 +39,7 @@ class DataViewSet(viewsets.ModelViewSet):
         )
         return Response(serializer.data)
 
+    @grainy_endpoint("service_bridge")
     def list(self, request, *args, **kwargs):
         qset = self.filter(self.get_queryset(), request)
 
@@ -83,5 +89,3 @@ class DataViewSet(viewsets.ModelViewSet):
             qset = qset.select_related(*field)
 
         return qset, join
-
-
