@@ -47,26 +47,17 @@ class DataObject:
             else:
                 setattr(self, k, v)
 
-    def __getattr__(self, k, default=None):
+    def __getattr__(self, k, **kwargs):
         """
         Override the default __getattr__ handling
         to support lazy relationship loading.
         """
-        try:
-            # attribute set, proceed normally
-            return super().__getattr__(k)
-        except AttributeError:
-            pass
-
-        # see if there is a relatioonship defined for
+        # see if there is a relationship defined for
         # `k`
         rel = self.relationships.get(k)
 
         if not rel:
-
-            # no relationship definition, found proceed normally
-            # but this time also pass the default along
-            return super().__getattr__(k, default)
+            raise AttributeError(k)
 
         # relationship definition found
         #
