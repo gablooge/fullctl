@@ -12,16 +12,102 @@ from fullctl.service_bridge.client import ServiceBridgeError
 
 SOURCE_MAP = {
     "member": {"pdbctl": pdbctl.NetworkIXLan, "ixctl": ixctl.InternetExchangeMember},
+    "portinfo": {"pdbctl": pdbctl.NetworkIXLan, "ixctl": ixctl.InternetExchangeMember},
     "ix": {"pdbctl": pdbctl.InternetExchange, "ixctl": ixctl.InternetExchange},
 }
+
+
+class ReferenceNotFoundError(KeyError):
+    pass
+
+
+def get_ref_definition(obj):
+
+    """
+    Will return the reference tag and id reference field name
+    as a tuple.
+
+    This will use django HandleRef ref tags if they exist.
+
+    id reference field name will be obtained from a `ref_field` attribute
+    that should either exist on HandleRef meta class or on the object
+    itself. Will default to `id` if missing.
+    """
+
+    if hasattr(obj, "HandleRef"):
+        ref_tag = obj.HandleRef.tag
+        ref_field = getattr(obj.HandleRef, "ref_field", "id")
+    elif hasattr(obj, "ref_tag"):
+        ref_tag = obj.ref_tag
+        ref_field = getattr(obj, "ref_field", "id")
+    else:
+        raise AttributeError(f"Cannot find ref tag on object: {obj}")
+
+    return ref_tag, ref_field
+
+
+class ReferenceMixin:
+
+    """
+    Mixin class to use with django models (but also work with other object
+    types)
+
+    Needs to specify a `ref_id` attribute that should hold a reference to
+    a service bridge data object in the format of `{source}:{id}`.
+
+    Example: `ixctl.137`
+
+    Needs to specify a `ref_tag` attribute, either through HandleRef
+    or directly on the object. ref_tag needs to exist SOURCE_MAP
+    """
+
+    @classmethod
+    def ref_bridge(cls, source):
+        """Returns service bridge instance"""
+        ref_tag, ref_field = get_ref_definition(cls)
+        return SOURCE_MAP[ref_tag].get(source)()
+
+    @property
+    def ref_parts(self):
+        """Return reference source name and id as a tuple"""
+        src, _id = self.ref_id.split(":")
+        return (src, int(_id))
+
+    @property
+    def ref_source(self):
+        """Return reference source name"""
+        return self.ref_parts[0]
+
+    @property
+    def ref(self):
+        """Return reference object (DataObject)"""
+        if hasattr(self, "_ref"):
+            return self._ref
+
+        ref_tag, ref_field = get_ref_definition(self)
+        source, id = self.ref_parts
+        bridge = SOURCE_MAP[ref_tag].get(source)()
+
+        filters = {ref_field: id}
+
+        self._ref = bridge.first(**filters)
+
+        if not self._ref:
+            raise ReferenceNotFoundError()
+
+        return self._ref
+
+    def ref_objects(self, **kwargs):
+        """
+        Return reference objects (DataObject instances) according to filters
+        specified in kwargs
+        """
+        return self.ref_bridge(self.ref_source).objects(**kwargs)
 
 
 class SourceOfTruth:
     sources = []
     key = ("id",)
-
-    def make_key(self, obj):
-        return (getattr(obj, k) for k in self.key)
 
     def object(self, *args, **kwargs):
         for source, params in self.sources:

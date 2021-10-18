@@ -5,6 +5,8 @@ import urllib.parse
 
 import requests
 
+from fullctl.service_bridge.data import DataObject
+
 # Location of test data
 TEST_DATA_PATH = "."
 
@@ -29,89 +31,6 @@ class ServiceBridgeError(IOError):
 
 class AuthError(ServiceBridgeError):
     pass
-
-
-class DataObject:
-
-    source = "__undefined__"
-    description = "Object"
-    relationships = {}
-
-    @property
-    def pk(self):
-        return self.id
-
-    @property
-    def ref_id(self):
-        return f"{self.source}:{self.id}"
-
-    def __init__(self, **kwargs):
-        for k, v in kwargs.items():
-            if isinstance(v, dict):
-                if k in self.relationships:
-                    setattr(self, f"_rel_{k}", True)
-                    rel_cls = self.relationships[k]["bridge"].Meta.data_object_cls
-                else:
-                    rel_cls = DataObject
-
-                setattr(self, k, rel_cls(**v))
-            else:
-                setattr(self, k, v)
-
-    def __getattr__(self, k, default=None):
-        try:
-            return super().__getattr__(k)
-        except AttributeError:
-            pass
-
-        rel = self.relationships.get(k)
-
-        if not rel:
-            return super().__getattr__(k, default)
-
-        filters = {}
-        filter_key, value_key = rel["filter"]
-        filters[filter_key] = getattr(self, value_key)
-
-        rel_obj = rel["bridge"]().first(**filters)
-        setattr(self, k, rel_obj)
-        setattr(self, f"_rel_{k}", True)
-        return rel_obj
-
-    def ref_rel_id(self, rel):
-        rel_id = getattr(self, rel)
-        return f"{self.source}:{rel_id}"
-
-
-class Relationships:
-    @classmethod
-    def preload(cls, name, objects):
-
-        filters = {}
-        if not objects:
-            return
-
-        for obj in objects:
-            rel = obj.relationships.get(name)
-            if not rel:
-                raise AttributeError(f"{name} is not a defined relationship for {obj}")
-
-            if hasattr(obj, f"_rel_{name}"):
-                continue
-
-            field, attr_name = rel["filter"]
-            filters.setdefault(f"{field}s", []).append(getattr(obj, attr_name))
-
-        if not filters:
-            return
-
-        rel_objects = dict(
-            [(getattr(o, field), o) for o in rel["bridge"]().objects(**filters)]
-        )
-
-        for obj in objects:
-            setattr(obj, name, rel_objects.get(getattr(obj, attr_name)))
-            setattr(obj, f"_rel_{name}", True)
 
 
 class Bridge:
