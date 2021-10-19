@@ -35,7 +35,7 @@ class Pdbctl(Bridge):
         kwargs.setdefault("cache", CACHE)
 
         super().__init__(settings.PDBCTL_HOST, key, org, **kwargs)
-        self.url = f"{self.url}/service-bridge/data"
+        self.url = f"{self.url}/service-bridge"
 
 
 class InternetExchange(Pdbctl):

@@ -36,7 +36,7 @@ class Ixctl(Bridge):
         kwargs.setdefault("cache", CACHE)
 
         super().__init__(settings.IXCTL_HOST, key, org, **kwargs)
-        self.url = f"{self.url}/service-bridge/data"
+        self.url = f"{self.url}/service-bridge"
 
 
 class InternetExchangeObject(IxctlEntity):
@@ -61,3 +61,21 @@ class InternetExchangeMember(Ixctl):
     class Meta(Ixctl.Meta):
         ref_tag = "member"
         data_object_cls = InternetExchangeMemberObject
+
+
+    def set_mac_address(self, member_id,  mac_address, source):
+        data = {
+            "mac_address": mac_address,
+            "source": source
+        }
+        self.put(f"data/member/{member_id}/sync/mac-address", data=data)
+
+    def set_as_macro(self, asn, as_macro, source):
+        data = {
+            "as_macro": as_macro,
+            "asn": asn,
+            "source": source
+        }
+        self.put(f"data/member/sync/as-macro", data=data)
+
+

@@ -133,7 +133,7 @@ class Bridge:
         return self._data(requests.delete(url, **self._requests_kwargs(**kwargs)))
 
     def object(self, id, raise_on_notfound=True, join=None):
-        url = f"{self.ref_tag}/{id}"
+        url = f"data/{self.ref_tag}/{id}"
         params = {}
 
         if join:
@@ -147,7 +147,7 @@ class Bridge:
             return None
 
     def objects(self, **kwargs):
-        url = f"{self.ref_tag}"
+        url = f"data/{self.ref_tag}"
         for k, v in kwargs.items():
             if isinstance(v, list):
                 kwargs[k] = ",".join([str(a) for a in v])
