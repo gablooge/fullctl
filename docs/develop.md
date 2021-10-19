@@ -79,6 +79,7 @@ To start individually, for example `aaactl`
 semanage port -m -t http_port_t -p tcp 8001
 
 
+
 ```sh
 # change the port it listens on if needed
 # export AAACTL_PORT=7002
@@ -100,6 +101,12 @@ cp ixctl/Ctl/dev/example.env ixctl/Ctl/.env
 cp peerctl/Ctl/dev/example.env peerctl/Ctl/.env
 cp pdbctl/Ctl/dev/example.env pdbctl/Ctl/.env
 cp devicectl/Ctl/dev/example.env devicectl/Ctl/.env
+```
+
+#### Database setup
+
+```sh
+Ctl/dev/compose.sh up postgres
 ```
 
 #### AAACTL setup
