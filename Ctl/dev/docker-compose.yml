@@ -29,8 +29,8 @@ services:
       DATABASE_PASSWORD: devPASSWORD
       DATABASE_HOST: postgres
       # defaults
-      DATABASE_USER: account_service
-      DATABASE_NAME: account_service
+      DATABASE_USER: aaactl
+      DATABASE_NAME: aaactl
       # DATABASE_PORT: 5432
     logging:
       options:

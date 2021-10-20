@@ -87,46 +87,102 @@ semanage port -m -t http_port_t -p tcp 8001
 # export AAACTL_PORT=7002
 poetry run Ctl/dev/compose.sh up aaactl_web
 ```
-### Setup recipe
 
+#### Developer Environment Setup
+
+Please run the following command to checkout and setup the verious repositories and services that make up a complete fullctl dev environment.
 
 ```
 git clone git@github.com:fullctl/fullctl
-git clone git@github.com:fullctl/ixctl
-git clone git@github.com:fullctl/aaactl
-git clone git@github.com:fullctl/peerctl
-git clone git@github.com:fullctl/pdbctl
-git clone git@github.com:fullctl/devicectl
-
-cp aaactl/Ctl/dev/example.env aaactl/Ctl/dev/.env
-cp ixctl/Ctl/dev/example.env ixctl/Ctl/dev/.env
-cp peerctl/Ctl/dev/example.env peerctl/Ctl/dev/.env
-cp pdbctl/Ctl/dev/example.env pdbctl/Ctl/dev/.env
-cp devicectl/Ctl/dev/example.env devicectl/Ctl/dev/.env
+. fullctl/scripts/devenv-setup.sh
 ```
 
-#### Database setup
+At some point the script will prompt you to create a user, this is your superuser account that will work accross all services. (managed in aaactl)
 
-Start with the database, and can keep it running in a window to see the logs.
+After the script is done running, you will have the database container up and running and all of the service containers built and migrated to the latest database schema.
 
-```sh
-Ctl/dev/compose.sh up postgres
+At this point you will want to go through each service in order and follow its individual setup steps and start them up.
+
+**Note:** services will authenticate users through oauth to aaactl, this **requires** HTTPS, we found nginx reverse proxies used with certbot ceritifcates to be the easiest way to provide https for our dev instances.
+
+##### aaactl 
+
+Follow [instructions](https://github.com/fullctl/aaactl/blob/prep-release/docs/deploy.md) for the points listed below:
+
+**required setup**
+
+- Setup internal API key
+- Setup ouuth2 provider
+
+**optional setup**
+
+- PeeringDB oauth
+- Google oauth
+
+
+#### run aaactl
+
+```
+export AAACTL_PORT=7001
+Ctl/dev/compose.sh up aaactl_web
 ```
 
-#### AAACTL setup
+Your aaactl instance should now be running on port 7001
+
+#### pdbctl
+
+Follow [instructions](https://github.com/fullctl/pdbctl/blob/prep-release/docs/quickstart.md) for the points listed below:
+
+**required setup**
+
+- Authentication and accounts
+
+#### run pdbctl
 
 ```
-cd fullctl
-export AAACTL_PORT=8001
-Ctl/dev/compose.sh up -d postgres
-Ctl/dev/compose.sh up -d aaactl_web
+export PDBCTL_PORT=7002
+Ctl/dev/compose.sh up pdbctl_web
 ```
 
-Follow instructions at https://github.com/fullctl/aaactl/blob/prep-release/docs/deploy.md but wherever it says `Ctl/dev/run.sh` replace it with `Ctl/dev/run.sh aaactl_web` and run from within the fullctl directory.
+Your pdbctl instance should now be running on port 7002
 
-#### PDBCTL setup
+#### ixctl
 
-Follow instructions at https://github.com/fullctl/pdbctl/blob/prep-release/docs/quickstart.md but wherever it says `Ctl/dev/run.sh` replace it with `Ctl/dev/run.sh pdbctl_web` and run from within the fullctl directory.
+Follow [instructions](https://github.com/fullctl/ixctl/blob/prep-release/docs/quickstart.md) for the points listed below:
+
+**required setup**
+
+- Authentication and accounts
+- add `PDBCTL_HOST` to pdbctl/Ctl/dev/.env - pointing at your pdbctl instance (e.g., https://localhost:7002)
+
+#### run ixctl
+
+```
+export PDBCTL_PORT=7003
+Ctl/dev/compose.sh up ixctl_web
+```
+
+Your ixctl instance should now be running on port 7003
+
+#### peerctl
+
+Follow [instructions](https://github.com/fullctl/peerctl/blob/prep-release/docs/quickstart.md) for the points listed below:
+
+**required setup**
+
+- Authentication and accounts
+- add `PDBCTL_HOST` to pdbctl/Ctl/dev/.env - pointing at your pdbctl instance (e.g., https://localhost:7002)
+- add `IXCTL_HOST` to pdbctl/Ctl/dev/.env - pointing at your pdbctl instance (e.g., https://localhost:7003)
+
+#### run peerctl
+
+```
+export PDBCTL_PORT=7004
+Ctl/dev/compose.sh up peerctl_web
+```
+
+Your peerctl instance should now be running on port 7004
+
 
 ```
 export PDBCTL_PORT=8003
