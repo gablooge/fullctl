@@ -8,12 +8,14 @@ further down the line
 
 import fullctl.service_bridge.ixctl as ixctl
 import fullctl.service_bridge.pdbctl as pdbctl
+import fullctl.service_bridge.peerctl as peerctl
 from fullctl.service_bridge.client import ServiceBridgeError
 
 SOURCE_MAP = {
     "member": {"pdbctl": pdbctl.NetworkIXLan, "ixctl": ixctl.InternetExchangeMember},
     "portinfo": {"pdbctl": pdbctl.NetworkIXLan, "ixctl": ixctl.InternetExchangeMember},
     "ix": {"pdbctl": pdbctl.InternetExchange, "ixctl": ixctl.InternetExchange},
+    "as_set": {"pdbctl": pdbctl.Network, "peerctl": peerctl.Network},
 }
 
 
@@ -169,5 +171,22 @@ class InternetExchangeMember(SourceOfTruth):
             if member.source == "pdbctl" and member.ix_id in pdb_ixctl_map:
                 continue
             filtered.append(member)
+
+        return filtered
+
+
+class ASSet(SourceOfTruth):
+
+    sources = [(peerctl.Network, {"has_as_set": 1}), (pdbctl.Network, {})]
+
+    def filter_source_of_truth(self, networks):
+
+        asn_map = {}
+        filtered = []
+
+        for net in networks:
+            if net.asn not in asn_map:
+                filtered.append(net)
+                asn_map[net.asn] = net
 
         return filtered

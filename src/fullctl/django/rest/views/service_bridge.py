@@ -1,8 +1,9 @@
 from django.utils.translation import gettext_lazy as _
-from fullctl.django.rest.core import BadRequest
-from fullctl.django.rest.decorators import grainy_endpoint
 from rest_framework import viewsets
 from rest_framework.response import Response
+
+from fullctl.django.rest.core import BadRequest
+from fullctl.django.rest.decorators import grainy_endpoint
 
 
 class MethodFilter:

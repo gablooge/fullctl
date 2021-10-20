@@ -4,7 +4,6 @@ from peeringdb.client import Client
 
 from fullctl.django.management.commands.base import CommandInterface
 
-
 PDB_API_URL = getattr(settings, "PDB_API_URL", "https://www.peeringdb.com/api")
 
 
