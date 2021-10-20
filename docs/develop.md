@@ -112,7 +112,7 @@ Follow [instructions](https://github.com/fullctl/aaactl/blob/prep-release/docs/d
 **required setup**
 
 - Setup internal API key
-- Setup ouuth2 provider
+- Setup oauth2 provider
 
 **optional setup**
 
