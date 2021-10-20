@@ -158,7 +158,7 @@ Follow [instructions](https://github.com/fullctl/ixctl/blob/prep-release/docs/qu
 ### run ixctl
 
 ```
-export PDBCTL_PORT=7003
+export IXCTL_PORT=7003
 Ctl/dev/compose.sh up ixctl_web
 ```
 
@@ -177,17 +177,11 @@ Follow [instructions](https://github.com/fullctl/peerctl/blob/prep-release/docs/
 ### run peerctl
 
 ```
-export PDBCTL_PORT=7004
+export PEERCTL_PORT=7004
 Ctl/dev/compose.sh up peerctl_web
 ```
 
 Your peerctl instance should now be running on port 7004
-
-
-```
-export PDBCTL_PORT=8003
-Ctl/dev/compose.sh up -d pdbctl_web
-```
 
 ### Bumping release
 
