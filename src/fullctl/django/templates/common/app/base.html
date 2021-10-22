@@ -51,7 +51,11 @@ fullctl.permissions = {{ permissions|safe }}
 <div class="container-fluid header-outer">
   <div class="top-border {{ request.app_id }} app_bg"></div>
   <div class="row header" data-component="header">
-    <div class="col-12 col-sm-6  header-left">
+
+    <!-- logo and app switcher -->
+
+    <div class="col-12 col-sm-4 header-left">
+      {% block "header_left" %}
       <div class="app-switcher" data-element="app_switcher">
         <div class="selected {{ request.app_id }}">
           <img class="app-logo" src="{% static service_logo_dark %}" alt="{{ service_tag }}">
@@ -66,8 +70,21 @@ fullctl.permissions = {{ permissions|safe }}
         </div>
         </div>
       </div>
+      {% endblock "header_left" %}
     </div>
-    <div class="col-12 col-sm-6 header-right">
+
+    <!-- /logo and app switcher -->
+
+    <!-- pages -->
+
+    <div class="col-12 col-sm-4 header-middle">
+    {% block "header_middle" %}
+    {% endblock "header_middle" %}
+    </div>
+
+    <!-- /pages -->
+
+    <div class="col-12 col-sm-4 header-right">
     {% block "header_right" %}
       {% block "header_account_panel" %}
 

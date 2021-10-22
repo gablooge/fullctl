@@ -404,6 +404,16 @@ fullctl.application.Header = $tc.extend(
   fullctl.application.Component
 );
 
+fullctl.application.Pages = $tc.extend(
+  "Pages",
+  {
+    Pages : function() {
+      this.Component("pages");
+    }
+  },
+  fullctl.application.Component
+);
+
 
 fullctl.application.Toolbar = $tc.extend(
   "Toolbar",

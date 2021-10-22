@@ -6,7 +6,9 @@ body {
 .inactive {
   color: #646a6f;
 }
-.active {
+
+a.active,
+span.active {
   color: #7dd120;
 }
 

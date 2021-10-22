@@ -234,6 +234,10 @@ twentyc.rest.Client = twentyc.cls.define(
       return JSON.stringify(data);
     },
 
+    format_request_url : function(url, method) {
+      return url;
+    },
+
     /**
      * Perform a read request (GET, HEAD, OPTIONS) on the api
      *
@@ -253,7 +257,7 @@ twentyc.rest.Client = twentyc.cls.define(
         $.ajax({
           method : method.toUpperCase(),
           data : data,
-          url : this.endpoint_url(endpoint),
+          url : this.format_request_url(this.endpoint_url(endpoint), method),
         }).done(function(result) {
           var response = new twentyc.rest.Response(result);
           $(this).trigger("api-request:success", [endpoint, data, response, method]);
@@ -295,7 +299,7 @@ twentyc.rest.Client = twentyc.cls.define(
         $.ajax({
           dataType : "json",
           method : method.toUpperCase(),
-          url : this.endpoint_url(endpoint),
+          url : this.format_request_url(this.endpoint_url(endpoint), method),
           data : this.encode(data),
           headers : {
             "Content-Type" : "application/json",
@@ -748,6 +752,115 @@ twentyc.rest.Form = twentyc.cls.extend(
   twentyc.rest.Widget
 );
 
+
+twentyc.rest.Input = twentyc.cls.extend(
+  "Input",
+  {
+    Input : function(jq) {
+      var base_url = jq.data("api-base");
+      this.Widget(base_url, jq);
+    },
+
+    /**
+     * Sets the widget state to processing
+     *
+     * This will trigger the `processing` event
+     *
+     * @method start_processing
+     */
+
+    start_processing : function() {
+      this.busy = true
+      this.element.prop("disabled", true);
+      $(this).trigger("processing");
+    },
+
+
+    /**
+     * Sets the widget state to ready or done with processing
+     *
+     * This will trigger the `ready` event
+     *
+     * @method done_processing
+     */
+
+    done_processing : function() {
+      this.busy = false
+      this.element.prop("disabled", false);
+      $(this).trigger("ready");
+    },
+
+
+    post_success : function(result) {
+
+    },
+
+    post_failure : function(response) {
+      console.error(response);
+      response.field_errors(this.render_error.bind(this));
+      response.non_field_errors(this.render_non_field_errors.bind(this))
+    },
+
+
+    bind : function(jq) {
+      this.Widget_bind(jq);
+      this.method = jq.data("api-method") || "POST";
+
+      this.element.on("keyup", function(ev) {
+        this.clear_errors();
+
+        if(ev.which != 13)
+          return;
+
+        if(this.action === null)
+          return;
+
+        var action = this.action;
+        var fn = this[this.method.toLowerCase()].bind(this);
+
+        fn(action, this.payload()).then(
+          this.post_success.bind(this),
+          this.post_failure.bind(this)
+        );
+      }.bind(this));
+    }
+
+  },
+  twentyc.rest.Widget
+);
+
+
+twentyc.rest.Button = twentyc.cls.extend(
+  "Button",
+  {
+    bind : function(jq) {
+      this.Widget_bind(jq);
+      this.method = jq.data("api-method") || "POST";
+
+      this.element.on("mouseup", function(ev) {
+
+        var confirm_required = this.element.data("confirm");
+        if(confirm_required && !confirm(confirm_required))
+          return;
+
+        this.clear_errors();
+        if(this.action === null)
+          return;
+
+        var action = this.action;
+        var fn = this[this.method.toLowerCase()].bind(this);
+
+        fn(action, this.payload()).then(
+          this.post_success.bind(this),
+          this.post_failure.bind(this)
+        );
+      }.bind(this));
+
+    }
+  },
+  twentyc.rest.Input
+);
+
 /**
  * Wires a `select` element to the API
  *
@@ -766,7 +879,7 @@ twentyc.rest.Form = twentyc.cls.extend(
  *   defaultd to "id"
  * - data-selected-field: which data resultset field to check whether and option
  *   should be auto-selected, defaults to "selected"
- * - data-load-type: what load method to use, can be "get" or "drf_choices",
+ * - data-load-type: what load method to use, can be "get" or "drf-choices",
  *   with the latter being a way to load in django-rest-framework field values
  *   choices. Defaults to "get"
  * - data-drf-name: relevant if load type is "drf-choices". Specifies the
@@ -782,27 +895,23 @@ twentyc.rest.Select = twentyc.cls.extend(
   "Select",
   {
     Select : function(jq) {
-      var base_url = jq.data("api-base")
       this.load_action = jq.data("api-load")
       this.name_field = jq.data("name-field") || "name"
       this.id_field = jq.data("id-field") || "id"
       this.selected_field = jq.data("selected-field") || "selected"
       this.load_type = jq.data("load-type") || "get"
       this.drf_name = jq.data("drf-name") || jq.attr("name");
-      this.Widget(base_url, jq);
+      this.null_option = jq.data("null-option")
+      this.proxy_data = jq.data("proxy-data")
+      this.Input(jq);
     },
 
     payload: function() {
       return { "id": this.element.val() }
     },
 
-    post_success : function(result) {
-
-    },
-
-    post_failure : function(response) {
-      response.field_errors(this.render_error.bind(this));
-      response.non_field_errors(this.render_non_field_errors.bind(this))
+    load_params : function() {
+      return null;
     },
 
 
@@ -820,6 +929,16 @@ twentyc.rest.Select = twentyc.cls.extend(
      */
 
     load : function(select_this) {
+
+      if(this.proxy_data) {
+        var select = this.element;
+        select.empty();
+
+        $(this.proxy_data).find('option').each(function() {
+          select.append($(this).clone());
+        });
+        return;
+      }
 
       if(this.load_type == "drf-choices")
         return this._load_drf_choices(select_this);
@@ -854,12 +973,21 @@ twentyc.rest.Select = twentyc.cls.extend(
 
     _load_get : function(select_this) {
 
-      return this.get().then(function(response) {
+
+      return this.get(null, this.load_params()).then(function(response) {
         var select = this.element;
         var name_field = this.name_field
         var id_field = this.id_field
         var selected_field = this.selected_field
-        select.empty()
+
+        select.empty();
+
+        if(this.null_option) {
+          let null_parts = this.null_option.split(";");
+          select.append($('<option>').val(null_parts[0]).text(null_parts[1]));
+        }
+
+
         $(response.content.data).each(function() {
           var selected = this[selected_field] || false;
           var opt = $('<option>').val(this[id_field]).text(this[name_field])
@@ -871,7 +999,7 @@ twentyc.rest.Select = twentyc.cls.extend(
         if(select_this)
           select.val(select_this);
 
-        $(this).trigger("load:after", [select, response.content.data]);
+        $(this).trigger("load:after", [select, response.content.data, this]);
       }.bind(this));
     },
 
@@ -922,6 +1050,11 @@ twentyc.rest.Select = twentyc.cls.extend(
       );
     },
 
+    prepare_write_url : function(url) {
+      return url;
+    },
+
+
     bind : function(jq) {
       this.Widget_bind(jq);
       this.method = jq.data("api-method") || "POST";
@@ -935,15 +1068,17 @@ twentyc.rest.Select = twentyc.cls.extend(
         if(!this.action)
           return;
 
+        var action = this.action;
         var fn = this[this.method.toLowerCase()].bind(this);
-        fn(this.action, this.payload()).then(
+
+        fn(action, this.payload()).then(
           this.post_success.bind(this),
           this.post_failure.bind(this)
         );
       }.bind(this));
     }
   },
-  twentyc.rest.Widget
+  twentyc.rest.Input
 );
 
 /**
@@ -1071,7 +1206,7 @@ twentyc.rest.List = twentyc.cls.extend(
             col_element.removeClass(toggle);
           }
         } else if(!formatter) {
-          col_element.text(data[k])
+          col_element.text(data[k]).val(data[k])
         } else {
           val = formatter(data[k], data, col_element)
           col_element.empty().append(val)
@@ -1088,6 +1223,8 @@ twentyc.rest.List = twentyc.cls.extend(
       this.wire(row_element)
 
       $(this).trigger("insert:after", [row_element, data]);
+
+      return row_element;
     },
 
     api_callback_remove : function(response) {
