@@ -16,6 +16,19 @@ a[data-action]:hover,
   text-decoration: none;
 }
 
+body {
+	overflow: scroll;
+}
+
+button {
+	border: none;
+  font-family: "Archivo Narrow";
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 16px;
+  text-transform: capitalize;
+	text-decoration: underline;
+}
 
 .loading-shim {
   position: absolute;
@@ -86,8 +99,13 @@ div.validation-error p {
   margin: 0px;
 }
 
+div.loading-anim {
+  text-align: center;
+  padding: 8px;
+}
+
 .marg-top-lg {
-  margin-top: 30px;
+  margin-top: 24px;
 }
 
 .marg-bot-sm {
@@ -97,6 +115,18 @@ div.validation-error p {
 .marg-sm {
   margin-top: 5px;
   margin-bottom: 5px;
+}
+
+.pad-top-lg {
+	padding-top: 24px;
+}
+
+.pad-top-9 {
+	padding-top: 9px;
+}
+
+.tool-spacing-left {
+	margin-left: 8px;
 }
 
 /**
@@ -202,6 +232,13 @@ div.header span.header-control span.icon {
   top: 2px;
 }
 
+div.header span.header-control span.icon > span.inner-icon {
+  top: 8px;
+  left: -2px;
+  position: relative;
+}
+
+div.header span.header-control span.icon > span.inner-icon,
 div.header span.header-control span.icon > img {
   display: inline-block;
   padding: 7px;
@@ -351,17 +388,50 @@ div.toolbar {
   line-height: 24px;
 }
 
+input.slim {
+	width: 75px;
+}
+
+.list-body + .list-no-data {
+  display: none;
+}
+
+.list-body:empty + .list-no-data {
+  display: block;
+  text-align: center;
+  padding: 8px;
+}
+
+.list-body div.secondary input[type="text"],
+div.toolbar-field input[type="text"] {
+	border: 1px solid;
+  font-family: "Archivo Narrow";
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 20px;
+  padding: 2px 2px 2px 8px;
+}
+
+.list-body .secondary select,
+div.toolbar-field select,
 div.toolbar select {
   border: none;
+  border-radius: 0px;
+}
+div.toolbar select {
   font-size: 20px;
   font-weight: bold;
-  border-radius: 0px;
   line-height: 24px;
   padding: 8px 48px 8px 8px;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   margin-left: 16px;
+}
+
+div.toolbar div.toolbar-control-group {
+	display: inline-block;
+  padding-left: 8px;
 }
 
 div.toolbar span.toolbar-control {
@@ -374,6 +444,34 @@ div.toolbar span.toolbar-control > img.caret {
   right: 18px;
   top: 19px;
 }
+
+div.toolbar-field {
+	position: relative;
+  font-family: "Archivo Narrow";
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 20px;
+	display: inline;
+  margin-left: 1px;
+  padding: 8px;
+}
+
+div.toolbar-field > span.icon {
+	background-color: #fff;
+  position: absolute;
+  z-index: 1;
+  right: 14px;
+  top: 10px;
+}
+
+div.toolbar-field > span.value {
+  font-family: "Archivo Narrow";
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0;
+  line-height: 20px;
+}
+
 
 
 div.menu .button {
@@ -416,6 +514,7 @@ div.menu div.section.tabs h5.active {
  * icons
  */
 
+span.inner-icon,
 span.icon {
   display: inline-block;
   height: 16px;
@@ -465,9 +564,42 @@ span.icon-org {
   -webkit-mask-image: url(icons/icon/org.svg);
   mask-image: url(icons/icon/org.svg);
 }
+
+span.icon-launch {
+  -webkit-mask-image: url(icons/icon/launch.svg);
+  mask-image: url(icons/icon/launch.svg);
+}
+span.icon-mail {
+  -webkit-mask-image: url(icons/icon/mail.svg);
+  mask-image: url(icons/icon/mail.svg);
+}
+span.icon-view {
+  -webkit-mask-image: url(icons/icon/view.svg);
+  mask-image: url(icons/icon/view.svg);
+}
+
+
+
 span.icon-caret-down {
   -webkit-mask-image: url(icons/ui-caret-caret/down.svg);
   mask-image: url(icons/ui-caret-caret/down.svg);
+}
+
+.secondary span.icon-caret-down {
+	position: relative;
+	top: 5px;
+}
+
+
+span.icon-caret-left {
+  -webkit-mask-image: url(icons/ui-caret-caret/down.svg);
+  mask-image: url(icons/ui-caret-caret/down.svg);
+  transform: rotate(-90deg);
+}
+
+.secondary span.icon-caret-left {
+	position: relative;
+	top: -5px;
 }
 
 
@@ -490,6 +622,25 @@ img.icon {
 
 .checked [data-true] {
   display: inline;
+}
+
+/**
+ * nav
+ */
+
+a.nav-link {
+  font-family: "Archivo Narrow";
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 24px;
+  text-decoration: none;
+	padding: 12px 0px;
+  margin: 0px 12px -20px 12px;
+}
+
+a.nav-link.active {
+  border-bottom: 2px solid;
 }
 
 /**
@@ -528,6 +679,7 @@ div.menu .button {
  * content
  */
 
+div.list-th,
 .table th {
   font-size: 15px;
   letter-spacing: 3px;
@@ -553,6 +705,7 @@ div.menu .button {
   line-height: 16px;
 }
 
+.list-body div.secondary,
 .table tr.secondary {
   border-bottom: 1px transparent solid;
 }
@@ -588,6 +741,32 @@ td.property {
   border-left: 1px transparent solid;
 }
 
+div.list-body .secondary .property {
+	margin-left: -15px;
+}
+
+div.list-body .secondary .property .transparent-field,
+div.list-body .secondary .property .field {
+	padding: 8px;
+  display: inline-block;
+}
+
+div.list-body .secondary .property [data-field] {
+	margin-left: 4px;
+}
+
+div.list-body .secondary button {
+}
+
+.row-gap button {
+  font-family: "Archivo Narrow";
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0;
+  line-height: 20px;
+	text-decoration: none;
+}
+
 tr.secondary > td {
   padding: 0px 15px;
 }
@@ -618,6 +797,19 @@ div.list-head {
 
 div.list-body > div.row {
   margin-top: 5px;
+}
+
+div.list-body div.secondary {
+  margin-left: 0px;
+}
+
+div.list-body .primary-row-name {
+  font-family: "Archivo Narrow";
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 0;
+  line-height: 24px;
+  margin: 16px 0px 16px 8px;
 }
 
 tbody.list-footer {

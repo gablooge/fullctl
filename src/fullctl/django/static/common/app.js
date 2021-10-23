@@ -34,6 +34,11 @@ fullctl.formatters.monitor_status = (value) => {
 }
 
 
+fullctl.loading_animation = () => {
+  var anim = $('<div class="spinner loadingio-spinner-bars-k879i8bcs9"><div class="ldio-a9ruqenne8l"><div></div><div></div><div></div><div></div></div></div>');
+  return $('<div>').addClass("loading-anim").append(anim);
+}
+
 fullctl.widget.StatusBadge = $tc.extend(
   "StatusBadge",
   {
