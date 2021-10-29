@@ -114,6 +114,9 @@ class SettingsManager(confu.util.SettingsManager):
         # django secret key
         self.set_from_env("SECRET_KEY")
 
+        self.set_option("SECURE_SSL_REDIRECT", True)
+        self.set_option("CSRF_COOKIE_SECURE", True)
+
         # database
 
         self.set_option("DATABASE_ENGINE", "postgresql_psycopg2")
