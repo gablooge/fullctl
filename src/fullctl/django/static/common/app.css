@@ -960,6 +960,12 @@ div.flags > span {
  * modal
  */
 
+@media (min-width: 1100px) {
+  .modal-xl {
+    max-width: 1200px;
+  }
+}
+
 h5.modal-title {
   font-family: "Archivo Narrow";
   font-size: 24px;
@@ -1205,4 +1211,23 @@ div.wizard.wiz-step-3 .wiz-step.wiz-step-3,
 div.wizard.wiz-step-2 .wiz-step.wiz-step-2,
 div.wizard.wiz-step-1 .wiz-step.wiz-step-1{
   display: block;
+}
+
+/*
+ * tags
+ */
+
+span.tag {
+  padding: 3px 5px;
+  margin-right: 10px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+span.tag-name {
+  font-weight: 600;
+}
+
+span.tag-value {
+  margin-left: 10px;
 }

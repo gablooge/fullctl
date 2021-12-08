@@ -529,6 +529,19 @@ tbody.list-footer button {
   border-color: transparent;
 }
 
+.status-badge.issues,
+.status-badge.warning {
+		background-color: #f58200 !important;
+    border-color: #f58200 !important;
+    color: #502626;
+}
+
+.status-badge.ok,
+.status-badge.completed {
+    background-color: #d1ff27 !important;
+    border-color: #d1ff27 !important;
+    color: #000000;
+}
 
 .status-badge.queued,
 .status-badge.pending {
@@ -537,6 +550,8 @@ tbody.list-footer button {
     background-color: #132736;
 }
 
+
+.status-badge.failed,
 .status-badge.error {
   background-color: #662020 !important;
   border-color: #d10f0f !important;
@@ -604,3 +619,16 @@ a.nav-link {
   transform-origin: 0 0; /* see note above */
 }
 .ldio-a9ruqenne8l div { box-sizing: content-box; }
+
+/*
+ * tags
+ */
+
+span.tag {
+  background-color: #29323b;
+  color: #b8bbbc;
+}
+
+span.tag-name {
+  color: #fff;
+}
