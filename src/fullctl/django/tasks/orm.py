@@ -1,9 +1,11 @@
 """
 ORM based task delegation
 """
-from django.db import IntegrityError
 
-from fullctl.django.models import Task, TaskClaimed, WorkerUnqualified
+from django.db import IntegrityError
+from django.utils import timezone
+
+from fullctl.django.models import Task, TaskClaimed, TaskSchedule, TaskAlreadyStarted, WorkerUnqualified
 from fullctl.django.models.concrete.tasks import TaskClaim
 from fullctl.django.tasks import specify_task
 from fullctl.django.tasks.util import worker_id
@@ -79,3 +81,20 @@ def work_task(task):
     """
 
     task._run()
+
+
+def progress_schedules(**filters):
+
+    """
+    fetch and process due task schedules (one at a time)
+    """
+
+    schedule = TaskSchedule.objects.filter(schedule__lte=timezone.now(), status="ok").order_by("schedule").first()
+    if not schedule:
+        return
+
+    try:
+        task = schedule.spawn_tasks()
+    except TaskAlreadyStarted:
+        schedule.reschedule()
+

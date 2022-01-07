@@ -3,8 +3,7 @@ from django.contrib import admin
 from django_handleref.admin import VersionAdmin
 
 import fullctl.django.auditlog as auditlog
-from fullctl.django.models.concrete import AuditLog, OrganizationUser, Task
-
+from fullctl.django.models.concrete import AuditLog, OrganizationUser, Task, TaskSchedule
 
 class BaseAdmin(VersionAdmin):
     readonly_fields = ("version",)
@@ -38,7 +37,7 @@ class OrganizationAdmin(BaseAdmin):
     list_display = ("id", "name", "slug")
     inlines = (OrganizationUserInline,)
 
-
+@admin.register(Task)
 class TaskAdmin(BaseAdmin):
     list_display = (
         "id",
@@ -50,15 +49,29 @@ class TaskAdmin(BaseAdmin):
         "limit_id",
         "param",
         "time",
+        "user",
+        "org",
         "created",
         "updated",
     )
     list_filter = ("status", "op")
 
 
-@admin.register(Task)
-class TaskAdmin(TaskAdmin):
-    pass
+@admin.register(TaskSchedule)
+class TaskScheduleAdmin(BaseAdmin):
+    readonly_fields = BaseAdmin.readonly_fields + ("tasks",)
+    list_display = (
+        "id",
+        "description",
+        "status",
+        "interval",
+        "repeat",
+        "user",
+        "org",
+        "created",
+        "updated",
+        "schedule",
+    )
 
 
 @admin.register(AuditLog)

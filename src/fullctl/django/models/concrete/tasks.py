@@ -3,6 +3,7 @@ import json
 import subprocess
 import time
 import traceback
+import datetime
 from io import StringIO
 
 from asgiref.sync import sync_to_async
@@ -10,6 +11,8 @@ from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
+from django.contrib.auth import get_user_model
 
 import fullctl.django.tasks
 from fullctl.django.models.abstract.base import HandleRefModel
@@ -24,6 +27,7 @@ __all__ = [
     "ParentTaskNotFinished",
     "Task",
     "TaskClaim",
+    "TaskSchedule",
     "CallCommand",
 ]
 
@@ -144,6 +148,12 @@ class Task(HandleRefModel):
         related_name="children",
     )
 
+    # ownership
+
+    user = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.CASCADE, help_text=_("Task was started by this user"))
+
+    org = models.ForeignKey("django_fullctl.Organization", null=True, blank=True, on_delete=models.CASCADE, help_text=_("Task belongs to this organization"))
+
     class Meta:
         db_table = "fullctl_task"
         verbose_name = _("Task")
@@ -157,6 +167,9 @@ class Task(HandleRefModel):
 
         parent = kwargs.pop("parent", None)
         timeout = kwargs.pop("timeout", None)
+        user = kwargs.pop("user", None)
+        org = kwargs.pop("org", None)
+
         op = cls.HandleRef.tag
 
         if parent:
@@ -164,7 +177,7 @@ class Task(HandleRefModel):
 
         param = {"args": args or [], "kwargs": kwargs or {}}
 
-        task = cls(op=op, param=param, status="pending", parent=parent, timeout=timeout)
+        task = cls(op=op, param=param, status="pending", parent=parent, timeout=timeout, user=user, org=org)
         task.limit_id = task.generate_limit_id
 
         try:
@@ -415,6 +428,153 @@ class TaskClaim(HandleRefModel):
 
     class HandleRef:
         tag = "task_claim"
+
+
+class TaskSchedule(HandleRefModel):
+
+    """
+    Implements delayed and repeated task execution
+    """
+
+    # schedule config
+
+    interval = models.PositiveIntegerField(
+        help_text=_("Interval in seconds"),
+        null=False,
+        blank=False
+    )
+
+    repeat = models.BooleanField(
+        help_text=_("Repeat task"),
+        default=False,
+    )
+
+    schedule = models.DateTimeField(
+        help_text=_("Next scheduled execution"),
+        null=False,
+        blank=False,
+        db_index=True,
+    )
+
+    description = models.CharField(max_length=255, null=True, blank=True)
+
+    # task config
+
+    task_config = models.JSONField(
+        null = False,
+        blank = False,
+        help_text = _("Task setup")
+    )
+
+    tasks = models.ManyToManyField(Task, blank=True)
+
+    # ownership
+
+    user = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.CASCADE, help_text=_("Task schedule was started by this user"))
+
+    org = models.ForeignKey("django_fullctl.Organization", null=True, blank=True, on_delete=models.CASCADE, help_text=_("Task schedule belongs to this organization"))
+
+
+    class Meta:
+        db_table = "fullctl_task_schedule"
+        verbose_name = _("Scheduled Task")
+        verbose_name_plural = _("Scheduled Tasks")
+
+    class HandleRef:
+        tag = "task_schedule"
+
+    def reschedule(self):
+        self.schedule = timezone.now() + datetime.timedelta(seconds=self.interval)
+        self.save()
+
+
+    def spawn_tasks(self):
+
+        # first check that there isnt currently a task pending on the schedule already
+
+        for task in self.tasks.all():
+            if task.status in ["pending", "running"]:
+                raise TaskAlreadyStarted()
+
+        tasks = fullctl.django.tasks.create_tasks_from_json(
+            self.task_config,
+            user=self.user,
+            org=self.org,
+        )
+
+        if self.repeat:
+            self.reschedule()
+        else:
+            self.status = "deactivated"
+            self.save()
+
+        for task in tasks:
+            self.tasks.add(task)
+
+        return tasks
+
+
+class Monitor(HandleRefModel):
+
+
+    class Meta:
+        abstract = True
+
+
+    @property
+    def is_enabled(self):
+
+        if not self.task_schedule_id:
+            return False
+
+        return self.task_schedule.status == "ok"
+
+
+    @property
+    def schedule_task_config(self):
+        return {}
+
+    @property
+    def schedule_interval(self):
+        return 3600
+
+    @property
+    def schedule_description(self):
+        return self.__class__.__name__
+
+    @property
+    def require_task_schedule(self):
+        if not self.task_schedule:
+            org = self.instance.org
+            self.task_schedule = TaskSchedule.objects.create(
+                org = org,
+                task_config = self.schedule_task_config,
+                description = self.schedule_description,
+                repeat = True,
+                interval = self.schedule_interval,
+                schedule = timezone.now()
+            )
+            self.save()
+
+        return self.task_schedule
+
+
+
+
+    def save(self, **kwargs):
+        super().save(**kwargs)
+
+        if not self.task_schedule:
+            self.require_task_schedule
+
+    def delete(self, **kwargs):
+
+        super().delete(**kwargs)
+
+        if self.task_schedule:
+            self.task_schedule.delete()
+
+
 
 
 @fullctl.django.tasks.register
