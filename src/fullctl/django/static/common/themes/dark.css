@@ -250,6 +250,14 @@ div.list-th,
   border-bottom-color: #9da2a7;
 }
 
+.table .table {
+  background-color: inherit;
+}
+
+.modal-body .table tr.sub-row {
+  background-color: #181818;
+}
+
 span.highlight,
 .table td.highlight {
   color: #fff;
