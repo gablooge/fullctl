@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('django_fullctl', '0018_task_schedule'),
+        ("django_fullctl", "0018_task_schedule"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='organizationuser',
-            name='is_default',
+            model_name="organizationuser",
+            name="is_default",
             field=models.BooleanField(default=False),
         ),
     ]

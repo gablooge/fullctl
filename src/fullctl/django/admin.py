@@ -4,8 +4,8 @@ from django_handleref.admin import VersionAdmin
 
 import fullctl.django.auditlog as auditlog
 from fullctl.django.models.concrete import (
-    Organization,
     AuditLog,
+    Organization,
     OrganizationUser,
     Task,
     TaskSchedule,

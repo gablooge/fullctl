@@ -64,7 +64,9 @@ class RequestAugmentation:
                 if default_org:
                     request.org = default_org.org
                 else:
-                    request.org = request.user.org_set.filter(user=request.user).first().org
+                    request.org = (
+                        request.user.org_set.filter(user=request.user).first().org
+                    )
 
             if hasattr(request.user, "org_set"):
                 request.orgs = request.user.org_set.all()
