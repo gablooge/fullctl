@@ -645,6 +645,11 @@ span.icon-api {
   mask-image: url(icons/icon/api.svg);
 }
 
+span.icon-down {
+  -webkit-mask-image: url(icons/icon/down.svg);
+  mask-image: url(icons/icon/down.svg);
+}
+
 span.icon-report {
   -webkit-mask-image: url(icons/icon/report.svg);
   mask-image: url(icons/icon/report.svg);
@@ -1171,6 +1176,7 @@ span.status-badge div.spinner {
       padding-top: 2px;
 }
 
+.prefix-rep,
 .rep-status {
   text-transform: uppercase;
 }

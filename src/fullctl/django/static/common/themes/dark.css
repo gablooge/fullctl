@@ -315,11 +315,11 @@ table thead th.selected-order-header-desc,
   border-left: 4px #191f26 solid;
 }
 
-.orange-border {
+.with-border.orange-border {
   border-color: #FD7E14;
 }
 
-.green-border {
+.with-border.green-border {
   border-color: #7ED321;
 }
 
