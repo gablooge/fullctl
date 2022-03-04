@@ -90,6 +90,10 @@ a.button span.label{
   text-decoration: underline;
 }
 
+a.button span.label.no-text-deco{
+  text-decoration: none;
+}
+
 a.button span.label:hover {
   text-decoration: underline;
 }
@@ -1165,6 +1169,10 @@ span.status-badge {
 
 span.status-badge div.spinner {
       padding-top: 2px;
+}
+
+.rep-status {
+  text-transform: uppercase;
 }
 
 /*

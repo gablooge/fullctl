@@ -262,6 +262,10 @@ span.highlight,
   color: #fff;
 }
 
+.green-text {
+  color: #7ED321;
+}
+
 .table td.prefix-name {
   font-size: 24px;
 }
@@ -305,6 +309,30 @@ table thead th.selected-order-header-desc,
 
 .table tr.secondary td.indent {
   background-color: #191f26;
+}
+
+.with-border {
+  border-left: 4px #191f26 solid;
+}
+
+.orange-border {
+  border-color: #FD7E14;
+}
+
+.green-border {
+  border-color: #7ED321;
+}
+
+.rep-issues {
+  background: #FD7E14 !important;
+  border: none !important;
+  color: #000;
+}
+
+.rep-ok {
+  background: #7ED321 !important;
+  border: none !important;
+  color: #000;
 }
 
 
