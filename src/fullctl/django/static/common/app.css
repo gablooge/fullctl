@@ -602,6 +602,7 @@ span.icon {
   width: 16px;
   vertical-align: bottom;
   margin-right: 3px;
+  mask-position: center;
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
 }
