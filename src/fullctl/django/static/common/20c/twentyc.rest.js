@@ -1194,7 +1194,15 @@ twentyc.rest.Button = twentyc.cls.extend(
       this.Widget_bind(jq);
       this.method = jq.data("api-method") || "POST";
 
-      this.element.on("mouseup", function(ev) {
+      /**
+       * which input event to bind to, defaults to 'mouseup'
+       * @property bind_to_event
+       * @type String
+       */
+
+      var bind_to_event = (this.bind_to_event || "mouseup")
+
+      this.element.on( bind_to_event , function(ev) {
 
         var confirm_required = this.element.data("confirm");
         if(confirm_required && !confirm(confirm_required))
