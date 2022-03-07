@@ -72,6 +72,14 @@ button:focus {
   font-size: 12px;
 }
 
+.m-info {
+  font-size: 14px;
+}
+
+.ux-keep-list-open {
+  margin-right: 4px;
+}
+
 a,
 a:hover {
   text-decoration: underline;
@@ -942,6 +950,7 @@ td.inner-list-container {
   padding-left: 0px;
   padding-right: 0px;
   padding-bottom: 0px;
+  padding-top: 0px;
 }
 
 
@@ -961,12 +970,54 @@ div.inner-list > div {
   padding: 3px 0px;
 }
 
+.prelist {
+  border-bottom: none !important;
+  border-left: 16px solid #191f26;
+}
+
+.prelist div.prefix-container {
+  padding: 4px 8px;
+  margin: 0 32px;
+}
+
+.prefix-container {
+  background: #0F1317;
+  position: relative;
+}
+
+.prefix-container a {
+  position: absolute;
+  right: 1;
+  padding: 0 8px;
+}
+
+.prefix-container a,
+.prefix-container span {
+  display: inline-block;
+}
+
+.prefix-container a {
+  margin-left: 36px;
+}
+
+.prefix {
+  text-decoration: underline;
+}
+
 td div.controls div.alert {
   margin: 0px;
 }
 
 td div.controls  {
   padding: 5px;
+}
+
+td div.controls .label {
+  padding: 5px;
+}
+
+.underline {
+  text-decoration: underline;
 }
 
 div.flags > span {
@@ -1165,6 +1216,10 @@ span.status-badge div.spinner {
 .prefix-rep,
 .rep-status {
   text-transform: uppercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
 }
 
 /*

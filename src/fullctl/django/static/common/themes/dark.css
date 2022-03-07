@@ -285,7 +285,6 @@ table thead th.selected-order-header-desc,
 .list-body div.secondary,
 .table tr.secondary {
   background-color: #20262e;
-  border-bottom-color: #3c4650;
 }
 
 .list-body div.secondary {
@@ -338,14 +337,16 @@ table thead th.selected-order-header-desc,
 .prefix-rep {
   padding: 4px;
   border-radius: 5px;
-  margin-left: 8px;
   display: inline-block;
 }
 
 
-div.modal .controls,
-.inner-list {
+div.modal .controls {
   background-color: #000;
+}
+
+.inner-list {
+  background-color: #20262e;
 }
 
 .inner-list-2 {
