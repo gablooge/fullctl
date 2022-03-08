@@ -184,24 +184,24 @@ div.toolbar {
 }
 
 div.list-body .secondary .property [data-field] {
-	color: #fff;
+  color: #fff;
 }
 
 .list-body div.secondary input[type="text"],
 div.toolbar-field input[type="text"] {
-	background-color: #191F26;
+  background-color: #191F26;
   border-color: #5a636c;
   color: #fff;
 }
 
 .list-body div.secondary input[type="text"]:disabled,
 div.toolbar-field input[type="text"]:disabled {
-	opacity: 0.5;
+  opacity: 0.5;
 }
 
 .list-body .secondary select {
   background-color: #29323b;
-	color: #fff;
+  color: #fff;
 }
 div.toolbar-field select,
 div.toolbar select {
@@ -221,9 +221,7 @@ div.toolbar .button {
 }
 
 .rounded-button {
-  border-radius: 50px;
   background: #000;
-  padding: 12px 16px;
 }
 
 div.menu .button.prefixctl {
@@ -312,6 +310,7 @@ table thead th.selected-order-header-desc,
 }
 
 .with-border {
+  border-color: #191f26;
   border-left: 4px #191f26 solid;
 }
 
@@ -335,13 +334,6 @@ table thead th.selected-order-header-desc,
   color: #000;
 }
 
-.prefix-rep {
-  padding: 4px;
-  border-radius: 5px;
-  display: inline-block;
-}
-
-
 div.modal .controls {
   background-color: #000;
 }
@@ -352,7 +344,7 @@ div.modal .controls {
 
 .inner-list-2 {
   background-color: #131313;
-  border-top: 1px #2f2f2f solid;
+  border-color: #2f2f2f;
 }
 
 
@@ -362,13 +354,17 @@ div.list-head,
   color: #55585b;
 }
 
+.prelist {
+  border-color: #191f26;
+}
+
 .main {
   background-color: #191f26;
 }
 
 button,
 .main a {
-	background-color: transparent;
+  background-color: transparent;
   color: #D1FF27;
 }
 
@@ -417,7 +413,7 @@ div.modal button.submit {
 }
 
 div.modal .card {
-	background-color: #191f26;
+  background-color: #191f26;
 }
 
 div.modal .list-group-item {
@@ -425,8 +421,8 @@ div.modal .list-group-item {
 }
 
 div.modal .list-group-item.highlight {
-	background-color: #535d68;
-	color: #fff;
+  background-color: #535d68;
+  color: #fff;
 }
 
 div.controls button.generic:disabled {
@@ -508,7 +504,7 @@ div.menu div.menu-deco-border {
 }
 
 div.tool-custom > h4.tool-title {
-	border-bottom: 2px solid #3c4650;
+  border-bottom: 2px solid #3c4650;
 }
 
 
@@ -522,12 +518,6 @@ div.tool-custom > h4.tool-title {
   border-color: #656567;
 }
 
-
-div.dropdown-meny.show,
-span.header-control.show,
-span.dropdown.show {
-  display: inline-block !important;
-}
 
 .dropdown-item,
 .dropdown-menu {
@@ -574,23 +564,23 @@ tbody.list-footer button {
 
 .status-badge.issues,
 .status-badge.warning {
-		background-color: #f58200 !important;
-    border-color: #f58200 !important;
-    color: #502626;
+  background-color: #f58200 !important;
+  border-color: #f58200 !important;
+  color: #502626;
 }
 
 .status-badge.ok,
 .status-badge.completed {
-    background-color: #d1ff27 !important;
-    border-color: #d1ff27 !important;
-    color: #000000;
+  background-color: #d1ff27 !important;
+  border-color: #d1ff27 !important;
+  color: #000000;
 }
 
 .status-badge.queued,
 .status-badge.pending {
-    color: #0097ff;
-    border-color: #0097ff;
-    background-color: #132736;
+  color: #0097ff;
+  border-color: #0097ff;
+  background-color: #132736;
 }
 
 
@@ -600,6 +590,30 @@ tbody.list-footer button {
   border-color: #d10f0f !important;
 }
 
+
+/**
+ * login
+ */
+
+div.login button {
+  color: #0099ff;
+  background-color: #000;
+}
+
+div.login input {
+  background-color: #3C4650;
+  color: #fff;
+}
+
+
+/*
+ * oauth
+ */
+
+div.oauth-backend.twentyc > a.btn {
+  background-color: #191919;
+  border-color: #0f1419;
+}
 
 
 /**
