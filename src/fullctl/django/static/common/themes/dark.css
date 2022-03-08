@@ -358,6 +358,33 @@ div.list-head,
   border-color: #191f26;
 }
 
+.ux-keep-list-open {
+  background-color: #191F26;
+  border: 1px solid #BCBEC0;
+  outline: none;
+  box-sizing: border-box;
+  height: 16px;
+  width: 16px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  position: absolute;
+  margin-left: -1.25rem;
+}
+
+.ux-keep-list-open:checked:before {
+  content: '\2713';
+  position: relative;
+  top: -2px;
+  left: 2px;
+  color: #FFFFFF;
+}
+
+.keep-list-open {
+  display: flex;
+  align-content: center;
+}
+
 .main {
   background-color: #191f26;
 }
