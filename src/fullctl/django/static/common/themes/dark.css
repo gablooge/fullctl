@@ -358,7 +358,7 @@ div.list-head,
   border-color: #191f26;
 }
 
-.ux-keep-list-open {
+.tool .list-body input[type="checkbox"] {
   background-color: #191F26;
   border: 1px solid #BCBEC0;
   outline: none;
@@ -372,7 +372,7 @@ div.list-head,
   margin-left: -1.25rem;
 }
 
-.ux-keep-list-open:checked:before {
+.tool .list-body input[type="checkbox"]:checked:before {
   content: '\2713';
   position: relative;
   top: -2px;
