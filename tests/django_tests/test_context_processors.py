@@ -21,6 +21,7 @@ def test_account_service(db, dj_account_objects, settings):
 
     assert context["account_service"] == expected
 
+
 def test_account_service_no_org(db, dj_account_objects, settings):
 
     request = HttpRequest()
@@ -36,6 +37,7 @@ def test_account_service_no_org(db, dj_account_objects, settings):
     context = context_processors.account_service(request)
 
     assert context["account_service"] == expected
+
 
 def test_permissions_crud(db, dj_account_objects, settings):
     request = HttpRequest()
@@ -53,20 +55,15 @@ def test_permissions_crud(db, dj_account_objects, settings):
     context = context_processors.permissions(request)
     assert context["permissions"] == full_perms
 
+
 def test_permissions_crud_no_org(db, dj_account_objects, settings):
     request = HttpRequest()
     request.user = dj_account_objects.user
     request.perms = dj_account_objects.perms
 
-    full_perms = {
-        "create_instance": True,
-        "read_instance": True,
-        "update_instance": True,
-        "delete_instance": True,
-    }
-
     context = context_processors.permissions(request)
     assert context["permissions"] == {}
+
 
 def test_permissions_readonly(db, dj_account_objects, settings):
     request = HttpRequest()
