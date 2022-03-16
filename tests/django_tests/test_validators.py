@@ -37,7 +37,7 @@ def test_validate_prefix(ipaddrs):
     assert "Invalid prefix" in str(execinfo.value)
 
 
-def test_validate_masklength_range(ipaddrs):
+def test_validate_masklength_range():
 
     validators.validate_masklength_range("32..128")
     validators.validate_masklength_range("exact")
