@@ -1,6 +1,7 @@
 from django.http import HttpRequest
 
 from fullctl.django import context_processors
+from fullctl.django.auth import RemotePermissionsError
 
 
 # Settings fixture allows for safe manipulations of settings inside test
@@ -61,6 +62,13 @@ def test_permissions_crud_no_org(db, dj_account_objects, settings):
     request.user = dj_account_objects.user
     request.perms = dj_account_objects.perms
 
+    context = context_processors.permissions(request)
+    assert context["permissions"] == {}
+
+
+def test_permissions_crud_RemotePermissionsError():
+    request = HttpRequest()
+    request.error_response = RemotePermissionsError()
     context = context_processors.permissions(request)
     assert context["permissions"] == {}
 
