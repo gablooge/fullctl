@@ -56,6 +56,13 @@ def test_validate_as_set_multiple():
     assert validated_set == "AS64448:AS-SOME, AS64496:AS-ALL"
 
 
+def test_validate_as_set_with_source():
+    validated_set = validators.validate_as_set("RIPE::AS64496:AS-ALL")
+    assert validated_set == "RIPE::AS64496:AS-ALL"
+    validated_set = validators.validate_as_set("RIPE::AS64496:AS-ALL,AS13241:AS-SOME")
+    assert validated_set == "RIPE::AS64496:AS-ALL, AS13241:AS-SOME"
+
+
 def test_validate_as_set_non_string():
     with pytest.raises(ValueError) as execinfo:
         validators.validate_as_set(123)
