@@ -101,4 +101,4 @@ def test_conf(db, dj_account_objects, settings):
     }
 
     conf = context_processors.conf(request)
-    assert conf == conf_dict
+    assert conf == conf_support_email
