@@ -45,6 +45,7 @@ class QualifierTestTask(TestTask):
     class TaskMeta:
         qualifiers = [
             qualifiers.Setting("TEST_QUALIFIER", True),
+            qualifiers.SettingUnset("TEST_UNSET_QUALIFIER"),
         ]
 
 
