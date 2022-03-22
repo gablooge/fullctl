@@ -33,6 +33,5 @@ def test_SettingsManager_set():
     g = {}
     settings_manager = settings.SettingsManager(g)
     setting = settings_manager.set_option("TEST_SETTING", "world")
-    print(g)
 
     assert setting == "world"
