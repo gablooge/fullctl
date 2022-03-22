@@ -1,3 +1,5 @@
+import os
+
 import fullctl.django.settings as settings
 
 
@@ -68,3 +70,41 @@ def test_SettingsManager_set_relase_env():
 
     assert g["DEBUG"] == False
     assert g["EXPOSE_ADMIN"] == False
+
+
+def test_SettingsManager_set_default_v1():
+    global settings_manager
+    settings_manager = settings.SettingsManager(globals())
+    settings_manager.set_option("SERVICE_TAG", "testctl")
+    os.environ["SERVER_EMAIL"] = "mail@testctl.com"
+    settings_manager.set_option("BASE_DIR", "testctl")
+    settings_manager.set_option("PACKAGE_VERSION", "1")
+    settings_manager.set_default_v1()
+
+    installed_apps = [
+        "django.contrib.admin",
+        "django.contrib.auth",
+        "django.contrib.contenttypes",
+        "django.contrib.sessions",
+        "django.contrib.messages",
+        "django.contrib.staticfiles",
+    ]
+    middleware = [
+        "django.middleware.security.SecurityMiddleware",
+        "whitenoise.middleware.WhiteNoiseMiddleware",
+        "django.contrib.sessions.middleware.SessionMiddleware",
+        "django.middleware.common.CommonMiddleware",
+        "django.middleware.csrf.CsrfViewMiddleware",
+        "django.contrib.auth.middleware.AuthenticationMiddleware",
+        "django.contrib.messages.middleware.MessageMiddleware",
+        "django.middleware.clickjacking.XFrameOptionsMiddleware",
+        "fullctl.django.middleware.CurrentRequestContext",
+    ]
+
+    assert SECURE_SSL_REDIRECT is True
+    assert CSRF_COOKIE_SECURE is True
+    assert DATABASE_ENGINE == "postgresql_psycopg2"
+    assert EMAIL_BACKEND == "django.core.mail.backends.console.EmailBackend"
+    assert INSTALLED_APPS == installed_apps
+    assert MIDDLEWARE == middleware
+    assert WSGI_APPLICATION == "testctl.wsgi.application"
