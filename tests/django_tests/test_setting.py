@@ -35,3 +35,11 @@ def test_SettingsManager_set():
     setting = settings_manager.set_option("TEST_SETTING", "world")
 
     assert setting == "world"
+
+
+def test_SettingsManager_try_include():
+    global settings_manager
+    settings_manager = settings.SettingsManager(globals())
+    settings_manager.try_include("./tests/django_tests/testdev.py")
+
+    assert TEST_EXTERNAL_SETTING == "a whole new world"
