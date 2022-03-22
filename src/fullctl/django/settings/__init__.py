@@ -75,7 +75,7 @@ class SettingsManager(confu.util.SettingsManager):
         env_file = os.path.join(
             os.path.dirname(__file__), f"{self.get('RELEASE_ENV')}.py"
         )
-        settings.try_include(env_file)
+        self.try_include(env_file)
 
     # fullctl helpers #######
 
