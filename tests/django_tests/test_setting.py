@@ -19,3 +19,20 @@ def test_get_locale_name():
 def test_read_file():
     text = settings.read_file("./tests/django_tests/test-file.md")
     assert text == "Hello world!"
+
+
+def test_SettingsManager_get():
+    g = {"TEST_SETTING": "world"}
+    settings_manager = settings.SettingsManager(g)
+    setting = settings_manager.get("TEST_SETTING")
+
+    assert setting == "world"
+
+
+def test_SettingsManager_set():
+    g = {}
+    settings_manager = settings.SettingsManager(g)
+    setting = settings_manager.set_option("TEST_SETTING", "world")
+    print(g)
+
+    assert setting == "world"
