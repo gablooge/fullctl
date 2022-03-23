@@ -155,3 +155,14 @@ def test_SettingsManager_set_default_append():
     assert disable_existing_loggers == g["LOGGING"]["disable_existing_loggers"]
     assert handlers == g["LOGGING"]["handlers"]
     assert loggers == g["LOGGING"]["loggers"]
+
+
+def test_SettingsManager_set_service_bridges():
+    g = {}
+    settings_manager = settings.SettingsManager(g)
+    settings_manager.set_service_bridges()
+
+    assert g["AAACTL_HOST"] == ""
+    assert g["PDBCTL_HOST"] == ""
+    assert g["PEERCTL_HOST"] == ""
+    assert g["IXCTL_HOST"] == ""
