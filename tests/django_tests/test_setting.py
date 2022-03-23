@@ -1,4 +1,5 @@
 import os
+import sys
 
 import fullctl.django.settings as settings
 
@@ -108,3 +109,49 @@ def test_SettingsManager_set_default_v1():
     assert INSTALLED_APPS == installed_apps
     assert MIDDLEWARE == middleware
     assert WSGI_APPLICATION == "testctl.wsgi.application"
+
+
+def test_SettingsManager_set_default_append():
+    g = {}
+    settings_manager = settings.SettingsManager(g)
+    settings_manager.set_option("DEBUG", True)
+    settings_manager.set_option("TEMPLATES", "")
+    settings_manager.set_option("MIDDLEWARE", [""])
+    settings_manager.set_default_append()
+
+    # logging define extra formatters and handlers for convenience
+    version = 1
+    disable_existing_loggers = False
+    handlers = {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "color_console",
+            "stream": sys.stdout,
+        },
+        "console_json": {
+            "class": "logging.StreamHandler",
+            "formatter": "json",
+            "stream": sys.stdout,
+        },
+        "mail_admins": {
+            "class": "django.utils.log.AdminEmailHandler",
+            "level": "ERROR",
+            # plain text by default - HTML is nicer
+            "include_html": True,
+        },
+    }
+    loggers = {
+        "django": {
+            "handlers": ["console_json"],
+            "level": "INFO",
+        },
+        "django_structlog": {
+            "handlers": ["console_json"],
+            "level": "DEBUG",
+        },
+    }
+
+    assert version == g["LOGGING"]["version"]
+    assert disable_existing_loggers == g["LOGGING"]["disable_existing_loggers"]
+    assert handlers == g["LOGGING"]["handlers"]
+    assert loggers == g["LOGGING"]["loggers"]
