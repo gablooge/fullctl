@@ -350,6 +350,7 @@ class SettingsManager(confu.util.SettingsManager):
         # terminate session on browser close
         self.set_option("SESSION_EXPIRE_AT_BROWSER_CLOSE", True)
 
+    # TODO: review implementation
     def set_languages_docs(self):
         self.set_option("ENABLE_ALL_LANGUAGES", False)
 
