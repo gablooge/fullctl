@@ -208,3 +208,16 @@ def test_SettingsManager_set_twentyc_oauth():
     assert g["LOGIN_REDIRECT_URL"] == "/"
     assert g["LOGOUT_REDIRECT_URL"] == "/login"
     assert g["LOGIN_URL"] == "/login"
+
+
+def test_SettingsManager_set_twentyc_service():
+    g = {}
+    settings_manager = settings.SettingsManager(g)
+    settings_manager.set_option("SERVER_EMAIL", "mail@testctl.com")
+    settings_manager.set_twentyc_service()
+
+    assert g["SUPPORT_EMAIL"] == "mail@testctl.com"
+    assert g["SOCIAL_AUTH_NO_DEFAULT_PROTECTED_USER_FIELDS"] is True
+    assert g["SOCIAL_AUTH_PROTECTED_USER_FIELDS"] == ("id", "pk")
+    assert g["BILLING_INTEGRATION"] is True
+    assert g["SESSION_EXPIRE_AT_BROWSER_CLOSE"] is True
