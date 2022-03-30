@@ -97,7 +97,7 @@ def test_conf(db, dj_account_objects, settings):
     conf_support_email = {
         "google_analytics_id": None,
         "cloudflare_analytics_id": "asdf",
-        "support_email": "support@mail.com",
+        "support_email": "support@localhost",
     }
 
     conf = context_processors.conf(request)
