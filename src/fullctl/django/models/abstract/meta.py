@@ -3,7 +3,9 @@ Abstract classes to facilitate the fetching, caching and retrieving of meta data
 sourced from third party sources.
 """
 from datetime import timedelta
-from django.util import timezone
+import requests
+from django.utils import timezone
+from django.db import models
 from fullctl.django.models.abstract import HandleRefModel
 
 __all__ = [
@@ -19,7 +21,7 @@ class Data(HandleRefModel):
     Normalized object meta data
     """
 
-    meta = models.JSONField()
+    data = models.JSONField()
 
     class Meta:
         abstract = True
@@ -38,6 +40,7 @@ class Request(HandleRefModel):
     url = models.URLField()
     http_status = models.PositiveIntegerField()
     payload = models.JSONField(null=True)
+    count = models.PositiveIntegerField(default=1)
 
     processing_error = models.CharField(
         max_length=255,
@@ -52,6 +55,9 @@ class Request(HandleRefModel):
 
     class HandleRef:
         tag = "meta_request"
+
+    class Meta:
+        abstract = True
 
     @classmethod
     def prepare_request(cls, targets):
@@ -89,7 +95,7 @@ class Request(HandleRefModel):
         results = {}
 
         for target in targets:
-            results[target] = cls.request_target(target)
+            results[f"{target}"] = cls.request_target(target)
 
         return results
 
@@ -120,9 +126,11 @@ class Request(HandleRefModel):
         request = cls.get_cache(target)
 
         if request:
-            if request.response_id:
+
+            try:
                 return request.response
-            return request
+            except Exception:
+                return request
 
         return cls.send(target)
 
@@ -150,9 +158,14 @@ class Request(HandleRefModel):
 
         url = cls.target_to_url(target)
 
-        _resp = requests.get(url)
+        print("seding request to", url, " - target - ", target)
+        _resp = cls.send_request(url)
 
         return cls.process(target, url, _resp.status_code, lambda: _resp.json())
+
+    @classmethod
+    def send_request(cls, url):
+        return requests.get(url)
 
     @classmethod
     def process(cls, target, url, http_status, getdata, payload=None):
@@ -162,17 +175,27 @@ class Request(HandleRefModel):
         """
 
         source = cls.config("source_name")
+        target_field = cls.config("target_field")
         response_cls = cls._meta.get_field("response").related_model
 
-        params = {"pk": target, "url": url, "source": source}
+        params = {target_field: target, "url": url, "source": source}
 
-        if paload:
+        if payload:
             params.update(payload=json.dumps(payload))
 
-        req, _ = cls.objects.get_or_create(**params)
-        req.http_status = http_response.status_code
+        try:
+            req = cls.objects.get(**params)
+            created = False
+        except cls.DoesNotExist:
+            req = cls(**params)
+            created = True
+
+        if not created:
+            req.count += 1
 
         data = None
+
+        req.http_status = http_status
 
         try:
             if callable(getdata):
@@ -185,8 +208,13 @@ class Request(HandleRefModel):
         req.save()
 
         if data is not None:
+            try:
+                req.response
+                create_response = False
+            except Exception:
+                create_response = True
 
-            if req.response_id:
+            if not create_response:
                 req.response.data = data
                 req.response.save()
             else:
@@ -196,7 +224,7 @@ class Request(HandleRefModel):
                     request=req,
                 )
 
-            req.response.write_meta_data()
+            req.response.write_meta_data(req)
 
             return req
 
@@ -225,12 +253,21 @@ class Request(HandleRefModel):
 
     @classmethod
     def get_cache_queryset(cls, target):
-        return cls.objects.filter(pk=target)
+        target_field = cls.config("target_field")
+        filters = {target_field: target}
+        return cls.objects.filter(**filters)
+
+    @classmethod
+    def cache_expiry(cls):
+        return cls.config("cache_expiry")
 
     @classmethod
     def valid_cache_datetime(cls):
-        expiry = cls.config("cache_expiry")
-        return timezone.now() - timedelta(minutes=expiry)
+        expiry = cls.cache_expiry()
+        return timezone.now() - timedelta(seconds=expiry)
+
+    def process_response(self, response):
+        return response.data
 
 
 class Response(HandleRefModel):
@@ -261,12 +298,19 @@ class Response(HandleRefModel):
 
         return value
 
-    def prepare_meta_data(self):
-        raise NotImplementedError("override in extended class")
-
-    def write_meta_data(self):
+    def write_meta_data(self, req):
 
         meta_data_cls = self.config("meta_data_cls")
-        meta_data, _ = meta_data_cls.objects.get_or_create(pk=self.pk)
-        meta_data.data.update(self.prepare_meta_data() or {})
+        target_field = self.config("target_field", req.config("target_field"))
+
+        target = getattr(req, target_field)
+
+        try:
+            filters = {target_field: target}
+            meta_data = meta_data_cls.objects.get(**filters)
+        except meta_data_cls.DoesNotExist:
+            meta_data = meta_data_cls(data={})
+            setattr(meta_data, target_field, target)
+
+        meta_data.data.update({req.config("source_name"): req.process_response(self)})
         meta_data.save()
