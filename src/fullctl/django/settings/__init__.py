@@ -8,6 +8,7 @@ import sys
 from urllib.parse import urljoin
 
 import confu.util
+import django
 
 
 def print_debug(*args, **kwargs):
@@ -74,7 +75,7 @@ class SettingsManager(confu.util.SettingsManager):
         env_file = os.path.join(
             os.path.dirname(__file__), f"{self.get('RELEASE_ENV')}.py"
         )
-        settings.try_include(env_file)
+        self.try_include(env_file)
 
     # fullctl helpers #######
 
@@ -349,6 +350,7 @@ class SettingsManager(confu.util.SettingsManager):
         # terminate session on browser close
         self.set_option("SESSION_EXPIRE_AT_BROWSER_CLOSE", True)
 
+    # TODO: review implementation
     def set_languages_docs(self):
         self.set_option("ENABLE_ALL_LANGUAGES", False)
 
