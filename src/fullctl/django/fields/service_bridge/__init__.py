@@ -82,6 +82,8 @@ class ReferencedObjectField(PositiveIntegerField):
 
 
     def get_prep_value(self, value):
+        if value is None:
+            return None
         if isinstance(value, int):
             return value
         return value.id
