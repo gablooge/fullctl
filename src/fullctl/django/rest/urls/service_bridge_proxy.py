@@ -63,7 +63,8 @@ def proxy_api_endpoint(service, host, endpoint):
 def setup(service, patterns):
 
     if service in PROXIED:
-        raise ValueError(f"Proxied api for service {service} already setup")
+        print(f"Proxied api for service {service} already setup")
+        return
 
     PROXIED[service] = patterns
 
