@@ -163,7 +163,6 @@ class grainy_endpoint(base):
                     request.user = get_user_model().objects.get(
                         social_auth__uid=as_user
                     )
-                    print("Initimating user", request.user)
 
             return inner(self, request, *args, **kwargs)
 
