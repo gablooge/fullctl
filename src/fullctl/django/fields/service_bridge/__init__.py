@@ -1,9 +1,7 @@
-
 from django.db.models import PositiveIntegerField
 
+
 class ReferencedObject:
-
-
     @property
     def object(self):
         if not hasattr(self, "_object"):
@@ -32,13 +30,10 @@ class ReferencedObject:
         return int(self) > int(b)
 
     def load(self):
-        kwargs = {self.remote_lookup:self.id}
+        kwargs = {self.remote_lookup: self.id}
         bridge = self.bridge()
         self.source = f"{bridge.ref_tag}.{self.id}@{bridge.host}"
         return bridge.first(**kwargs)
-
-
-
 
 
 class ReferencedObjectField(PositiveIntegerField):
@@ -79,7 +74,6 @@ class ReferencedObjectField(PositiveIntegerField):
             return value
 
         return ReferencedObject(self.bridge, value, self.remote_lookup)
-
 
     def get_prep_value(self, value):
         if value is None:

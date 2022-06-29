@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+
 class TemplateSerializer(serializers.Serializer):
 
     """
@@ -23,5 +24,3 @@ class TemplateSerializer(serializers.Serializer):
                     exc
                 )
             )
-
-

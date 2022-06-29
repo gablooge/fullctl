@@ -7,8 +7,8 @@ from rest_framework.response import Response
 
 from fullctl.django.auth import Permissions, RemotePermissions
 from fullctl.django.models import Instance, Organization
-from fullctl.django.rest.core import HANDLEREF_FIELDS
 from fullctl.django.rest.authentication import APIKey
+from fullctl.django.rest.core import HANDLEREF_FIELDS
 from fullctl.service_bridge.client import AaaCtl
 
 
@@ -113,7 +113,6 @@ class grainy_endpoint(base):
         else:
             permissions_cls = RemotePermissions
 
-
         @grainy_endpoint_response(
             namespace=decorator.namespace,
             namespace_instance=decorator.namespace,
@@ -158,10 +157,13 @@ class grainy_endpoint(base):
 
             as_user = request.headers.get("X-User")
             if as_user and hasattr(request, "api_key"):
-                if permissions_cls(APIKey(request.api_key)).check(f"superuser.{as_user}", "c"):
-                    request.user = get_user_model().objects.get(social_auth__uid=as_user)
+                if permissions_cls(APIKey(request.api_key)).check(
+                    f"superuser.{as_user}", "c"
+                ):
+                    request.user = get_user_model().objects.get(
+                        social_auth__uid=as_user
+                    )
                     print("Initimating user", request.user)
-
 
             return inner(self, request, *args, **kwargs)
 

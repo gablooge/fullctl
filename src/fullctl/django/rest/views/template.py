@@ -1,10 +1,11 @@
 import os
 
 from rest_framework import viewsets
+
 from fullctl.django.rest.mixins import CachedObjectMixin, OrgQuerysetMixin
 
-class TemplateRenderView(CachedObjectMixin, OrgQuerysetMixin, viewsets.GenericViewSet):
 
+class TemplateRenderView(CachedObjectMixin, OrgQuerysetMixin, viewsets.GenericViewSet):
     def _render(self, request, instance, type, pk, *args, **kwargs):
 
         model = self.queryset.model
@@ -12,16 +13,12 @@ class TemplateRenderView(CachedObjectMixin, OrgQuerysetMixin, viewsets.GenericVi
         if pk == "default":
             body = request.data.get("body")
 
-            tmpl = model(
-                name="Default",
-                instance = instance,
-                type = type
-            )
+            tmpl = model(name="Default", instance=instance, type=type)
 
             if not body:
                 path = os.path.join(tmpl.template_loader_paths[0], tmpl.template_path)
                 with open(path) as fh:
-                    body  = fh.read()
+                    body = fh.read()
 
             tmpl.body = body
 

@@ -2,19 +2,16 @@
 Models to facilitate customization and rendering of jinja2 templates
 """
 
-import string
 import os
 
-from django.db import models
 from django.conf import settings
+from django.db import models
 from django.utils.html import strip_tags
-
 from jinja2 import DictLoader, Environment, FileSystemLoader
 
 from fullctl.django.exceptions import TemplateRenderError
 
 from .base import HandleRefModel
-
 
 
 def make_variable_name(value):
@@ -42,10 +39,11 @@ class TemplateModel(HandleRefModel):
         """
         return os.path.join(self.HandleRef.tag, f"{self.type}.txt")
 
-
     @property
     def template_loader_paths(self):
-        return [os.path.join(settings.SERVICE_APP_DIR, "templates", settings.SERVICE_TAG)]
+        return [
+            os.path.join(settings.SERVICE_APP_DIR, "templates", settings.SERVICE_TAG)
+        ]
 
     @property
     def context(self):
@@ -96,5 +94,4 @@ class TemplateModel(HandleRefModel):
         try:
             return strip_tags(template.render(**self.get_data()))
         except Exception as exc:
-            import traceback
             raise TemplateRenderError(exc)

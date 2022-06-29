@@ -1,6 +1,6 @@
-
 class FullctlException(Exception):
-	pass
+    pass
+
 
 class TemplateRenderError(FullctlException, ValueError):
     """Error that gets raised when template render fails"""

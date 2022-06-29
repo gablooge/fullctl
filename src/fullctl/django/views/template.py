@@ -1,13 +1,8 @@
 import os
 
-from django.conf import settings
-
-from django.http import (
-    HttpResponse,
-)
-
-
+from django.http import HttpResponse
 from django.views import View
+
 
 class TemplateFileView(View):
 

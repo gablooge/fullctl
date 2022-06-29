@@ -1,9 +1,9 @@
 import json
 
 import requests
+from django.conf import settings
 from django.http import JsonResponse
 from django.urls import include, path
-from django.conf import settings
 
 PROXIED = {}
 
@@ -16,7 +16,9 @@ def proxy_api(service, host, endpoints):
     """
 
     paths = [
-        proxy_api_endpoint(service, host, {"remote": remote, "local": local, "name": name})
+        proxy_api_endpoint(
+            service, host, {"remote": remote, "local": local, "name": name}
+        )
         for remote, local, name in endpoints
     ]
 
@@ -39,9 +41,12 @@ def proxy_api_endpoint(service, host, endpoint):
 
         url = f"{host}/api/{endpoint_remote}"
 
-        headers = {"Authorization": f"Bearer {api_key}", "X-User": request.user.social_auth.first().uid}
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "X-User": request.user.social_auth.first().uid,
+        }
 
-        response = request_fn(url,  headers=headers, **_kwargs)
+        response = request_fn(url, headers=headers, **_kwargs)
         print("proxied response in", response.elapsed.total_seconds())
 
         json_dumps_params = {}
