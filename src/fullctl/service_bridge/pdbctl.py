@@ -34,7 +34,7 @@ class Pdbctl(Bridge):
         kwargs.setdefault("cache_duration", 10)
         kwargs.setdefault("cache", CACHE)
 
-        super().__init__(settings.PDBCTL_HOST, key, org, **kwargs)
+        super().__init__(settings.PDBCTL_URL, key, org, **kwargs)
         self.url = f"{self.url}/service-bridge"
 
 

@@ -34,7 +34,7 @@ class Aaactl(Bridge):
         kwargs.setdefault("cache_duration", 10)
         kwargs.setdefault("cache", CACHE)
 
-        super().__init__(settings.AAACTL_HOST, key, org, **kwargs)
+        super().__init__(settings.AAACTL_URL, key, org, **kwargs)
         self.url = f"{self.url}/service-bridge"
 
 

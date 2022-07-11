@@ -174,10 +174,10 @@ class grainy_endpoint(base):
 class _aaactl:
     @property
     def connected(self):
-        return getattr(settings, "AAACTL_HOST", None) is not None
+        return getattr(settings, "AAACTL_URL", None) is not None
 
     def bridge(self, org_slug):
-        return AaaCtl(settings.AAACTL_HOST, settings.SERVICE_KEY, org_slug)
+        return AaaCtl(settings.AAACTL_URL, settings.SERVICE_KEY, org_slug)
 
 
 class billable(_aaactl):
@@ -214,7 +214,7 @@ class billable(_aaactl):
                 return Response(
                     {
                         "non_field_errors": [
-                            f"Billing setup required to continue using {product}. Please set up billing for your organization at {settings.AAACTL_HOST}/billing/setup?org={request.org.slug}"
+                            f"Billing setup required to continue using {product}. Please set up billing for your organization at {settings.AAACTL_URL}/billing/setup?org={request.org.slug}"
                         ]
                     },
                     status=403,

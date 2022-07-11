@@ -80,6 +80,7 @@ class Bridge:
             kwargs["headers"].update(self.auth_headers)
         else:
             kwargs["headers"] = self.auth_headers
+
         return kwargs
 
     def cached(self, url, now, params):
