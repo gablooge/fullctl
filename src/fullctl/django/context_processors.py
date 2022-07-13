@@ -44,8 +44,8 @@ def account_service(request):
     if settings.OAUTH_TWENTYC_URL:
         context.update(
             service_applications=[
-                svcapp.for_org(org)
-                for svcapp in ServiceApplication().objects(group="fullctl")
+                service_application.for_org(org)
+                for service_application in ServiceApplication().objects(group="fullctl")
             ],
         )
 

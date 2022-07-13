@@ -180,13 +180,13 @@ class AaaCtl(Bridge):
 
     def requires_billing(self, product_name):
 
-        sub = self.require_subscription(product_name)
+        subscription = self.require_subscription(product_name)
 
-        if not sub:
+        if not subscription:
             return False
 
-        if not sub["pay"]:
-            for item in sub.get("items"):
+        if not subscription["payment_method"]:
+            for item in subscription.get("items"):
                 if item["name"].lower() == product_name and item["cost"] > 0:
                     return True
 

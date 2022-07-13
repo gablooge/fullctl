@@ -185,7 +185,7 @@ class billable(_aaactl):
     """
     Will use the aaactl service bridge to determine
     if the specified product/service has accumulated
-    costs during the current subscription cycle and
+    costs during the current subscription subscription_cycle and
     return an error response if the there are costs
     but the organization has not yet set up billing
     """

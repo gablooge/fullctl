@@ -51,5 +51,5 @@ class ServiceApplicationObject(AaactlEntity):
 
 class ServiceApplication(Aaactl):
     class Meta(Aaactl.Meta):
-        ref_tag = "svcapp"
+        ref_tag = "service_application"
         data_object_cls = ServiceApplicationObject
