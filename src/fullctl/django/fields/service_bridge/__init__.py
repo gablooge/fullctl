@@ -1,4 +1,20 @@
+from importlib import import_module
 from django.db.models import PositiveIntegerField
+from django.conf import settings
+
+BRIDGE_MAP = {}
+
+
+for name in dir(settings):
+    if name.startswith("SERVICE_BRIDGE_REF_"):
+        path = getattr(settings, name).split(".")
+        name = name.split("_")[-1].lower()
+        print("loading", path, "for", name)
+        if not path or len(path) < 2:
+            BRIDGE_MAP[name] = None
+            continue
+        bridge = getattr(import_module(".".join(path[:-1])), path[-1])
+        BRIDGE_MAP[name] = bridge
 
 
 class ReferencedObject:
@@ -30,6 +46,9 @@ class ReferencedObject:
         return int(self) > int(b)
 
     def load(self):
+        if not self.bridge:
+            return None
+
         kwargs = {self.remote_lookup: self.id}
         bridge = self.bridge()
         self.source = f"{bridge.ref_tag}.{self.id}@{bridge.host}"
@@ -43,16 +62,33 @@ class ReferencedObjectField(PositiveIntegerField):
     service bridge
     """
 
-    def __init__(self, bridge=None, remote_lookup="id", *args, **kwargs):
+    def __init__(self, bridge=None, remote_lookup="id", bridge_type=None, *args, **kwargs):
+
+        if bridge and bridge_type:
+            raise AttributeError("Cannot specify both bridge and bridge_type")
+
+        if bridge_type:
+            try:
+                bridge = BRIDGE_MAP[bridge_type]
+            except KeyError:
+                raise KeyError(f"settings.SERVICE_BRIDGE_REF_{bridge_type.upper} not set")
+
+
+        self.bridge_type = bridge_type
         self.bridge = bridge
         self.remote_lookup = remote_lookup
+
         super().__init__(*args, **kwargs)
 
     def deconstruct(self):
 
         name, path, args, kwargs = super().deconstruct()
 
-        kwargs["bridge"] = self.bridge
+        if self.bridge_type:
+            kwargs["bridge_type"] = self.bridge_type
+        else:
+            kwargs["bridge"] = self.bridge
+
         if self.remote_lookup != "id":
             kwargs["remote_lookup"] = self.remote_lookup
 
