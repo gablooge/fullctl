@@ -10,21 +10,21 @@ from fullctl.service_bridge.client import Bridge, DataObject
 CACHE = {}
 
 
-class PeerctlEntity(DataObject):
-    source = "peerctl"
-    description = "Peerctl Object"
+class PrefixctlEntity(DataObject):
+    source = "prefixctl"
+    description = "Prefixctl Object"
 
 
-class Peerctl(Bridge):
+class Prefixctl(Bridge):
 
     """
-    Service bridge for peerctl data retrieval
+    Service bridge for prefixctl data retrieval
     """
 
     class Meta:
-        service = "peerctl"
+        service = "prefixctl"
         ref_tag = "base"
-        data_object_cls = PeerctlEntity
+        data_object_cls = PrefixctlEntity
 
     def __init__(self, key=None, org=None, **kwargs):
 
@@ -34,15 +34,15 @@ class Peerctl(Bridge):
         kwargs.setdefault("cache_duration", 10)
         kwargs.setdefault("cache", CACHE)
 
-        super().__init__(settings.PEERCTL_URL, key, org, **kwargs)
+        super().__init__(settings.PREFIXCTL_URL, key, org, **kwargs)
         self.url = f"{self.url}/service-bridge"
 
 
-class NetworkObject(PeerctlEntity):
-    description = "Peerctl Network"
+class PrefixSetObject(PrefixctlEntity):
+    description = "PrefixCtl PrefixSet"
 
 
-class Network(Peerctl):
-    class Meta(Peerctl.Meta):
-        ref_tag = "net"
-        data_object_cls = NetworkObject
+class PrefixSet(Prefixctl):
+    class Meta(Prefixctl.Meta):
+        ref_tag = "prefix_set"
+        data_object_cls = PrefixSetObject

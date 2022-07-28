@@ -13,7 +13,7 @@ from fullctl.service_bridge.client import ServiceBridgeError
 
 SOURCE_MAP = {
     "member": {"pdbctl": pdbctl.NetworkIXLan, "ixctl": ixctl.InternetExchangeMember},
-    "portinfo": {"pdbctl": pdbctl.NetworkIXLan, "ixctl": ixctl.InternetExchangeMember},
+    "port_info": {"pdbctl": pdbctl.NetworkIXLan, "ixctl": ixctl.InternetExchangeMember},
     "ix": {"pdbctl": pdbctl.InternetExchange, "ixctl": ixctl.InternetExchange},
     "as_set": {"pdbctl": pdbctl.Network, "peerctl": peerctl.Network},
 }
@@ -113,10 +113,18 @@ class SourceOfTruth:
 
     def object(self, *args, **kwargs):
         for source, params in self.sources:
+
+            client = source()
+
+            # source host not specified, skip
+            # TODO: error when no source hosts are specified ?
+            if not client.host:
+                continue
+
             kwargs.update(params)
             kwargs["raise_on_notfound"] = False
             try:
-                return source().object(*args, **kwargs)
+                return client.object(*args, **kwargs)
             except ServiceBridgeError as exc:
                 if exc.status == 404:
                     continue
@@ -129,9 +137,17 @@ class SourceOfTruth:
         _result = []
 
         for source, params in self.sources:
+
+            client = source()
+
+            # source host not specified, skip
+            # TODO: error when no source hosts are specified ?
+            if not client.host:
+                continue
+
             kwargs.update(params)
             try:
-                for obj in source().objects(**kwargs):
+                for obj in client.objects(**kwargs):
                     _result.append(obj)
 
             except ServiceBridgeError as exc:

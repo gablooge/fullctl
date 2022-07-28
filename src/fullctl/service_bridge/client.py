@@ -39,6 +39,9 @@ class Bridge:
     # responses for the specified duration (seconds)
     cache_duration = 0
 
+    results_key = "data"
+    url_prefix = "data/"
+
     class Meta:
         service = "base"
         ref_tag = "base"
@@ -60,13 +63,14 @@ class Bridge:
         self.url = f"{host}/api"
         self.org = org_slug
         self.key = key
+        self.host = host
         self.cache = kwargs.get("cache", None)
         self.cache_duration = kwargs.get("cache_duration", 5)
 
     def _data(self, response):
         status = response.status_code
         if status == 200:
-            return response.json().get("data")
+            return response.json().get(self.results_key)
         elif status in [401, 403]:
             raise AuthError(self, status)
         elif status in [400]:
@@ -79,6 +83,7 @@ class Bridge:
             kwargs["headers"].update(self.auth_headers)
         else:
             kwargs["headers"] = self.auth_headers
+
         return kwargs
 
     def cached(self, url, now, params):
@@ -96,7 +101,7 @@ class Bridge:
             param_str = ""
         file_path = os.path.join(TEST_DATA_PATH, f"{path.rstrip('/')}{param_str}.json")
         with open(file_path) as fh:
-            return json.load(fh)["data"]
+            return json.load(fh)[self.results_key]
 
     def get(self, endpoint, **kwargs):
         url = f"{self.url}/{endpoint}/"
@@ -133,7 +138,7 @@ class Bridge:
         return self._data(requests.delete(url, **self._requests_kwargs(**kwargs)))
 
     def object(self, id, raise_on_notfound=True, join=None):
-        url = f"data/{self.ref_tag}/{id}"
+        url = f"{self.url_prefix}{self.ref_tag}/{id}"
         params = {}
 
         if join:
@@ -147,7 +152,7 @@ class Bridge:
             return None
 
     def objects(self, **kwargs):
-        url = f"data/{self.ref_tag}"
+        url = f"{self.url_prefix}{self.ref_tag}"
         for k, v in kwargs.items():
             if isinstance(v, list):
                 kwargs[k] = ",".join([str(a) for a in v])
@@ -178,13 +183,13 @@ class AaaCtl(Bridge):
 
     def requires_billing(self, product_name):
 
-        sub = self.require_subscription(product_name)
+        subscription = self.require_subscription(product_name)
 
-        if not sub:
+        if not subscription:
             return False
 
-        if not sub["pay"]:
-            for item in sub.get("items"):
+        if not subscription["payment_method"]:
+            for item in subscription.get("items"):
                 if item["name"].lower() == product_name and item["cost"] > 0:
                     return True
 
