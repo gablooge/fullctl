@@ -900,7 +900,7 @@ td.property {
 }
 
 div.list-body .secondary .property {
-  margin-left: -15px;
+  margin-left: calc(var(--bs-gutter-x) * -0.5);
 }
 
 div.list-body .secondary .property .transparent-field,
@@ -927,7 +927,7 @@ div.list-body .secondary button {
 }
 
 tr.secondary > td {
-  padding: 0px 15px;
+  padding: 0px calc(var(--bs-gutter-x) * .5);
 }
 
 .row.double-row > div.field > span {
