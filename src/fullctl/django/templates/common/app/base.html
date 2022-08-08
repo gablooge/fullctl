@@ -139,7 +139,7 @@ fullctl.permissions = {{ permissions|safe }}
 
           {% if oauth_manages_org %}
 
-          <a class="dropdown-item" href="{{ account_service.urls.create_org }}?service={{ app_id }}">
+          <a class="dropdown-item" href="{{ account_service.urls.create_org }}">
             <span class="icon icon-add"></span>{% trans "Create Organization" %}</a>
           {% endif %}
         </div>
