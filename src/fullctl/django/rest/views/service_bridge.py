@@ -1,13 +1,12 @@
 import time
-import logging
 
 from django.utils.translation import gettext_lazy as _
 from rest_framework import viewsets
 from rest_framework.response import Response
 
+from fullctl.django.models import Organization
 from fullctl.django.rest.core import BadRequest
 from fullctl.django.rest.decorators import grainy_endpoint
-from fullctl.django.models import Organization
 
 
 class MethodFilter:
@@ -172,7 +171,6 @@ class DataViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data)
 
-
     @grainy_endpoint("service_bridge")
     def partial_update(self, request, pk, *args, **kwargs):
         instance = self.get_object()
@@ -185,7 +183,6 @@ class DataViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data)
 
-
     @grainy_endpoint("service_bridge")
     def destroy(self, request, pk, *args, **kwargs):
         instance = self.get_object()
@@ -195,5 +192,3 @@ class DataViewSet(viewsets.ModelViewSet):
         instance.delete()
 
         return response
-
-

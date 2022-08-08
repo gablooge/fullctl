@@ -53,6 +53,7 @@ class DeviceType(Nautobot):
         ref_tag = "dcim/device-types"
         data_object_cls = DeviceTypeObject
 
+
 class DeviceObject(NautobotObject):
     description = "Nautobot Device"
 
@@ -65,8 +66,10 @@ class Device(Nautobot):
     def ux_url(self, id):
         return f"{self.host}/{self.ref_tag}/{id}/?tab=main"
 
+
 class SiteObject(NautobotObject):
     description = "Nautobot Site"
+
 
 class Site(Nautobot):
     class Meta(Nautobot.Meta):
@@ -77,15 +80,15 @@ class Site(Nautobot):
 class CustomFieldObject(NautobotObject):
     description = "Nautobot CustomField"
 
+
 class CustomField(Nautobot):
     class Meta(Nautobot.Meta):
         ref_tag = "extras/custom-fields"
         data_object_cls = CustomFieldObject
 
-
     def sync(self, fields):
 
-        nautobot_fields = dict([(nbf.name, nbf) for nbf in self.objects()])
+        nautobot_fields = {nbf.name: nbf for nbf in self.objects()}
 
         for field in fields:
 
@@ -95,6 +98,3 @@ class CustomField(Nautobot):
                 self.create(field)
             else:
                 self.update(nautobot_field, field)
-
-
-

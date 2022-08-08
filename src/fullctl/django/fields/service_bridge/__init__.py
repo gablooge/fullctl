@@ -1,15 +1,14 @@
 from importlib import import_module
+from logging import getLogger
 
 from django.conf import settings
 from django.db.models import CharField, PositiveIntegerField
 
 from fullctl.django.fields import CastOnAssignDescriptor
 
-BRIDGE_MAP = {}
-
-from logging import getLogger
-
 log = getLogger("django")
+
+BRIDGE_MAP = {}
 
 
 for name in dir(settings):
@@ -140,8 +139,8 @@ class ReferencedObjectFieldMixin:
         return value.id
 
     def contribute_to_class(self, cls, name):
-	    super().contribute_to_class(cls, name)
-	    setattr(cls, name, CastOnAssignDescriptor(self))
+        super().contribute_to_class(cls, name)
+        setattr(cls, name, CastOnAssignDescriptor(self))
 
 
 class ReferencedObjectField(ReferencedObjectFieldMixin, PositiveIntegerField):

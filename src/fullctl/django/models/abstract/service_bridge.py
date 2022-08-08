@@ -1,7 +1,7 @@
-import json
 from django.db import models
+
 from fullctl.django.models.abstract import HandleRefModel
-from fullctl.utils import rgetattr, rsetattr
+from fullctl.utils import rgetattr
 
 __all__ = [
     "ServiceBridgeReferenceModel",
@@ -29,7 +29,7 @@ class ServiceBridgeReferenceModel(HandleRefModel):
 
     def field_map(self, service_name=None):
         if not service_name:
-          service_name = self.reference.bridge.Meta.service
+            service_name = self.reference.bridge.Meta.service
         return getattr(self.ServiceBridge, f"map_{service_name}")
 
     def sync_from_reference(self, ref_obj=None):
@@ -47,10 +47,9 @@ class ServiceBridgeReferenceModel(HandleRefModel):
                 changed = True
                 setattr(self, src_field, dest_value)
 
-
         return changed
 
-    #def save(self):
+    # def save(self):
     #    if self.reference_is_sot and not getattr(self, "stop_sync_from_reference", False):
     #        self.sync_from_reference()
     #   return super().save()
@@ -73,4 +72,3 @@ class ServiceBridgeReferenceModel(HandleRefModel):
                 data[dest_field] = getattr(self, src_field)
 
         return data
-

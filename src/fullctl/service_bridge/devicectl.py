@@ -46,4 +46,3 @@ class Device(Pdbctl):
 class Facility(Pdbctl):
     class Meta(Pdbctl.Meta):
         ref_tag = "facility"
-

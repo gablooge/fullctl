@@ -1,4 +1,4 @@
-class CastOnAssignDescriptor(object):
+class CastOnAssignDescriptor:
     """
     A property descriptor which ensures that `field.to_python()` is called on _every_ assignment to the field.
     This used to be provided by the `django.db.models.subclassing.Creator` class, which in turn
@@ -15,5 +15,3 @@ class CastOnAssignDescriptor(object):
 
     def __set__(self, obj, value):
         obj.__dict__[self.field.name] = self.field.to_python(value)
-
-

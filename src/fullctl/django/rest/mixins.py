@@ -37,7 +37,6 @@ class ContainerQuerysetMixin:
     - container_lookup_field (`str`): the database field to use for lookups
     """
 
-
     def get_queryset(self):
         org_tag = self.kwargs["org_tag"]
         container_tag = self.kwargs[self.container_url_field]
@@ -49,5 +48,3 @@ class ContainerQuerysetMixin:
         }
 
         return self.queryset.filter(**filters)
-
-

@@ -69,7 +69,7 @@ class Bridge:
 
     def _data(self, response):
         status = response.status_code
-        if status in [200,201,202,203,204,205]:
+        if status in [200, 201, 202, 203, 204, 205]:
             return response.json().get(self.results_key)
         elif status in [401, 403]:
             raise AuthError(self, status)
@@ -192,7 +192,6 @@ class Bridge:
         data = self.patch(url, data=data)
         return data
 
-
     def update_if_changed(self, obj, data):
 
         diff = {}
@@ -208,7 +207,6 @@ class Bridge:
         data = self.patch(url, data=diff)
 
         return data
-
 
     def first(self, **kwargs):
         for o in self.objects(**kwargs):
@@ -227,7 +225,6 @@ class Bridge:
 
     def api_url(self, id):
         return f"{self.url}/{self.url_prefix}{self.ref_tag}/{id}"
-
 
 
 class AaaCtl(Bridge):
