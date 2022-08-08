@@ -15,7 +15,7 @@ class DeviceCtlEntity(DataObject):
     source = "devicectl"
 
 
-class Pdbctl(Bridge):
+class Devicectl(Bridge):
 
     """
     Service bridge to devicectl for data
@@ -38,11 +38,11 @@ class Pdbctl(Bridge):
         self.url = f"{self.url}/service-bridge"
 
 
-class Device(Pdbctl):
-    class Meta(Pdbctl.Meta):
+class Device(Devicectl):
+    class Meta(Devicectl.Meta):
         ref_tag = "device"
 
 
-class Facility(Pdbctl):
-    class Meta(Pdbctl.Meta):
+class Facility(Devicectl):
+    class Meta(Devicectl.Meta):
         ref_tag = "facility"
