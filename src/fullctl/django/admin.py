@@ -1,6 +1,7 @@
 import reversion
-from django.contrib import admin
 from django.conf.urls import url
+from django.contrib import admin
+from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
 from django_handleref.admin import VersionAdmin
 
@@ -121,12 +122,9 @@ class AuditLogAdmin(admin.ModelAdmin):
 
 
 class UrlActionMixin:
-
-
     def make_redirect(self, obj, action):
         opts = obj.model._meta
         return redirect(f"admin:{opts.app_label}_{opts.model_name}_changelist")
-
 
     def actions_view(self, request, object_id, action, **kwargs):
         """
@@ -162,5 +160,3 @@ class UrlActionMixin:
             ),
         ] + super().get_urls()
         return urls
-
-

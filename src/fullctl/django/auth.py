@@ -1,19 +1,17 @@
 import json
-import requests
 
 import django_grainy.remote
 import django_grainy.util
-from django.db import transaction
+import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
+from django.db import transaction
 from social_django.models import UserSocialAuth
 
-from fullctl.django.context import current_request
-
 import fullctl.django.models.concrete.account as account_models
-
 import fullctl.service_bridge.aaactl as aaactl
+from fullctl.django.context import current_request
 
 
 class RemotePermissionsError(IOError):
@@ -46,21 +44,23 @@ def require_user(aaactl_user_id):
         aaactl_user = aaactl.User().object(aaactl_user_id)
 
         user = get_user_model().objects.create_user(
-            username = aaactl_user.username,
-            first_name = aaactl_user.first_name,
-            last_name = aaactl_user.last_name,
-            is_staff = aaactl_user.is_staff,
-            is_superuser = aaactl_user.is_superuser,
-            email = aaactl_user.email
+            username=aaactl_user.username,
+            first_name=aaactl_user.first_name,
+            last_name=aaactl_user.last_name,
+            is_staff=aaactl_user.is_staff,
+            is_superuser=aaactl_user.is_superuser,
+            email=aaactl_user.email,
         )
 
-        account_models.Organization.sync(aaactl_user.organizations, user, backend="twentyc")
+        account_models.Organization.sync(
+            aaactl_user.organizations, user, backend="twentyc"
+        )
 
         UserSocialAuth.objects.create(
-            user = user,
-            provider = "twentyc",
-            extra_data = {},
-            uid = aaactl_user_id,
+            user=user,
+            provider="twentyc",
+            extra_data={},
+            uid=aaactl_user_id,
         )
 
     return user
@@ -76,7 +76,6 @@ class RemotePermissions(django_grainy.remote.Permissions):
 
     def __init__(self, obj):
         super().__init__(obj, **settings.GRAINY_REMOTE)
-
 
     @transaction.atomic
     def handle_impersonation(self, response):
@@ -97,10 +96,7 @@ class RemotePermissions(django_grainy.remote.Permissions):
             if not request.user.is_superuser:
                 return
 
-            request.impersonating = {
-                "superuser": request.user,
-                "user": user
-            }
+            request.impersonating = {"superuser": request.user, "user": user}
             request.user = user
 
     def fetch(self, url, cache_key, **params):
