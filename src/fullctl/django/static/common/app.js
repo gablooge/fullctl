@@ -436,20 +436,20 @@ fullctl.application.Application = $tc.define(
       }
     },
 
-    getPage : function(page) {
+    get_page : function(page) {
       return $('[data-component="pages"]').find('[aria-controls="'+page+'"]');
     },
 
     page : function(page) {
-      $('[data-component="pages"]').find('[aria-controls="'+page+'"]').tab('show');
+      this.get_page(page).tab('show');
     },
 
-    showPage : function(page) {
-      $('[data-component="pages"]').find('[aria-controls="'+page+'"]').show();
+    show_page : function(page) {
+      this.get_page(page).show();
     },
 
-    hidePage : function(page) {
-      $('[data-component="pages"]').find('[aria-controls="'+page+'"]').hide();
+    hide_page : function(page) {
+      this.get_page(page).hide();
     }
   }
 );
