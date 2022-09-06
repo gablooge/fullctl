@@ -11,6 +11,10 @@ from fullctl.django.models.concrete import (
     TaskSchedule,
 )
 
+from fullctl.django.models.concrete.service_bridge import (
+    ServiceBridgeReference,
+)
+
 
 class BaseAdmin(VersionAdmin):
     readonly_fields = ("version",)
@@ -116,3 +120,8 @@ class AuditLogAdmin(admin.ModelAdmin):
         elif obj and obj.object_id:
             return "<deleted>"
         return ""
+
+
+@admin.register(ServiceBridgeReference)
+class ServiceBridgeReference(admin.ModelAdmin):
+    list_display = ("name", "reference", "target", "operation", "reference_url", "description", "org", "created", "updated")

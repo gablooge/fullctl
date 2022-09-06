@@ -1,6 +1,7 @@
 from django.db import models
 
 from fullctl.django.models.abstract import HandleRefModel
+from fullctl.django.models.concrete.service_bridge import ServiceBridgeReference
 from fullctl.utils import rgetattr
 
 __all__ = [
@@ -36,6 +37,16 @@ class ServiceBridgeReferenceModel(HandleRefModel):
         if self.reference_is_sot:
             return self.reference.object
         return self
+
+    def references(self, org=None):
+        qset = ServiceBridgeReference.objects.filter(target=f"{self._meta.app_label}.{self._meta.model_name}")
+
+        if org:
+            qset = qset.filter(org=org)
+        else:
+            qset = qset.filter(org__isnull=True)
+
+        return list(qset)
 
 
     def field_map(self, service_name=None):
