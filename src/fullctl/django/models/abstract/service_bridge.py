@@ -70,7 +70,6 @@ class ServiceBridgeReferenceModel(HandleRefModel):
 
     def service_bridge_data(self, service_name):
 
-
         field_map = self.field_map(service_name)
 
         data = {}
