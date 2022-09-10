@@ -162,6 +162,7 @@ class UrlActionMixin:
         ] + super().get_urls()
         return urls
 
+
 @admin.register(ServiceBridgeAction)
 class ServiceBridgeAction(admin.ModelAdmin):
     list_display = (
