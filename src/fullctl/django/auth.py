@@ -82,19 +82,15 @@ class RemotePermissions(django_grainy.remote.Permissions):
 
         user_id = response.headers.get("X-User")
 
-        print("IMPERSONATE", user_id, response.headers)
-
         if not user_id:
             return
-
-        user = require_user(user_id)
-
-        print("IMPERSONATE", user)
 
         with current_request() as request:
 
             if not request.user.is_superuser:
                 return
+
+            user = require_user(user_id)
 
             request.impersonating = {"superuser": request.user, "user": user}
             request.user = user
