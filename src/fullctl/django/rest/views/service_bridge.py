@@ -36,7 +36,7 @@ class HeartbeatViewSet(SystemViewSet):
 
 class StatusViewSet(SystemViewSet):
     ref_tag = "status"
-    serialzer_class = StatusSerializer
+    serializer_class = StatusSerializer
     checks = []
 
     @grainy_endpoint("service_bridge.system")

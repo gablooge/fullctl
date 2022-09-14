@@ -1,4 +1,4 @@
-from rest_framework.schemas.openapi import AutoSchema
+from rest_framework.schemas.openapi import AutoSchema, is_list_view
 
 from fullctl.django.rest.serializers import ModelSerializer
 
@@ -37,18 +37,27 @@ class BaseSchema(AutoSchema):
 
         return method.lower()
 
-    def _get_operation_id(self, path, method):
+    def get_operation_id(self, path, method):
         """
         We override this so operation ids become "{op} {reftag}"
         """
 
         serializer, model = self.get_classes(path, method)
         op_type = self.get_operation_type(path, method)
+        method_name = getattr(self.view, 'action', method.lower())
 
-        if model:
-            return f"{model.HandleRef.tag}.{op_type}"
+        if is_list_view(path, method, self.view):
+            action = 'list'
+        elif method_name not in self.method_mapping:
+            action = method_name
+        else:
+            action = self.method_mapping[method.lower()]
 
-        return super()._get_operation_id(path, method)
+        name = self.get_operation_id_base(path, method, action)
+
+        name = self.view.__class__.__name__
+
+        return f"{name} {action}"
 
     def get_classes(self, *op_args):
         """
@@ -89,16 +98,11 @@ class BaseSchema(AutoSchema):
 
         serializer, model = self.get_classes(*args)
 
-        #if not model:
-        #    return op_dict
+        if not model or not hasattr(model, "HandleRef"):
+            return op_dict
 
         # if we were able to get a model we want to include the markdown documentation
         # for the model type in the openapi description field (docs/api/obj_*.md)
-
-        if hasattr(model, "HandleRef"):
-            reftag = model.HandleRef.tag
-        else:
-            reftag = model.__name__.lower()
 
         if model:
             augment = getattr(self, f"augment_{op_type}_{model.HandleRef.tag}", None)

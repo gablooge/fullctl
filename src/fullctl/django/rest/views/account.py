@@ -43,5 +43,10 @@ class User(viewsets.GenericViewSet):
     @action(detail=False, methods=["GET"])
     @grainy_endpoint()
     def asns(self, request, org, *args, **kwargs):
+
+        """
+        Lists the asns that the user has been verified for.
+        """
+
         serializer = Serializers.asn(verified_asns(request.perms), many=True)
         return Response(serializer.data)
