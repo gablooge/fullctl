@@ -26,15 +26,21 @@ class SystemViewSet(viewsets.GenericViewSet):
 
 
 class HeartbeatViewSet(SystemViewSet):
+
     ref_tag = "heartbeat"
     serializer_class = HeartbeatSerializer
 
     @grainy_endpoint("service_bridge.system")
     def list(self, request):
+        """
+        Service heart-beat, check if the service is alive and responding
+        """
+
         return Response({"status": "ok"})
 
 
 class StatusViewSet(SystemViewSet):
+
     ref_tag = "status"
     serializer_class = StatusSerializer
     checks = []
@@ -42,6 +48,10 @@ class StatusViewSet(SystemViewSet):
     @grainy_endpoint("service_bridge.system")
     def list(self, request):
 
+        """
+        Returns service bridge status for all the service bridges
+        in use
+        """
         results = {}
 
         for check in self.checks:
