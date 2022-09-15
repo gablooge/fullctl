@@ -11,7 +11,7 @@ endpoints in the api documenation.
 
 api docs will be available at the following paths:
 
--`/apidocs/openapi.json` the schema
+-`/apidocs/schema.json` the schema
 -`/apidocs/redoc` ReDoc instance
 -`/apidocs/swagger` Swagger instance
 
