@@ -1,6 +1,21 @@
-from rest_framework.schemas.openapi import AutoSchema, is_list_view
+from rest_framework.schemas.openapi import SchemaGenerator as BaseSchemaGenerator, AutoSchema, is_list_view
+from rest_framework import serializers
+
+from django.conf import settings
 
 from fullctl.django.rest.serializers import ModelSerializer
+
+class SchemaGenerator(BaseSchemaGenerator):
+
+
+    def has_view_permissions(self, path, method, view):
+
+        generate_service_bridge = getattr(settings, "API_DOCS_GENERATE_SERVICE_BRIDGE", False)
+
+        if "service-bridge" in path and not generate_service_bridge:
+            return False
+
+        return super().has_view_permissions(path, method, view)
 
 
 class BaseSchema(AutoSchema):
@@ -114,6 +129,64 @@ class BaseSchema(AutoSchema):
 
         return op_dict
 
+
+    def get_components(self, path, method):
+        """
+        Return components with their properties from the serializer.
+        """
+
+        request_serializer = self.get_request_serializer(path, method)
+        response_serializer = self.get_response_serializer(path, method)
+
+        components = {}
+
+        if isinstance(request_serializer, serializers.Serializer):
+            component_name = self.get_component_name(request_serializer)
+            content = self.map_serializer(request_serializer)
+            components.setdefault(component_name, content)
+
+        if isinstance(response_serializer, serializers.Serializer):
+            component_name = self.get_component_name(response_serializer)
+            content = self.map_serializer(response_serializer)
+            components.setdefault(component_name, content)
+
+        return components
+
+    def get_serializer(self, path, method, direction="response"):
+        view = self.view
+
+        if hasattr(view, "get_serializer_dynamic"):
+            return view.get_serializer_dynamic(path, method, direction)
+
+        return super().get_serializer(path, method)
+
+
+    def get_response_serializer(self, path, method):
+        return self.get_serializer(path, method, "response")
+
+    def get_request_serializer(self, path, method):
+        return self.get_serializer(path, method, "request")
+
+    def get_request_body(self, path, method):
+        if method not in ('PUT', 'PATCH', 'POST', 'DELETE'):
+            return {}
+
+        self.request_media_types = self.map_parsers(path, method)
+
+        serializer = self.get_request_serializer(path, method)
+
+        if not isinstance(serializer, serializers.Serializer):
+            item_schema = {}
+        else:
+            item_schema = self._get_reference(serializer)
+
+        return {
+            'content': {
+                ct: {'schema': item_schema}
+                for ct in self.request_media_types
+            }
+        }
+
     def request_body_schema(self, op_dict, content="application/json"):
         """
         Helper function that return the request body schema
@@ -126,6 +199,46 @@ class BaseSchema(AutoSchema):
             .get(content, {})
             .get("schema", {})
         )
+
+
+    def get_reference(self, serializer):
+        return {'$ref': '#/components/schemas/{}'.format(self.get_component_name(serializer))}
+
+    def get_responses(self, path, method):
+
+        self.response_media_types = self.map_renderers(path, method)
+
+        serializer = self.get_response_serializer(path, method)
+
+        if not isinstance(serializer, serializers.Serializer):
+            item_schema = {}
+        else:
+            item_schema = self.get_reference(serializer)
+
+
+        response_schema = {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": item_schema,
+                }
+            }
+        }
+
+        status_code = '201' if method == 'POST' else '200'
+        return {
+            status_code: {
+                'content': {
+                    ct: {'schema': response_schema}
+                    for ct in self.response_media_types
+                },
+                # description is a mandatory property,
+                # https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#responseObject
+                # TODO: put something meaningful into it
+                'description': ""
+            }
+        }
 
 
 class PeeringDBImportSchema(AutoSchema):
