@@ -1,4 +1,4 @@
-{% extends "common/app/base.html" %}
+{% extends "common/v2/app/base.html" %}
 {% load static i18n %}
 
 {% block "content" %}
@@ -74,7 +74,7 @@
                     {% if backends.backends %}
                     <h3>{% trans "Authenticate" %}</h3>
                     <!-- OAUTH -->
-                    {% include "common/auth/oauth.html" %}
+                    {% include "common/v2/auth/oauth.html" %}
                     {% endif %}
                 </div>
 

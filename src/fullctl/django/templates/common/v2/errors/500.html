@@ -1,4 +1,4 @@
-{% extends "common/errors/base.html" %}
+{% extends "common/v2/errors/base.html" %}
 {% load i18n %}
 {% block error_title %}{% trans "Internal Error" %}{% endblock %}
 {% block error_descr %}{% trans "Looks like something went wrong - we're looking into it and apologize for the inconvenience!" %}{% endblock %}
@@ -7,5 +7,5 @@
 <div>
 {{ error.description }}
 </div>
-{% include "common/errors/details.html" %}
+{% include "common/v2/errors/details.html" %}
 {% endblock %}
