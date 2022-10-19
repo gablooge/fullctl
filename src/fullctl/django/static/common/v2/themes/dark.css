@@ -511,3 +511,13 @@ div.oauth-backend.twentyc > a.btn {
 span.tag {
   background-color: #29323b;
 }
+
+/**
+ * footer
+ */
+
+div.footer-center,
+div.footer-left > div.row > div:not([type="button"]),
+div.footer-right > div.row > div:not([type="button"]) {
+  opacity: 0.3;
+}
