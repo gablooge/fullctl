@@ -11,10 +11,6 @@ a[data-action],
   cursor: pointer;
 }
 
-a[data-action]:hover,
-.action:hover {
-}
-
 [data-api-submit] {
   position: relative;
 }
@@ -157,10 +153,6 @@ div.loading-anim {
 
 .pad-top-9 {
   padding-top: 9px;
-}
-
-.tool-spacing-left {
-  margin-left: 8px;
 }
 
 .indent {
@@ -402,13 +394,6 @@ div.toolbar .button {
   text-align: left;
 }
 
-div.menu .button .icon,
-div.toolbar .button .icon {
-  width: 16px;
-  height: 16px;
-  vertical-align: bottom;
-}
-
 div.menu div.section.tabs h5 {
   cursor: pointer;
 }
@@ -439,8 +424,8 @@ div.tool-custom > h4.tool-title {
 span.inner-icon,
 span.icon {
   display: inline-block;
-  height: 16px;
-  width: 16px;
+  height: 20px;
+  width: 20px;
   vertical-align: bottom;
   margin-right: 3px;
   mask-position: center;
@@ -452,6 +437,26 @@ span.icon {
 span.icon-lg {
   width: 32px;
   height: 32px;
+}
+
+span.icon-add {
+  -webkit-mask-image: url(icons/add.svg);
+  mask-image: url(icons/add.svg);
+}
+
+span.icon-api {
+  -webkit-mask-image: url(icons/api.svg);
+  mask-image: url(icons/api.svg);
+}
+
+span.icon-delete {
+  -webkit-mask-image: url(icons/delete.svg);
+  mask-image: url(icons/delete.svg);
+}
+
+span.icon-view-settings {
+  -webkit-mask-image: url(icons/view-settings.svg);
+  mask-image: url(icons/view-settings.svg);
 }
 
 span.icon-org {
@@ -551,6 +556,17 @@ div.menu .button {
   margin-top: 54px;
 }
 
+.heading {
+  font-size: 32px;
+  line-height: 40px;
+}
+
+.heading-preposition {
+  line-height: 20px;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
 div.list-th,
 table thead tr th {
   opacity: 0.4;
@@ -567,6 +583,12 @@ div.list-th,
 
 .tool {
   position: relative;
+}
+
+.table th,
+.table td {
+  border: solid 1px;
+  border-collapse: collapse;
 }
 
 .table td.highlight {
@@ -770,8 +792,6 @@ div.flags > span {
  * Table headings (ordering)
  */
 
-.selected-order-header-asc {
-}
 .selected-order-header-asc::after {
   content: " \2191";
 }
@@ -902,15 +922,11 @@ span.modal-control {
   display: block;
 }
 
-
-
 span.modal-control > img.caret {
   position: absolute;
   right: 18px;
   top: 19px;
 }
-
-
 
 .select2-selection__rendered {
   padding-left: 0px !important;
