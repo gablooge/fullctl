@@ -449,7 +449,7 @@ span.icon-api {
   mask-image: url(icons/api.svg);
 }
 
-s-modalpan.icon-delete {
+span.icon-delete {
   -webkit-mask-image: url(icons/delete.svg);
   mask-image: url(icons/delete.svg);
 }
@@ -801,7 +801,7 @@ div.flags > span {
 }
 
 /**
- * dmodal
+ * modal
  */
 
 @media (min-width: 1100px) {
