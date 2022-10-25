@@ -6,18 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('django_fullctl', '0024_auto_20221012_1227'),
+        ("django_fullctl", "0024_auto_20221012_1227"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='usersettings',
-            name='color_scheme',
-            field=models.CharField(choices=[('dark', 'Dark'), ('light', 'Light')], default='dark', help_text="user's color scheme selection", max_length=255),
+            model_name="usersettings",
+            name="color_scheme",
+            field=models.CharField(
+                choices=[("dark", "Dark"), ("light", "Light")],
+                default="dark",
+                help_text="user's color scheme selection",
+                max_length=255,
+            ),
         ),
         migrations.AlterField(
-            model_name='usersettings',
-            name='theme',
-            field=models.CharField(blank=True, help_text='override layout theme for this user', max_length=255, null=True),
+            model_name="usersettings",
+            name="theme",
+            field=models.CharField(
+                blank=True,
+                help_text="override layout theme for this user",
+                max_length=255,
+                null=True,
+            ),
         ),
     ]

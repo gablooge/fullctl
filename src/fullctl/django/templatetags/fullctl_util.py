@@ -47,7 +47,6 @@ def themed_path(path):
         if not request:
             return path
 
-
         # attempt to revtrieve theme override for requesting
         # user.
         try:
@@ -84,5 +83,3 @@ def themed_path(path):
                 return orig_path
 
         return path
-
-

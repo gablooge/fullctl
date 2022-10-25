@@ -12,7 +12,7 @@ from fullctl.django.models.concrete import (
     OrganizationUser,
     Task,
     TaskSchedule,
-    UserSettings
+    UserSettings,
 )
 from fullctl.django.models.concrete.service_bridge import ServiceBridgeAction
 
@@ -177,7 +177,7 @@ class ServiceBridgeAction(admin.ModelAdmin):
         "updated",
     )
 
+
 @admin.register(UserSettings)
 class UserSettingsAdmin(BaseAdmin):
     list_display = ("user", "theme", "color_scheme")
-
