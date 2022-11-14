@@ -9,13 +9,13 @@
     {% endblock %}
 
     {% block "header_middle" %}
-    <div class="container-fluid header-outer">
+    <header class="container-fluid header-outer">
         <div class="row header">
             <div class="col-12 col-sm-6 header-left mt-3 mb-2 ms-3 app-switcher">
                 <img class="app-logo" src="{% static service_logo_dark %}" alt="{{ sertvice_tag }}">
             </div>
         </div>
-    </div>
+    </header>
     {% endblock %}
 
     {% if form.errors %}

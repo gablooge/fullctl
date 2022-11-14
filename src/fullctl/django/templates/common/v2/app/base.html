@@ -50,7 +50,8 @@ fullctl.permissions = {{ permissions|safe }}
 
 {% block "header" %}
 
-<div class="container-fluid header-outer px-4">
+<div class="main-container">
+<header class="container-fluid header-outer px-4">
   {% if request.impersonating %}
   <div class="row">
     <div class="col-12 col-sm-2"></div>
@@ -203,9 +204,10 @@ fullctl.permissions = {{ permissions|safe }}
     {% endblock %}
     </div>
   </div>
-</div>
+</header>
 {% endblock %}
 
+<main>
 {% block "error_content" %}{% endblock %}
 
 {% if not permissions.read_instance and request.org %}
@@ -256,8 +258,9 @@ You do not have the permissions to view the {{ app_id }} workspace for the {{ or
 {% include "common/v2/app/modal.html" %}
 </div>
 {% if not permissions.read_instance %}</div>{% endif %}
+</main>
 
-<div class="center app-footer">
+<footer class="center app-footer">
 {% block "footer" %}
 <!--TODO: make links functional-->
 <div class="container-fluid">
@@ -282,5 +285,6 @@ You do not have the permissions to view the {{ app_id }} workspace for the {{ or
   </div>
 </div>
 {% endblock %}
-</div>
+</footer>
 {% endblock %}
+</div>
