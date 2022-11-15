@@ -210,7 +210,6 @@ class ServiceBridgeReferenceModel(HandleRefModel):
         """
         pass
 
-
     def service_bridge_data(self, service_name, field_map=None):
 
         """
