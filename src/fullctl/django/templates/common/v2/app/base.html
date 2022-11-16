@@ -10,7 +10,7 @@
 <script src="{% static "autocomplete_light/forward.js" %}" type="text/javascript"></script>
 <script src="{% static "autocomplete_light/select2.js" %}" type="text/javascript"></script>
 <script src="{% static "autocomplete_light/jquery.post-setup.js" %}" type="text/javascript"></script>
-<script src="{% static "common/app.js" %}" type="text/javascript"></script>
+<script src="{% static "common/v2/app.js" %}" type="text/javascript"></script>
 <script src="{% static "common/service_bridge.js" %}" type="text/javascript"></script>
 <script src="{% static "common/v2/theme_switching.js" %}" type="text/javascript"></script>
 {% endblock %}
@@ -102,14 +102,14 @@ fullctl.permissions = {{ permissions|safe }}
 
     <!-- pages -->
 
-    <div class="col header-middle p-0">
+    <div class="col header-middle">
     {% block "header_middle" %}
     {% endblock "header_middle" %}
     </div>
 
     <!-- /pages -->
 
-    <div class="col-md-auto p-0 header-right d-flex align-items-center">
+    <div class="col-md-auto header-right d-flex align-items-center">
     {% block "header_right" %}
       {% block "header_account_panel" %}
 
@@ -277,7 +277,17 @@ You do not have the permissions to view the {{ app_id }} workspace for the {{ or
     <div class="col footer-right">
       <div class="row align-items-center">
         <div class="ms-auto col-auto">{{ version }} | Private Cloud Stackscale</div>
-        <div class="col-sm-auto theme-switcher" type="button">
+        <div class="help-box" style="display: none;">
+          <div class="banner-img">
+            <img src="{% static "common/v2/imgs/help.png" %}" alt="">
+          </div>
+          <div>Help Center</div>
+          <div>Tutorials</div>
+          <div>Contact Support</div>
+          <div>Submit Feedback</div>
+          <div>Legal Notes</div>
+        </div>
+        <div class="col-sm-auto" type="button">
           <span class="icon icon-lg icon-help"></span>
         </div>
       </div>

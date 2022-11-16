@@ -483,6 +483,10 @@ div.oauth-backend.twentyc>a.btn {
 
 div.footer-center,
 div.footer-left>div.row>div:not([type="button"]),
-div.footer-right>div.row>div:not([type="button"]) {
-  opacity: 0.3;
+div.footer-right>div.row>div:not([type="button"], .help-box) {
+  color: rgba(255,255,255, 0.3);
+}
+
+footer .help-box {
+  background: rgba(44, 47, 58, 0.96);
 }

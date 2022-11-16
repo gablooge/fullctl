@@ -101,7 +101,6 @@ button.primary {
 
 
 
-
 .templates,
 .hidden,
 div[data-element="templates"],
@@ -1154,6 +1153,25 @@ textarea.template-editor {
 footer {
   margin: 2rem .5rem;
   text-align: center;
+}
+
+.help-box {
+  display: block;
+  text-align: left;
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: 0;
+  width: 260px;
+  padding:0;
+  margin: 1rem;
+  margin-bottom: 3rem;
+  border-radius: .25rem;
+  background: rgba(44, 47, 58, 0.96);
+}
+
+.help-box div:not(.banner-img) {
+  padding: 1rem;
 }
 
 
