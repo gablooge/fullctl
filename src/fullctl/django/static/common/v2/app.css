@@ -1,3 +1,13 @@
+:root {
+  --fs-300: .875rem;
+  --fs-400: 1rem;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semi-bold: 600;
+  --fw-bold: 800;
+}
+
 /**
  * css reset
  */
@@ -81,6 +91,17 @@ main {
   flex: 1;
 }
 
+button.primary {
+  text-transform: uppercase;
+  font-size: var(--fs-300);
+  font-weight: var(--fw-semi-bold);
+}
+
+
+
+
+
+
 .templates,
 .hidden,
 div[data-element="templates"],
@@ -141,7 +162,7 @@ button:focus {
 }
 
 .m-info {
-  font-size: 14px;
+  font-size: --var(--fs-300);
 }
 
 .ux-keep-list-open {
@@ -262,10 +283,10 @@ body {
  * header
  */
 div.header {
-  min-height: 64px;
-  font-size: 14px;
-  line-height: 16px;
-  font-weight: 500;
+  min-height: 4.5em;
+  font-size: var(--fs-300);
+  line-height: 1.15;
+  font-weight: var(--fw-semi-bold);
 }
 
 div.header-left a {
@@ -273,7 +294,6 @@ div.header-left a {
 }
 
 div.header-middle {
-  padding: 20px;
   text-align: center;
   border-left: solid 1px;
 }
