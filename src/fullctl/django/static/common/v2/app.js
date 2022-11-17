@@ -745,7 +745,6 @@ fullctl.TemplatePreview = $tc.extend(
         var url = this.editor.data("api-preview-default").replace("type", this.type);
 
       this.base_url = url;
-      console.log(url)
 
       this.submit();
     }
