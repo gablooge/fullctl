@@ -1,9 +1,23 @@
 :root {
   --clr-primary-100: rgb(255, 255, 255);
+  --clr-primary-200: hsl(216, 14%, 93%);
+  --clr-primary-300: hsl(214, 6%, 77%);
+  --clr-primary-400: hsl(225, 2%, 57%);
+  --clr-primary-500: hsl(223, 3%, 53%);
+  --clr-primary-700: hsl(230, 3%, 38%);
+  --clr-primary-800: hsl(227, 9%, 19%);
+  --clr-primary-900: #191B22;
+
+  --clr-bg-200: rgba(246, 248, 250, 1);
+  --clr-bg-210: hsl(210, 14%, 95%);
+  --clr-bg-700: rgba(62, 70, 79, 1);
+  --clr-bg-800: rgba(44, 47, 58, 0.96);
+  --clr-bg-850: hsl(227, 12%, 14%);
+  --clr-bg-900: #191B22;
+
+  --clr-border-400: var(--clr-primary-800);
+
   --theme-secondary: #D1FF27;
-  --theme-bg: #191B22;
-  --theme-bg-secondary: #191B22;
-  --theme-border-color: rgba(255, 255, 255, 0.05);
   --theme-secondary-border-color: rgba(255, 255, 255, 0.15);
   --theme-toolbar-color: #fff;
 
@@ -14,40 +28,60 @@
   --theme-alert-info-color: #fff;
   --theme-alert-info-border: rgba(255, 255, 255, 0.12);
 
-  --theme-th-bg: rgba(255, 255, 255, 0.03);
-  --theme-th-color: rgba(255, 255, 255, 0.5);
 
   --theme-modal-color: #191B22;
 
-  --bs-body-bg: var(--theme-bg);
-  --bs-body-color: var(--clr-primary-100);
+  --foreground: var(--clr-primary-100);
+  --background: var(--clr-bg-900);
+
+  --bs-body-bg: var(--background);
+  --bs-body-color: var(--foreground);
+
+  --th-clr: var(--clr-primary-400);
+  --th-bg: var(--clr-bg-850);
+  --footer-clr: var(--clr-primary-700);
+  --header-bg: var(--clr-bg-900);
 
   color-scheme: dark;
 }
 
 :root[data-theme="light"] {
-  --clr-primary-100: #191B22;
-  --theme-bg: #E5E5E5;
   --theme-bg-secondary: #3E464F;
-  --theme-border-color: rgba(25, 27, 34, 0.05);
+  --clr-border-400: rgba(25, 27, 34, 0.05);
   --theme-secondary-border-color: rgba(25, 27, 34, 0.15);
 
-  --theme-th-bg: rgba(25, 27, 34, 0.03);
-  --theme-th-color: rgba(25, 27, 34, 0.5);
 
   --theme-modal-color: #fff;
+
+  --foreground: var(--clr-primary-900);
+  --background: var(--clr-bg-200);
+
+  --footer-clr: var(--clr-primary-300);
+  --th-clr: var(--clr-primary-500);
+  --th-bg: var(--clr-bg-210);
+  --header-bg: var(--clr-bg-700);
+
+  color-scheme: light;
 }
 
+/**
+ * Basic styles
+ */
+
 body {
-  background-color: var(--bs-body-bg);
-  color: var(--clr-primary-100);
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.btn {
+  --bs-btn-color: var(--foreground);
 }
 
 /**
  * icons
  */
 .icon {
-  background-color: var(--clr-primary-100);
+  background-color: var(--foreground);
 }
 
 .alert-danger {
@@ -124,8 +158,8 @@ a.prefixctl,
 div.header-middle,
 div.header-control,
 header {
-  border-color: var(--theme-border-color);
-  background-color: var(--theme-bg-secondary);
+  border-color: var(--clr-border-400);
+  background-color: var(--header-bg);
   color: var(--theme-toolbar-color);
 }
 
@@ -169,11 +203,11 @@ button.primary .icon {
 
 a.secondary,
 button.secondary {
-  --bs-btn-color: var(--clr-primary-100);
+  --bs-btn-color: var(--foreground);
   --bs-btn-bg: transparent;
-  --bs-btn-hover-color: var(--clr-primary-100);
+  --bs-btn-hover-color: var(--foreground);
   --bs-btn-hover-bg: transparent;
-  --bs-btn-active-color: var(--clr-primary-100);
+  --bs-btn-active-color: var(--foreground);
   --bs-btn-active-bg: transparent;
   border: 1px solid var(--theme-secondary-border-color);
 }
@@ -188,7 +222,6 @@ button.primary .icon {
 
 select.borderless {
   background: transparent;
-  color: var(--clr-primary-100);
   border: none;
   font-weight: 700;
 }
@@ -196,18 +229,12 @@ select.borderless {
 div.toolbar-field select.secondary,
 select.secondary {
   background: transparent;
-  color: var(--clr-primary-100);
   border-color: var(--theme-secondary-border-color);
-}
-
-.btn-close {
-  color: var(--clr-primary-100);
 }
 
 div.controls input[type="text"],
 div.controls select.form-control {
   background: transparent;
-  color: var(--clr-primary-100);
   border-color: var(--theme-secondary-border-color);
 }
 
@@ -222,12 +249,12 @@ div.menu div.section.tabs h5 {
 
 .table th,
 .table td {
-  border-color: var(--theme-border-color);
+  border-color: var(--clr-border-400);
 }
 
 .table th {
-  background-color: var(--theme-th-bg);
-  color: var(--theme-th-color);
+  background-color: var(--th-bg);
+  color: var(--th-clr);
 }
 
 .table .table {
@@ -279,7 +306,7 @@ div.controls button.generic:disabled {
 }
 
 div.modal-body div.border-top-seperator {
-  border-color: var(--theme-border-color);
+  border-color: var(--clr-border-400);
 }
 
 span.select2-dropdown {
@@ -287,7 +314,7 @@ span.select2-dropdown {
 }
 
 div.controls label {
-  color: var(--theme-th-color);
+  color: var(--th-clr);
 }
 
 /*
@@ -388,7 +415,6 @@ div.oauth-backend.twentyc>a.btn {
 }
 
 .nav a {
-  color: var(--clr-primary-100);
   opacity: 50%;
 }
 
@@ -480,13 +506,10 @@ div.oauth-backend.twentyc>a.btn {
 /**
  * footer
  */
-
-div.footer-center,
-div.footer-left>div.row>div:not([type="button"]),
-div.footer-right>div.row>div:not([type="button"], .help-box) {
-  color: rgba(255,255,255, 0.3);
+footer {
+  color: var(--footer-clr);
 }
 
 footer .help-box {
-  background: rgba(44, 47, 58, 0.96);
+  background: var(--clr-bg-800);
 }

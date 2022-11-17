@@ -287,6 +287,11 @@ body {
 /**
  * header
  */
+
+header {
+  border-bottom: 1px solid transparent;
+}
+
 div.header {
   min-height: 4.5em;
   font-size: var(--fs-300);
@@ -676,18 +681,13 @@ select.secondary {
   border: solid 1px;
 }
 
-div.list-th,
-table thead tr th {
-  opacity: 0.4;
-}
-
 table.list-table {
   vertical-align: middle;
 }
 
 div.list-th,
 .table th {
-  font-size: 15px;
+  font-size: var(--fs-300);
   letter-spacing: 3px;
   line-height: 30px;
   text-transform: uppercase;
