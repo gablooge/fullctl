@@ -193,17 +193,6 @@ div.validation-error {
   color: #D1FF27;
 }
 
-a[data-action].ixctl,
-a[data-action].ixctl:hover,
-a,
-a:hover,
-a.ixctl,
-a.button:hover,
-.menu a.button:hover,
-.ixctl {
-  color: #D1FF27;
-}
-
 
 a[data-action].prefixctl,
 a[data-action].prefixctl:hover,
@@ -222,6 +211,11 @@ a.prefixctl,
 .list-table .btn{
   border-color: transparent;
   background: transparent;
+}
+
+.list-table .btn[data-btn-type="secondary"]{
+  background: var(--clr-bg-800);
+  border-color: transparent;
 }
 
 .list-table tr:hover {
