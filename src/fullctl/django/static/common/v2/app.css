@@ -128,7 +128,6 @@ a.btn:hover {
 
 
 
-
 .templates,
 .hidden,
 div[data-element="templates"],
@@ -569,6 +568,20 @@ div.tool-custom > h4.tool-title {
   margin-top: 24px;
   font-weight: 400;
   border-bottom: 2px solid transparent;
+}
+
+/**
+ * codeblock
+ */
+
+pre.codeblock  {
+  border: 1px solid;
+}
+
+pre.codeblock code {
+  display: block;
+  line-height: 1.8;
+  padding: 0 var(--size-400);
 }
 
 /**

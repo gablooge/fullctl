@@ -48,6 +48,7 @@
   --primary-btn-clr: var(--clr-primary-800);
   --primary-btn-bg: var(--clr-accent-400);
   --dropdown-svg-url: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgb(255, 255, 255)' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  --codeblock-even-bg: var(--clr-bg-800);
 
   color-scheme: dark;
 }
@@ -160,6 +161,18 @@ div.header .app-switcher .selected.prefixctl.expanded {
 div.header .app-switcher .others {
   box-shadow: 0px 10px 10px var(--background);
   background-color: var(--header-bg);
+}
+
+/**
+ * codeblock
+*/
+
+pre.codeblock {
+  border-color: var(--theme-secondary-border-color);
+}
+
+pre.codeblock code:nth-child(even) {
+  background-color: var(--codeblock-even-bg);
 }
 
 /**
