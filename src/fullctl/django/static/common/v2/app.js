@@ -260,6 +260,16 @@ fullctl.application.Tool = $tc.extend(
       custom_dialog.append($('<h4>').addClass("tool-title").text(title));
       this.$e.body.append(custom_dialog);
       return custom_dialog;
+    },
+
+    delete_selected_list : function(endpoint="id") {
+      let list = this.$w.list;
+      let selected_rows = $(list.list_body.find("tr .row-chbx:checked")).parentsUntil("tbody", "tr");
+      selected_rows.each(function() {
+        apiobj = $(this).data("apiobject");
+        list.delete(apiobj[endpoint], apiobj)
+        list.remove(apiobj)
+      });
     }
 
   },

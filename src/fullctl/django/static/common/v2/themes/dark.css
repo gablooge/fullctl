@@ -9,6 +9,7 @@
   --clr-primary-900: #191B22;
 
   --clr-accent-400: #D1FF27;
+  --clr-accent-600: red;
 
   --clr-bg-200: rgba(246, 248, 250, 1);
   --clr-bg-210: hsl(210, 14%, 95%);
@@ -113,6 +114,20 @@ body {
   border: 1px solid var(--theme-secondary-border-color);
 }
 
+.btn[data-btn-type="delete"] {
+  --bs-btn-color: var(--clr-accent-600);
+  --bs-btn-bg: transparent;
+  --bs-btn-hover-color: var(--clr-accent-600);
+  --bs-btn-hover-bg: transparent;
+  --bs-btn-active-color: var(--clr-accent-600);
+  --bs-btn-active-bg: transparent;
+  border: 1px solid var(--clr-accent-600);
+}
+
+.btn[data-btn-type="delete"] .icon {
+  background-color: var(--clr-accent-600);
+}
+
 .modal {
   --bs-modal-bg: var(--background);
 }
@@ -150,10 +165,6 @@ header .icon {
   background-color: var(--theme-toolbar-color);
 }
 
-div.header .app-switcher {
-  --background-color: black;
-}
-
 div.header .app-switcher .selected.prefixctl.expanded {
   background-color: #244145;
 }
@@ -161,6 +172,10 @@ div.header .app-switcher .selected.prefixctl.expanded {
 div.header .app-switcher .others {
   box-shadow: 0px 10px 10px var(--background);
   background-color: var(--header-bg);
+}
+
+div.header .app-switcher .others a {
+  border: 1px solid var(--theme-secondary-border-color);
 }
 
 /**
@@ -315,20 +330,6 @@ table thead th.selected-order-header-desc,
   opacity: 1;
 }
 
-
-.tool .list-body input[type="checkbox"] {
-  background-color: #191F26;
-  border: 1px solid #BCBEC0;
-  outline: none;
-  box-sizing: border-box;
-  height: 16px;
-  width: 16px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  position: absolute;
-  margin-left: -1.25rem;
-}
 
 .keep-list-open {
   display: flex;
