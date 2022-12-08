@@ -120,7 +120,6 @@ fullctl.widget.StatusBadge = $tc.extend(
   twentyc.rest.Widget
 );
 
-
 fullctl.widget.OrganizationSelect = $tc.extend(
   "OrganizationSelect",
   {
@@ -129,6 +128,103 @@ fullctl.widget.OrganizationSelect = $tc.extend(
     }
   },
   twentyc.rest.Select
+);
+
+fullctl.widget.SelectionList = $tc.extend(
+  "SelectionList",
+  {
+    SelectionList : function(jq, jq_delete_selected_button) {
+      this.List(jq);
+      this.delete_selected_button = jq_delete_selected_button;
+
+      this.list_head.find('tr').first().prepend('<th><input type="checkbox" value="all"></th>');
+
+      $(this).on("load:after", () => {
+        this.set_delete_selected_button();
+        this.unselect_select_all_checkbox();
+      });
+
+      $(this).on("api-delete:success", () => {
+        this.set_delete_selected_button();
+      });
+
+      this.list_head.find('th input[type="checkbox"][value="all"]').click(() => {
+        this.select_all();
+        this.set_delete_selected_button();
+      });
+    },
+
+    build_row : function(data) {
+      return this.template('row').prepend('<td class="select-checkbox"><input type="checkbox" class="row-chbx" name="list-row"></td>');
+    },
+
+    insert : function(data) {
+      var row_element;
+
+      row_element = this.build_row(data);
+
+      this.apply_data(data, row_element);
+
+      if(this.formatters.row)
+        this.formatters.row(row_element, data)
+
+      row_element.find('.row-chbx').click(() => {
+        this.set_delete_selected_button();
+        this.unselect_select_all_checkbox();
+        console.log("here")
+      });
+
+      row_element.data("apiobject", data);
+      row_element.addClass("row-"+data[this.id_field])
+
+      this.list_body.append(row_element)
+      this.wire(row_element)
+
+      $(this).trigger("insert:after", [row_element, data]);
+
+      return row_element
+    },
+
+    unselect_select_all_checkbox : function() {
+      this.list_head.find('th input[type="checkbox"][value="all"]:checked').prop("checked", false);
+    },
+
+    set_delete_selected_button : function() {
+      if(this.get_selected_rows().length > 0) {
+        this.show_delete_selected_button();
+        console.log("and here")
+      } else {
+        this.hide_delete_selected_button();
+      }
+    },
+
+    show_delete_selected_button : function () {
+      this.delete_selected_button.removeClass("js-hide");
+    },
+
+    hide_delete_selected_button : function() {
+      this.delete_selected_button.addClass("js-hide");
+    },
+
+    select_all : function() {
+      this.list_body.find('td.select-checkbox input.row-chbx').prop('checked', true);
+    },
+
+    delete_selected_list : function(endpoint="id") {
+      let selected_rows = this.get_selected_rows();
+      let list = this;
+      selected_rows.each(function() {
+        apiobj = $(this).data("apiobject");
+        list.delete(apiobj[endpoint], apiobj)
+        list.remove(apiobj)
+      });
+    },
+
+    get_selected_rows : function() {
+      return $(this.list_body.find("tr .row-chbx:checked")).parentsUntil("tbody", "tr");
+    },
+  },
+  twentyc.rest.List
 );
 
 fullctl.application.Component = $tc.define(
@@ -261,16 +357,6 @@ fullctl.application.Tool = $tc.extend(
       this.$e.body.append(custom_dialog);
       return custom_dialog;
     },
-
-    delete_selected_list : function(endpoint="id") {
-      let list = this.$w.list;
-      let selected_rows = $(list.list_body.find("tr .row-chbx:checked")).parentsUntil("tbody", "tr");
-      selected_rows.each(function() {
-        apiobj = $(this).data("apiobject");
-        list.delete(apiobj[endpoint], apiobj)
-        list.remove(apiobj)
-      });
-    }
 
   },
   fullctl.application.Component
