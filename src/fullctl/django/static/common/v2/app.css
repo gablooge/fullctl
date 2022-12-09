@@ -1182,7 +1182,7 @@ span.modal-control > img.caret {
 .modal.modal-left.fade.in .modal-dialog{
   left: 0;
 }
-        
+
 /*Right*/
 .modal.modal-right.fade .modal-dialog {
   right: -380px;
@@ -1191,7 +1191,7 @@ span.modal-control > img.caret {
   -o-transition: opacity 0.3s linear, right 0.3s ease-out;
   transition: opacity 0.3s linear, right 0.3s ease-out;
 }
-	
+
 .modal.modal-right.fade.in .modal-dialog {
   right: 0;
 }
