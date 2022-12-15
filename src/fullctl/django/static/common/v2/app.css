@@ -474,7 +474,7 @@ div.toolbar select {
   margin-left: 16px;
 }
 
-div.toolbar div.toolbar-control-group {
+div.toolbar div.toolbar-control-group:not(.row) {
   display: inline-block;
   padding-left: 8px;
 }
@@ -749,6 +749,10 @@ div.menu .button {
   /**
   * searchbar
   */
+.input-group.searchbar {
+  flex-wrap: nowrap;
+}
+
 .input-group.searchbar input {
   padding: var(--size-200);
   border-top-left-radius: var(--size-200);
@@ -806,9 +810,8 @@ div.menu .button {
 }
 
 
-
-.main[data-component="main"] {
-  margin-top: 54px;
+main {
+  margin-top: 8vh;
 }
 
 .heading {
