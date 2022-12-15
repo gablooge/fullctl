@@ -792,6 +792,15 @@ div.menu .button {
   margin: 0;
 }
 
+.list-table .dropdown button {
+  border-radius: 1000vw;
+  padding: var(--size-100);
+}
+
+.list-table select option {
+  margin-top: var(--size-50);
+}
+
 .list-table td {
   padding: var(--size-400) var(--size-425);
 }

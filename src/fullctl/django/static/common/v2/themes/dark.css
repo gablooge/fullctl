@@ -230,10 +230,6 @@ div.validation-error {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-.fullctl {
-  color: #D1FF27;
-}
-
 
 a[data-action].prefixctl,
 a[data-action].prefixctl:hover,
@@ -270,6 +266,16 @@ a.prefixctl,
 .list-table .btn[data-btn-type="secondary"]{
   background: var(--clr-bg-800);
   border-color: transparent;
+}
+
+.list-table .dropdown button {
+  border-color: transparent;
+  background: var(--clr-bg-800);
+}
+
+.list-table select option:checked {
+  background-color: var(--foreground);
+  color: var(--background);
 }
 
 .list-table tr:hover {
