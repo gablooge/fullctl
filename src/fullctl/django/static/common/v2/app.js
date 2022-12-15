@@ -144,13 +144,14 @@ fullctl.widget.SelectionList = $tc.extend(
         this.unselect_select_all_checkbox();
       });
 
-      $(this).on("api-delete:success", () => {
-        this.set_delete_selected_button();
-      });
-
-      this.list_head.find('th input[type="checkbox"][value="all"]').click(() => {
-        this.select_all();
-        this.set_delete_selected_button();
+      let selection_list = this;
+      this.list_head.find('th input[type="checkbox"][value="all"]').click(function() {
+        if ($(this).prop("checked")) {
+          selection_list.select_all();
+        } else {
+          selection_list.unselect_all();
+        }
+        selection_list.set_delete_selected_button();
       });
     },
 
@@ -171,7 +172,6 @@ fullctl.widget.SelectionList = $tc.extend(
       row_element.find('.row-chbx').click(() => {
         this.set_delete_selected_button();
         this.unselect_select_all_checkbox();
-        console.log("here")
       });
 
       row_element.data("apiobject", data);
@@ -192,7 +192,6 @@ fullctl.widget.SelectionList = $tc.extend(
     set_delete_selected_button : function() {
       if(this.get_selected_rows().length > 0) {
         this.show_delete_selected_button();
-        console.log("and here")
       } else {
         this.hide_delete_selected_button();
       }
@@ -210,15 +209,23 @@ fullctl.widget.SelectionList = $tc.extend(
       this.list_body.find('td.select-checkbox input.row-chbx').prop('checked', true);
     },
 
+    unselect_all : function() {
+      this.list_body.find('td.select-checkbox input.row-chbx').prop('checked', false);
+    },
+
     delete_selected_list : function(endpoint="id") {
       let selected_rows = this.get_selected_rows();
       let list = this;
+      let promises = new Array();
       selected_rows.each(function() {
         apiobj = $(this).data("apiobject");
-        list.delete(apiobj[endpoint], apiobj).then(() => {
-          list.remove(apiobj);
-        });
+        promises.push(
+          list.delete(apiobj[endpoint], apiobj).then((request) => {
+            list.remove(request.content.data[0]);
+          })
+        );
       });
+      Promise.all(promises).then(() => {list.set_delete_selected_button()});
     },
 
     get_selected_rows : function() {
