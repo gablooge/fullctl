@@ -673,6 +673,16 @@ span.icon-edit {
   mask-image: url(icons/list/edit.svg);
 }
 
+span.icon-list {
+  -webkit-mask-image: url(icons/list-ul.svg);
+  mask-image: url(icons/list-ul.svg);
+}
+
+span.icon-search {
+  -webkit-mask-image: url(icons/search.svg);
+  mask-image: url(icons/search.svg);
+}
+
 .checked [data-false] {
   display: none;
 }
