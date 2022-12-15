@@ -762,6 +762,9 @@ div.menu .button {
   display: inline-flex;
   border: 1px solid;
   padding: var(--size-100);
+  margin-right: var(--size-100);
+  margin-bottom: var(--size-50);
+  margin-top: var(--size-50);
 }
 
 .list-table .btn[data-btn-type="secondary"]{
