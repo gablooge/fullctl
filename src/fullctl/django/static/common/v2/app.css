@@ -685,6 +685,11 @@ span.icon-search {
   mask-image: url(icons/search.svg);
 }
 
+span.icon-cancel {
+  -webkit-mask-image: url(icons/cancel.svg);
+  mask-image: url(icons/cancel.svg);
+}
+
 .checked [data-false] {
   display: none;
 }
