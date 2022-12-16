@@ -86,12 +86,6 @@ svg {
     scroll-behavior: auto !important;
   }
 }
-/**
- * Utility classes
- */
-.js-hide {
-  display: none;
-}
 
 /**
  * Basic styles
@@ -112,6 +106,14 @@ button.primary,
   text-transform: uppercase;
   font-size: var(--fs-300);
   font-weight: var(--fw-semi-bold);
+}
+
+.btn.secondary {
+  font-size: var(--fs-300);
+}
+
+.btn[data-btn-type="delete"].js-hide {
+  visibility: hidden;
 }
 
 .btn {
@@ -818,6 +820,10 @@ div.menu .button {
   visibility: visible;
 }
 
+.list-table.small td {
+  padding: var(--size-50) var(--size-425);
+}
+
 
 main {
   margin-top: 8vh;
@@ -1341,6 +1347,10 @@ footer {
 
 .help-box div:not(.banner-img) {
   padding: 1rem;
+}
+
+.help-box.js-hide {
+  display: none;
 }
 
 
