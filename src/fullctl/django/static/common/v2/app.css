@@ -122,6 +122,11 @@ button.primary,
   --bs-btn-padding-y: var(--size-400);
 }
 
+.btn.small {
+  --bs-btn-padding-x: var(--size-300);
+  --bs-btn-padding-y: var(--size-100);
+}
+
 a.btn:hover {
   text-decoration: none;
 }
@@ -534,11 +539,11 @@ div.menu .button span.label {
 }
 
 .shift-down .menu-deco-border {
-  margin-top: 55px;
+  margin-top: 41px;
 }
 
 .shift-down .menu .section {
-  padding-top: 55px;
+  padding-top: 41px;
 }
 
 div.toolbar .button {
@@ -688,6 +693,11 @@ span.icon-search {
 span.icon-cancel {
   -webkit-mask-image: url(icons/cancel.svg);
   mask-image: url(icons/cancel.svg);
+}
+
+span.icon-mail {
+  -webkit-mask-image: url(icons/envelope.svg);
+  mask-image: url(icons/envelope.svg);
 }
 
 .checked [data-false] {

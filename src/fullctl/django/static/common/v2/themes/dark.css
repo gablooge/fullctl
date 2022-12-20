@@ -44,6 +44,7 @@
 
   --th-clr: var(--clr-primary-400);
   --th-bg: var(--clr-bg-850);
+  --list-group-bg: var(--clr-bg-700);
   --list-table-hover: var(--clr-bg-850);
   --footer-clr: var(--clr-primary-700);
   --header-bg: var(--clr-bg-900);
@@ -72,6 +73,7 @@
   --footer-clr: var(--clr-primary-300);
   --th-clr: var(--clr-primary-500);
   --th-bg: var(--clr-bg-210);
+  --list-group-bg: var(--clr-bg-210);
   --list-table-hover: var(--clr-bg-210);
   --header-bg: var(--clr-bg-700);
   --dropdown-svg-url: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgb(0, 0, 0)' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
@@ -135,6 +137,15 @@ body {
 
 .btn-close {
   filter: var(--clr-filter-black-to-foreground);
+}
+
+.card {
+  background-color: var(--th-bg);
+}
+
+div.modal .list-group-item {
+  background-color: var(--list-group-bg);
+  color: var(--foreground);
 }
 
 /**
@@ -376,6 +387,10 @@ span.select2-dropdown {
 
 div.controls label {
   color: var(--th-clr);
+}
+
+div.menu div.menu-deco-border {
+  background-color: var(--clr-border-400);
 }
 
 /*
