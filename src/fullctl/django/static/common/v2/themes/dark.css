@@ -209,6 +209,11 @@ pre.codeblock code:nth-child(even) {
   background-color: var(--foreground);
 }
 
+.icon-background {
+  background-color: var(--clr-bg-900);
+  border-radius: 200vw;
+}
+
 .alert-danger {
   color: #ea0000;
   background-color: #480000;
@@ -328,6 +333,20 @@ div.controls textarea.form-control:is(:focus, :active){
   border-color: var(--clr-border-400);
 }
 
+.secondary .property .field {
+  background-color: var(--th-bg);
+  color: var(--th-clr);
+}
+
+.secondary .property .field select {
+  background-color: var(--th-bg);
+}
+
+.secondary .property .field [data-field] {
+  color: var(--foreground);
+}
+
+
 .list-body div.secondary input[type="text"]:disabled,
 div.toolbar-field input[type="text"]:disabled {
   opacity: 0.5;
@@ -367,10 +386,28 @@ table thead th.selected-order-header-desc,
   opacity: 1;
 }
 
-
 .keep-list-open {
   display: flex;
   align-content: center;
+}
+
+button.solid-active,
+button.solid-inactive {
+  background-color: var(--clr-primary-500);
+  color: var(--primary-btn-clr);
+  border: none;
+}
+
+button.solid-inactive {
+  background-color: var(--clr-accent-400);
+}
+
+.border-inactive {
+  border-color: var(--clr-accent-400);
+}
+
+.border-active {
+  border-color: var(--clr-primary-500);
 }
 
 div.controls button.generic:disabled {

@@ -600,10 +600,9 @@ pre.codeblock code {
 span.inner-icon,
 span.icon {
   display: inline-block;
-  height: 20px;
-  width: 20px;
+  height: var(--size-425);
+  width: var(--size-425);
   vertical-align: bottom;
-  margin-right: 3px;
   mask-position: center;
   -webkit-mask-position: center;
   mask-repeat: no-repeat;
@@ -670,6 +669,12 @@ span.icon-caret-down {
   mask-image: url(icons/ui-caret/down.svg);
 }
 
+span.icon-caret-left {
+  -webkit-mask-image: url(icons/ui-caret/down.svg);
+  mask-image: url(icons/ui-caret/down.svg);
+  transform: rotate(0.75turn);
+}
+
 span.icon-options {
   -webkit-mask-image: url(icons/list/options.svg);
   mask-image: url(icons/list/options.svg);
@@ -698,6 +703,21 @@ span.icon-cancel {
 span.icon-mail {
   -webkit-mask-image: url(icons/envelope.svg);
   mask-image: url(icons/envelope.svg);
+}
+
+span.icon-view {
+  -webkit-mask-image: url(icons/eye.svg);
+  mask-image: url(icons/eye.svg);
+}
+
+span.icon-settings {
+  -webkit-mask-image: url(icons/gear.svg);
+  mask-image: url(icons/gear.svg);
+}
+
+span.icon-launch {
+  -webkit-mask-image: url(icons/box-arrow-up-right.svg);
+  mask-image: url(icons/box-arrow-up-right.svg);
 }
 
 .checked [data-false] {
@@ -839,6 +859,14 @@ div.menu .button {
   padding: var(--size-50) var(--size-425);
 }
 
+button.solid-active,
+button.solid-inactive {
+  padding: 0 var(--size-400);
+}
+
+.secondary .property .field [data-field] {
+  margin-left: 1ch;
+}
 
 main {
   margin-top: 8vh;
