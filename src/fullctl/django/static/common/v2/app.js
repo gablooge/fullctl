@@ -832,6 +832,49 @@ fullctl.TemplatePreview = $tc.extend(
     TemplatePreview: function(jq, select_widget, type) {
       this.Form(jq);
       this.select = new select_widget(this.element.find('select'));
+      this.editor = this.element.find('textarea');
+      this.type = type;
+
+      if(type) {
+        this.select.filter = (tmpl) => {
+          return tmpl.type == type;
+        };
+      }
+
+      $(this.select).on("load:after", ()=>{ this.preview();});
+      $(this.select.element).on("change", ()=>{ this.preview();});
+      $(this).on("api-write:success", (ev,ep,data,response) => {
+          this.editor.val(response.first().body);
+      });
+
+      this.select.load();
+    },
+
+    payload : function() {
+      return { type: this.type }
+    },
+
+    preview : function() {
+      var tmpl_id = parseInt(this.select.element.val())
+      if(tmpl_id)
+        var url = this.editor.data("api-preview").replace("tmpl_id", tmpl_id);
+      else
+        var url = this.editor.data("api-preview-default").replace("type", this.type);
+
+      this.base_url = url;
+
+      this.submit();
+    }
+  },
+  twentyc.rest.Form
+);
+
+fullctl.ConfigPreview = $tc.extend(
+  "ConfigPreview",
+  {
+    ConfigPreview: function(jq, select_widget, type) {
+      this.Form(jq);
+      this.select = new select_widget(this.element.find('select'));
       this.codeblock = this.element.find('pre.codeblock');
       this.type = type;
 
@@ -849,7 +892,7 @@ fullctl.TemplatePreview = $tc.extend(
           let lines = response.first().body.split(/\r?\n/);
           lines.forEach(line => {
             let code_line = document.createElement("code");
-            code_line.innerText = line;
+            code_line.innerText = line || " ";
             this.codeblock.append(code_line);
           });
       });
