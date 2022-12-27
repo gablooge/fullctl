@@ -612,7 +612,6 @@ fullctl.application.ContainerApplication = $tc.extend(
 	"ContainerApplication",
 	{
     init_container : function(ref_tag, ref_tag_p) {
-      /*
       this[ref_tag_p] = this.containers = {}
       this[ref_tag+"_slugs"] = this.container_slugs = {}
 
@@ -667,7 +666,6 @@ fullctl.application.ContainerApplication = $tc.extend(
       this["unload_"+ref_tag] = function() { return this.unload_container(); }.bind(this);
       this["select_"+ref_tag] = function(id){ return this.select_container(id); }.bind(this);
       this["refresh_select_"+ref_tag] = function() { return this.refresh_select_container(); }.bind(this);
-      */
     },
 
     permission_ui : function () { return; },
