@@ -914,22 +914,31 @@ div.list-th {
   border-collapse: collapse;
 }
 
-.table td.highlight {
-  font-weight: 800;
-}
-
 .table td {
   font-size: 16px;
   line-height: 16px;
 }
 
-.list-body div.secondary,
-.table tr.secondary {
-  border-bottom: 1px transparent solid;
+.table td.highlight {
+  font-weight: 800;
 }
 
 .table td[data-field="controls"] a {
   white-space: nowrap;
+}
+
+.table td.no-wrap {
+  width: fit-content;
+}
+
+.table td.no-wrap .row {
+  flex-wrap: nowrap;
+}
+
+
+.list-body div.secondary,
+.table tr.secondary {
+  border-bottom: 1px transparent solid;
 }
 
 @media (max-width: 1200px) {
