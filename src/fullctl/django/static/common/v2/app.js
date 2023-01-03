@@ -130,6 +130,7 @@ fullctl.widget.OrganizationSelect = $tc.extend(
   twentyc.rest.Select
 );
 
+// v2 - list witch checkboxes and a delete selected button
 fullctl.widget.SelectionList = $tc.extend(
   "SelectionList",
   {
@@ -879,6 +880,7 @@ fullctl.TemplatePreview = $tc.extend(
   twentyc.rest.Form
 );
 
+// v2 - Preview with codeblock with alternating colors
 fullctl.ConfigPreview = $tc.extend(
   "ConfigPreview",
   {
