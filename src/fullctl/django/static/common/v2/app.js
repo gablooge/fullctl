@@ -231,6 +231,12 @@ fullctl.widget.SelectionList = $tc.extend(
     },
 
     delete_api_obj : function(apiobj, endpoint) {
+      let delete_url = this.element.data('api-delete-url');
+      if (delete_url) {
+        delete_url = delete_url.replace(/0\//, apiobj[endpoint]);
+        return this.write(null, apiobj, "delete", delete_url);
+      }
+
       return this.delete(apiobj[endpoint], apiobj);
     },
 
