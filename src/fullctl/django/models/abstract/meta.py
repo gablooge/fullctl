@@ -6,8 +6,12 @@ import json
 from datetime import timedelta
 
 import requests
+
+import confu.schema
+
 from django.db import models
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 from fullctl.django.models.abstract import HandleRefModel
 
@@ -16,6 +20,31 @@ __all__ = [
     "Response",
     "Data",
 ]
+
+
+class DataMixin:
+    def clean_data(self):
+
+        """
+        If the model has a DataSchema confu schema
+        defined, the schema will be used to validate the data
+        in self.data
+        """
+
+        if not hasattr(self, "DataSchema"):
+            return
+
+        for name in dir(self.DataSchema):
+            if name.startswith("_"):
+                continue
+
+            data = getattr(self, name)
+            schema = getattr(self, DataSchema, name)
+
+            try:
+                confu.schema.validate(schema(), data, raise_errors=True)
+            except confu.schema.ValidationError as exc:
+                raise ValidationError(f"Invalid meta-data in {name}: {exc}")
 
 
 class Data(HandleRefModel):
@@ -27,6 +56,7 @@ class Data(HandleRefModel):
     data = models.JSONField()
 
     class Meta:
+
         abstract = True
 
     class HandleRef:
