@@ -425,15 +425,15 @@ button.solid-inactive {
   border: none;
 }
 
-button.solid-inactive {
+button.solid-active {
   background-color: var(--clr-accent-400);
 }
 
-.border-inactive {
+.border-active {
   border-color: var(--clr-accent-400);
 }
 
-.border-active {
+.border-inactive {
   border-color: var(--clr-primary-500);
 }
 
