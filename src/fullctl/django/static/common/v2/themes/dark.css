@@ -536,6 +536,16 @@ tbody.list-footer button {
   border-color: #d10f0f !important;
 }
 
+span.tag {
+  background-color: var(--th-bg);
+  color: var(--foreground);
+}
+
+span.tag .tag-name {
+  font-weight: bold;
+  margin-right: 1ch;
+}
+
 
 /**
  * login
