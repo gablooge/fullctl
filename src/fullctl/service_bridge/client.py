@@ -14,7 +14,10 @@ TEST_DATA_PATH = "."
 
 class ServiceBridgeError(IOError):
     def __init__(self, bridge, status, data=None):
-        super().__init__(f"Service bridge error: {bridge} [{status}]")
+        if data:
+            super().__init__(f"Service bridge error: {bridge} [{status}] - response data: {data}")
+        else:
+            super().__init__(f"Service bridge error: {bridge} [{status}]")
         self.data = data
         self.status = status
 
@@ -75,10 +78,8 @@ class Bridge:
         elif status in [401, 403]:
             raise AuthError(self, status)
         elif status in [400]:
-            print(response.json())
             raise ServiceBridgeError(self, 400, data=response.json())
         else:
-            # print(response.content)
             raise ServiceBridgeError(self, status)
 
     def _requests_kwargs(self, **kwargs):
