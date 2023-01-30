@@ -9,6 +9,7 @@
   --clr-primary-900: #191B22;
 
   --clr-accent-400: #D1FF27;
+  --clr-accent-500: #FD7E14;
   --clr-accent-600: red;
 
   --clr-bg-200: rgba(246, 248, 250, 1);
@@ -41,6 +42,7 @@
 
   --th-clr: var(--clr-primary-400);
   --th-bg: var(--clr-bg-800);
+  --card-header-bg: var(--clr-bg-850);
   --list-group-bg: var(--clr-bg-700);
   --list-table-hover: var(--clr-bg-850);
   --footer-clr: var(--clr-primary-700);
@@ -77,7 +79,8 @@
   --footer-clr: var(--clr-primary-300);
   --th-clr: var(--clr-primary-500);
   --th-bg: var(--clr-bg-200);
-  --list-group-bg: var(--clr-bg-210);
+  --card-header-bg: var(--clr-bg-300);
+  --list-group-bg: var(--clr-bg-300);
   --list-table-hover: var(--clr-bg-210);
   --header-bg: var(--clr-bg-700);
   --secondary-list-btn-bg: var(--modal-bg);
@@ -155,7 +158,16 @@ body {
 }
 
 .card {
-  background-color: var(--th-bg);
+  background-color: var(--list-group-bg);
+}
+
+.card .card-header {
+  font-weight: bold;
+  background-color: var(--card-header-bg);
+}
+
+.card li.highlight {
+  background-color: var(--th-bg) !important;
 }
 
 div.modal .list-group-item {
@@ -290,6 +302,10 @@ a.prefixctl,
   outline: none;
 }
 
+.searchbar .select2-container--default .select2-selection--single {
+  background-color: transparent;
+}
+
  /**
   * lists
   */
@@ -343,6 +359,10 @@ div.controls select.form-control {
   background: transparent;
   border-color: var(--theme-secondary-border-color);
   color: inherit;
+}
+
+div.controls select.form-control option {
+  color: var(--clr-primary-900);
 }
 
 div.controls textarea.form-control,
@@ -417,15 +437,15 @@ button.solid-inactive {
   border: none;
 }
 
-button.solid-inactive {
+button.solid-active {
   background-color: var(--clr-accent-400);
 }
 
-.border-inactive {
+.border-active {
   border-color: var(--clr-accent-400);
 }
 
-.border-active {
+.border-inactive {
   border-color: var(--clr-primary-500);
 }
 
@@ -526,6 +546,16 @@ tbody.list-footer button {
 .status-badge.error {
   background-color: #662020 !important;
   border-color: #d10f0f !important;
+}
+
+span.tag {
+  background-color: var(--th-bg);
+  color: var(--foreground);
+}
+
+span.tag .tag-name {
+  font-weight: bold;
+  margin-right: 1ch;
 }
 
 

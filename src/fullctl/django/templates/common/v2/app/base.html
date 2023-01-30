@@ -143,8 +143,7 @@ fullctl.permissions = {{ permissions|safe }}
             <div class="list-body"></div>
             <div class="templates">
               <a data-template="row" class="dropdown-item action">
-                <span class="icon icon-solid">
-                  <img src="{% static "common/icons/icon/org.svg" %}">
+                <span class="icon icon-org">
                 </span>
                 <span data-field="name"></span>
                 {% if permissions.update_instance and oauth_manages_org %}

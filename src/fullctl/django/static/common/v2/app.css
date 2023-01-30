@@ -725,6 +725,26 @@ span.icon-download {
   mask-image: url(icons/download.svg);
 }
 
+span.icon-logout {
+  -webkit-mask-image: url(icons/logout.svg);
+  mask-image: url(icons/logout.svg);
+}
+
+span.icon-refresh {
+  -webkit-mask-image: url(icons/arrow-clockwise.svg);
+  mask-image: url(icons/arrow-clockwise.svg);
+}
+
+span.icon-location {
+  -webkit-mask-image: url(icons/geo-alt.svg);
+  mask-image: url(icons/geo-alt.svg);
+}
+
+span.icon-report {
+  -webkit-mask-image: url(icons/file-earmark-text.svg);
+  mask-image: url(icons/file-earmark-text.svg);
+}
+
 [data-true] {
   display: none;
 }
@@ -1334,6 +1354,14 @@ span.status-badge div.spinner {
   display: inline-block;
 }
 
+span.tag {
+  padding: var(--size-100);
+  margin-right: var(--size-300);
+  margin-top: var(--size-100);
+  border-radius: var(--size-100);
+  font-size: var(--fs-400);
+  display: inline-block;
+}
 
 .capitalize {
   text-transform: capitalize;
