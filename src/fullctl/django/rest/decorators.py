@@ -142,7 +142,11 @@ class grainy_endpoint(base):
             if hasattr(request, "api_key"):
                 request.perms = permissions_cls(APIKey(request.api_key))
 
-            if not request.perms.check(f"service.{settings.SERVICE_TAG}.{request.org.permission_id}", "r", ignore_grant_all=True):
+            if not request.perms.check(
+                f"service.{settings.SERVICE_TAG}.{request.org.permission_id}",
+                "r",
+                ignore_grant_all=True,
+            ):
                 return Response(status=403)
 
             with reversion.create_revision():

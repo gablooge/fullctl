@@ -123,9 +123,7 @@ class DataViewSet(viewsets.ModelViewSet):
         context = self.serializer_context(request, {"joins": joins})
 
         instance = qset.get(pk=pk)
-        serializer = self.serializer_class(
-            instance, many=False, context=context
-        )
+        serializer = self.serializer_class(instance, many=False, context=context)
         return Response(serializer.data)
 
     @grainy_endpoint("service_bridge")

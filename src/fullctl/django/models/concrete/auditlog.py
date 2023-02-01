@@ -59,7 +59,3 @@ class AuditLog(models.Model):
             models.Index(fields=["user"]),
             models.Index(fields=["object_type", "object_id"]),
         ]
-
-
-
-

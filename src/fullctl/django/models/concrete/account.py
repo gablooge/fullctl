@@ -220,7 +220,6 @@ class Organization(HandleRefModel):
             return _("your personal organization")
         return self.name
 
-
     def __str__(self):
         return f"{self.name} ({self.slug})"
 

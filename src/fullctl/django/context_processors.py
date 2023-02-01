@@ -47,7 +47,9 @@ def account_service(request):
         context.update(
             service_applications=[
                 service_application.for_org(org)
-                for service_application in ServiceApplication().objects(group="fullctl", org=org.slug)
+                for service_application in ServiceApplication().objects(
+                    group="fullctl", org=org.slug
+                )
             ],
         )
 
@@ -89,6 +91,8 @@ def permissions(request):
         else:
             context[key] = request.perms.check(request.org, op)
 
-    context["billing"] = request.perms.check(f"billing.{request.org.permission_id}", "c")
+    context["billing"] = request.perms.check(
+        f"billing.{request.org.permission_id}", "c"
+    )
 
     return {"permissions": context}

@@ -11,6 +11,7 @@ def can_read(request, namespace):
     namespace = namespace.format(org=request.org)
     return request.perms.check(namespace, "r")
 
+
 @register.filter
 def can_create(request, namespace):
     namespace = namespace.format(org=request.org)
@@ -28,15 +29,17 @@ def can_delete(request, namespace):
     namespace = namespace.format(org=request.org)
     return request.perms.check(namespace, "d")
 
+
 @register.filter
 def can_access(request, namespace):
     namespace = namespace.format(org=request.org)
     return (
-        request.perms.check(namespace, "c") or
-        request.perms.check(namespace, "r") or
-        request.perms.check(namespace, "u") or
-        request.perms.check(namespace, "d")
+        request.perms.check(namespace, "c")
+        or request.perms.check(namespace, "r")
+        or request.perms.check(namespace, "u")
+        or request.perms.check(namespace, "d")
     )
+
 
 @register.filter
 def themed_path(path):
