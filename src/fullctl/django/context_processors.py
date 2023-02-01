@@ -53,6 +53,9 @@ def account_service(request):
             ],
         )
 
+    # load this applications information from aaactl
+    # into `service_info` variable
+
     for svc_app in context.get("service_applications", []):
         if svc_app.slug != settings.SERVICE_TAG:
             continue

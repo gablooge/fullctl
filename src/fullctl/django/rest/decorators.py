@@ -139,8 +139,14 @@ class grainy_endpoint(base):
             if decorator.instance_class:
                 decorator.load_org_instance(request, kwargs)
 
+            # if an api key is set, that should become the permission
+            # holder
+
             if hasattr(request, "api_key"):
                 request.perms = permissions_cls(APIKey(request.api_key))
+
+            # check if the request is permissioned to access
+            # the fullctl service
 
             if not request.perms.check(
                 f"service.{settings.SERVICE_TAG}.{request.org.permission_id}",
