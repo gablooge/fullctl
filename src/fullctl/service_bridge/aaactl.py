@@ -67,6 +67,7 @@ class Product(Aaactl):
     class Meta(Aaactl.Meta):
         ref_tag = "product"
 
+
 class OrganizationProduct(Aaactl):
     class Meta(Aaactl.Meta):
         ref_tag = "org_product"

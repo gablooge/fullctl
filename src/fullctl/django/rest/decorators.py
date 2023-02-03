@@ -15,7 +15,6 @@ from fullctl.service_bridge.client import AaaCtl
 
 
 class base:
-
     def load_org(self, request, data):
         data.update(org=request.org)
 
