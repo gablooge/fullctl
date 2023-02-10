@@ -5,9 +5,10 @@ try:
 except ImportError:
     DEFAULT_SERVICE_KEY = ""
 
+import ipaddress
+
 import fullctl.service_bridge.pdbctl as pdbctl
 from fullctl.service_bridge.client import Bridge, DataObject
-import ipaddress
 
 CACHE = {}
 
