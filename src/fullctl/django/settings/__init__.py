@@ -365,6 +365,11 @@ class SettingsManager(confu.util.SettingsManager):
         # URL to POST Feature Request form to
         self.set_option("POST_FEATURE_REQUEST_URL", "")
 
+        # Docs URL
+        self.set_option("DOCS_URL", "https://docs.fullctl.com")
+
+        # Legal URL
+        self.set_option("LEGAL_URL", "https://www.fullctl.com/legal")
 
         # allow propagation of user field changes during oauth process
         # with exception of id fields

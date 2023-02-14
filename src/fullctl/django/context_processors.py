@@ -12,6 +12,8 @@ def conf(request):
         "contact_us_email": settings.CONTACT_US_EMAIL,
         "no_reply_email": settings.NO_REPLY_EMAIL,
         "post_feature_request_url": settings.POST_FEATURE_REQUEST_URL,
+        "docs_url": settings.DOCS_URL,
+        "legal_url": settings.LEGAL_URL,
     }
 
 
