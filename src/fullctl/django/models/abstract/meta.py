@@ -3,7 +3,9 @@ Abstract classes to facilitate the fetching, caching and retrieving of meta data
 sourced from third party sources.
 """
 import json
-from datetime import timedelta
+import time
+import datetime
+from datetime import timedelta, datetime
 
 import confu.schema
 import requests
@@ -50,13 +52,35 @@ class Data(HandleRefModel):
     Normalized object meta data
     """
 
+    source_name = models.CharField(max_length=255, null=True, blank=True)
     data = models.JSONField()
+    date = models.DateTimeField(help_text="Data validity date")
 
     class Meta:
         abstract = True
 
     class HandleRef:
         tag = "meta_data"
+
+    class Config:
+        # historic period in seconds
+        period = 12 * 3600
+
+    @classmethod
+    def cleanup(cls, target=None, age=None):
+        return
+
+    @classmethod
+    def config(cls, config_name, default=None):
+        value = getattr(cls.Config, config_name, default)
+
+        if value is None:
+            raise ValueError(f"`{cls}.Config.{config_name}` property not specified")
+
+        return value
+
+    def update(self, data):
+        self.data = data
 
 
 class Request(HandleRefModel):
@@ -66,6 +90,7 @@ class Request(HandleRefModel):
     """
 
     source = models.CharField(max_length=255)
+    type = models.CharField(max_length=255, null=True, blank=True)
     url = models.URLField()
     http_status = models.PositiveIntegerField()
     payload = models.JSONField(null=True)
@@ -152,10 +177,7 @@ class Request(HandleRefModel):
         request = cls.get_cache(target)
 
         if request:
-            try:
-                return request.response
-            except Exception:
-                return request
+            return cls.process(target, request.url, request.http_status, request.response.data, cached=True)
 
         return cls.send(target)
 
@@ -166,6 +188,14 @@ class Request(HandleRefModel):
         """
 
         raise NotImplementedError()
+
+    @classmethod
+    def target_to_type(cls, target):
+        """
+        override this to handle converting a target to a requestable url
+        """
+        return None
+
 
     @classmethod
     def send(cls, target):
@@ -191,7 +221,7 @@ class Request(HandleRefModel):
         return requests.get(url)
 
     @classmethod
-    def process(cls, target, url, http_status, getdata, payload=None):
+    def process(cls, target, url, http_status, getdata, payload=None, cached=False):
         """
         processes a response and return the `Request` object created for it
         """
@@ -200,7 +230,7 @@ class Request(HandleRefModel):
         target_field = cls.config("target_field")
         response_cls = cls._meta.get_field("response").related_model
 
-        params = {target_field: target, "url": url, "source": source}
+        params = {target_field: target, "url": url, "source": source, "type": cls.target_to_type(target)}
 
         if payload:
             params.update(payload=json.dumps(payload))
@@ -227,7 +257,8 @@ class Request(HandleRefModel):
         except Exception as exc:
             req.processing_error = f"{exc}"
 
-        req.save()
+        if not cached:
+            req.save()
 
         if data is not None:
             try:
@@ -274,7 +305,14 @@ class Request(HandleRefModel):
     @classmethod
     def get_cache_queryset(cls, target):
         target_field = cls.config("target_field")
-        filters = {target_field: target}
+        typ = cls.target_to_type(target)
+        filters = {target_field: target, "source": cls.config("source_name")}
+
+        if typ:
+            filters.update(type=typ)
+        else:
+            filters.update(type__isnull=True)
+
         return cls.objects.filter(**filters)
 
     @classmethod
@@ -320,15 +358,43 @@ class Response(HandleRefModel):
     def write_meta_data(self, req):
         meta_data_cls = self.config("meta_data_cls")
         target_field = self.config("target_field", req.config("target_field"))
-
+        source_name = req.config("source_name")
         target = getattr(req, target_field)
 
-        try:
-            filters = {target_field: target}
-            meta_data = meta_data_cls.objects.get(**filters)
-        except meta_data_cls.DoesNotExist:
-            meta_data = meta_data_cls(data={})
+        for date, data in req.process_response(self, timezone.now()):
+            self._write_meta_data(req, date, data, target, target_field, source_name)
+
+        meta_data_cls.cleanup(target=target)
+
+
+    def _write_meta_data(self, request, date, data, target, target_field, source_name):
+
+        meta_data_cls = self.config("meta_data_cls")
+        period = meta_data_cls.config("period")
+        start = date - timedelta(seconds=period)
+        end = date + timedelta(seconds=period)
+
+        filters = {target_field: target, "source_name": source_name}
+        meta_data = meta_data_cls.objects.filter(date__gte=start, date__lte=end).filter(**filters).first()
+
+
+        if not meta_data:
+            meta_data = meta_data_cls(data={}, source_name=source_name, date=date)
             setattr(meta_data, target_field, target)
 
-        meta_data.data.update({req.config("source_name"): req.process_response(self)})
+        meta_data.data = data
+
+        # if no meta-data was returned through the response
+        # we dont persist the entry, since the empty response will
+        # already be cached at the response layer anyway
+
+        # if the entry already was saved from earlier and is now
+        # empty delete the existing entry
+
+        if not meta_data.data:
+            if meta_data.id:
+                meta_data.delete()
+            return
+
         meta_data.save()
+
