@@ -53,8 +53,9 @@ class Data(HandleRefModel):
     """
 
     source_name = models.CharField(max_length=255, null=True, blank=True)
+    type = models.CharField(max_length=255, default="info")
     data = models.JSONField()
-    date = models.DateTimeField(help_text="Data validity date")
+    date = models.DateTimeField(help_text="Data validity start date")
 
     class Meta:
         abstract = True
@@ -65,6 +66,7 @@ class Data(HandleRefModel):
     class Config:
         # historic period in seconds
         period = 12 * 3600
+        type = "info"
 
     @classmethod
     def cleanup(cls, target=None, age=None):
@@ -324,8 +326,11 @@ class Request(HandleRefModel):
         expiry = cls.cache_expiry()
         return timezone.now() - timedelta(seconds=expiry)
 
-    def process_response(self, response):
-        return response.data
+    def process_response(self, response, target, date):
+        yield date, target, response.data
+
+    def prepare_data(self, data):
+        return data
 
 
 class Response(HandleRefModel):
@@ -355,21 +360,26 @@ class Response(HandleRefModel):
 
         return value
 
+    @property
+    def meta_data_cls(self):
+        return self.request.config("meta_data_cls", self.config("meta_data_cls"))
+
     def write_meta_data(self, req):
-        meta_data_cls = self.config("meta_data_cls")
+        meta_data_cls = self.meta_data_cls
         target_field = self.config("target_field", req.config("target_field"))
         source_name = req.config("source_name")
         target = getattr(req, target_field)
 
-        for date, data in req.process_response(self, timezone.now()):
-            self._write_meta_data(req, date, data, target, target_field, source_name)
+        for date, _target, data in req.process_response(self, target, timezone.now()):
+            self._write_meta_data(req, date, req.prepare_data(data), _target, target_field, source_name)
 
         meta_data_cls.cleanup(target=target)
 
 
     def _write_meta_data(self, request, date, data, target, target_field, source_name):
 
-        meta_data_cls = self.config("meta_data_cls")
+        meta_data_cls = self.meta_data_cls
+        meta_data_type = meta_data_cls.config("type")
         period = meta_data_cls.config("period")
         start = date - timedelta(seconds=period)
         end = date + timedelta(seconds=period)
@@ -383,18 +393,7 @@ class Response(HandleRefModel):
             setattr(meta_data, target_field, target)
 
         meta_data.data = data
-
-        # if no meta-data was returned through the response
-        # we dont persist the entry, since the empty response will
-        # already be cached at the response layer anyway
-
-        # if the entry already was saved from earlier and is now
-        # empty delete the existing entry
-
-        if not meta_data.data:
-            if meta_data.id:
-                meta_data.delete()
-            return
+        meta_data.type = meta_data_type
 
         meta_data.save()
 
