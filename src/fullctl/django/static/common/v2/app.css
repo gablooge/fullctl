@@ -1372,7 +1372,12 @@ span.tag {
  */
 
 .btn-oauth {
-  width: 210px;
+  min-width: 240px;
+}
+
+.btn-oauth img {
+  height: 40px;
+  display: inline-block;
 }
 
 img.login-twentyc,
