@@ -13,6 +13,9 @@ from fullctl.django.models.concrete import (
     Task,
     TaskSchedule,
     UserSettings,
+    Request,
+    Response,
+    Attachment,
 )
 from fullctl.django.models.concrete.service_bridge import ServiceBridgeAction
 
@@ -181,3 +184,43 @@ class ServiceBridgeAction(admin.ModelAdmin):
 @admin.register(UserSettings)
 class UserSettingsAdmin(BaseAdmin):
     list_display = ("user", "theme", "color_scheme")
+
+
+class ResponseInline(admin.TabularInline):
+    model = Response
+    extra = 0
+    show_change_link = True
+
+class AttachmentInline(admin.TabularInline):
+    model = Attachment
+    extra = 0
+    readonly_fields = ["size"]
+
+@admin.register(Request)
+class RequestAdmin(BaseAdmin):
+    list_display = [
+        "identifier",
+        "source",
+        "type",
+        "http_status",
+        "count",
+        "created",
+        "updated",
+    ]
+    list_filter = ["http_status", "source", "type"]
+    inlines = [
+        ResponseInline, 
+    ]
+    search_fields = ["identifier",]
+
+@admin.register(Response)
+class ResponseAdmin(BaseAdmin):
+    list_display = [
+        "request",
+        "created",
+        "updated",
+    ]
+    inlines = [
+        AttachmentInline, 
+    ]
+    search_fields = ["request__identifier",]

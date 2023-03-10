@@ -17,8 +17,11 @@ __all__ = [
     "Request",
     "Response",
     "Data",
+    "NoMetaClassDefined"
 ]
 
+class NoMetaClassDefined(ValueError):
+    pass
 
 class DataMixin:
     def clean_data(self):
@@ -96,7 +99,7 @@ class Request(HandleRefModel):
     type = models.CharField(max_length=255, null=True, blank=True)
     url = models.URLField()
     http_status = models.PositiveIntegerField()
-    payload = models.JSONField(null=True)
+    payload = models.JSONField(null=True, blank=True)
     count = models.PositiveIntegerField(default=1)
 
     processing_error = models.CharField(
@@ -186,6 +189,7 @@ class Request(HandleRefModel):
                 request.http_status,
                 request.response.data,
                 cached=True,
+                content=request.response.content,
             )
 
         return cls.send(target)
@@ -229,7 +233,7 @@ class Request(HandleRefModel):
         return requests.get(url)
 
     @classmethod
-    def process(cls, target, url, http_status, getdata, payload=None, cached=False):
+    def process(cls, target, url, http_status, getdata, payload=None, cached=False, content=None):
         """
         processes a response and return the `Request` object created for it
         """
@@ -267,6 +271,7 @@ class Request(HandleRefModel):
                 data = getdata()
             else:
                 data = getdata
+            req.processing_error = None
         except Exception as exc:
             req.processing_error = f"{exc}"
 
@@ -282,16 +287,24 @@ class Request(HandleRefModel):
 
             if not create_response:
                 req.response.data = data
+                req.response.content = content
                 req.response.save()
             else:
                 response_cls.objects.create(
                     source=source,
                     data=data,
+                    content=content,
                     request=req,
                 )
 
-            req.response.write_meta_data(req)
+            # if a meta data class is defined for this request
+            # we will write the meta data from the response
 
+            try:
+                req.response.write_meta_data(req)
+            except NoMetaClassDefined:
+                pass
+            
             return req
 
         return req
@@ -355,9 +368,11 @@ class Response(HandleRefModel):
 
     source = models.CharField(max_length=255)
     data = models.JSONField(null=True)
+    content = models.TextField(help_text="raw content of response - may not be set if data and content are equal.", null=True, blank=True)
 
     class Config:
         meta_data_cls = None
+        attachment_cls = None
 
     class Meta:
         abstract = True
@@ -376,7 +391,10 @@ class Response(HandleRefModel):
 
     @property
     def meta_data_cls(self):
-        return self.request.config("meta_data_cls", self.config("meta_data_cls"))
+        try:
+            return self.request.config("meta_data_cls", self.config("meta_data_cls"))
+        except ValueError:
+            raise NoMetaClassDefined()
 
     def write_meta_data(self, req):
         target_field = self.config("target_field", req.config("target_field"))
@@ -422,3 +440,32 @@ class Response(HandleRefModel):
         meta_data.type = meta_data_type
 
         meta_data.save()
+
+    def add_attachment(self, file_name, file_data, content_type):
+
+        attachment_cls = self.config('attachment_cls')
+
+        return attachment_cls.objects.create(response=self, file_name=file_name, file_data=file_data, content_type=content_type)
+
+        
+
+class Attachment(HandleRefModel):
+    """
+    File attachmnent for meta data response
+    
+    Needs to implement a `response` foreign key relationship to a `Response` class
+    """
+
+    content_type = models.CharField(max_length=255)
+    file_data = models.BinaryField()
+    file_name = models.CharField(max_length=255)
+
+    class Meta:
+        abstract = True
+
+    class HandleRef:
+        tag = "meta_attachment"
+
+    @property
+    def size(self):
+        return len(self.file_data)
