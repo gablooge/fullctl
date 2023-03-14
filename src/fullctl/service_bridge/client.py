@@ -120,8 +120,6 @@ class Bridge:
     def get(self, endpoint, **kwargs):
         url = urllib.parse.urljoin(self.url, f"{trim_endpoint(endpoint)}/")
 
-        print("GET", url)
-
         # if the url starts with a test:// protocol, attempt
         # to load test data from path instead.
         if url.startswith("test://"):
