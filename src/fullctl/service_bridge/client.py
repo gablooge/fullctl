@@ -17,6 +17,19 @@ def trim_endpoint(endpoint):
     return endpoint.strip("/")
 
 
+def urljoin(left, right):
+    """
+    Simplified urljoin that gets of extra / at the edges
+    of parts
+    """
+
+    if not left:
+        return f"/{trim_endpoint(right)}/"
+
+    # return "/".join([left.rtrim("/"), trim_endpoint(right)])
+    return f"{left.rstrip('/')}/{trim_endpoint(right)}/"
+
+
 # Location of test data
 TEST_DATA_PATH = "."
 
@@ -74,7 +87,7 @@ class Bridge:
         return self.Meta.data_object_cls
 
     def __init__(self, host, key, org_slug, **kwargs):
-        self.url = urllib.parse.urljoin(host, "/api/")
+        self.url = urljoin(host, "/api/")
         self.org = org_slug
         self.key = key
         self.host = host
@@ -118,7 +131,7 @@ class Bridge:
             return json.load(fh)[self.results_key]
 
     def get(self, endpoint, **kwargs):
-        url = urllib.parse.urljoin(self.url, f"{trim_endpoint(endpoint)}/")
+        url = urljoin(self.url, endpoint)
 
         # if the url starts with a test:// protocol, attempt
         # to load test data from path instead.
@@ -140,19 +153,19 @@ class Bridge:
         return data
 
     def post(self, endpoint, **kwargs):
-        url = urllib.parse.urljoin(self.url, f"{trim_endpoint(endpoint)}/")
+        url = urljoin(self.url, endpoint)
         return self._data(requests.post(url, **self._requests_kwargs(**kwargs)))
 
     def put(self, endpoint, **kwargs):
-        url = urllib.parse.urljoin(self.url, f"{trim_endpoint(endpoint)}/")
+        url = urljoin(self.url, endpoint)
         return self._data(requests.put(url, **self._requests_kwargs(**kwargs)))
 
     def patch(self, endpoint, **kwargs):
-        url = urllib.parse.urljoin(self.url, f"{trim_endpoint(endpoint)}/")
+        url = urljoin(self.url, endpoint)
         return self._data(requests.patch(url, **self._requests_kwargs(**kwargs)))
 
     def delete(self, endpoint, **kwargs):
-        url = urllib.parse.urljoin(self.url, f"{trim_endpoint(endpoint)}/")
+        url = urljoin(self.url, endpoint)
         try:
             return self._data(requests.delete(url, **self._requests_kwargs(**kwargs)))
         except ServiceBridgeError as exc:
@@ -239,7 +252,7 @@ class Bridge:
 
     def api_url(self, id):
         endpoint = f"{trim_endpoint(self.url_prefix)}/{self.ref_tag}/{id}"
-        url = urllib.parse.urljoin(self.url, f"{trim_endpoint(endpoint)}/")
+        url = urljoin(self.url, endpoint)
         return url
 
 
