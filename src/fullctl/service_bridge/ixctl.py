@@ -1,5 +1,3 @@
-from urllib.parse import urljoin
-
 try:
     from django.conf import settings
 
@@ -10,7 +8,7 @@ except ImportError:
 import ipaddress
 
 import fullctl.service_bridge.pdbctl as pdbctl
-from fullctl.service_bridge.client import Bridge, DataObject
+from fullctl.service_bridge.client import Bridge, DataObject, urljoin
 
 CACHE = {}
 

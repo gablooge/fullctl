@@ -1,5 +1,3 @@
-from urllib.parse import urljoin
-
 try:
     from django.conf import settings
 
@@ -7,7 +5,7 @@ try:
 except (ImportError, AttributeError):
     DEFAULT_SERVICE_KEY = ""
 
-from fullctl.service_bridge.client import Bridge, DataObject
+from fullctl.service_bridge.client import Bridge, DataObject, urljoin
 
 CACHE = {}
 
