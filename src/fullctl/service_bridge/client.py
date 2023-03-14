@@ -26,7 +26,7 @@ def urljoin(left, *args):
     right = []
 
     for parts in args:
-        right.extend([trim_endpoint(part) for part in parts.split("/")])
+        right.extend([trim_endpoint(part) for part in parts.split("/") if part])
 
     right = "/".join(right)
 
@@ -73,7 +73,7 @@ class Bridge:
     cache_duration = 0
 
     results_key = "data"
-    url_prefix = "data/"
+    url_prefix = "data"
 
     class Meta:
         service = "base"
