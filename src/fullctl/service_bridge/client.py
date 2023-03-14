@@ -26,7 +26,6 @@ def urljoin(left, right):
     if not left:
         return f"/{trim_endpoint(right)}/"
 
-    # return "/".join([left.rtrim("/"), trim_endpoint(right)])
     return f"{left.rstrip('/')}/{trim_endpoint(right)}/"
 
 
