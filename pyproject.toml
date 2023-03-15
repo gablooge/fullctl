@@ -39,9 +39,6 @@ social-auth-app-django = { git = "https://github.com/python-social-auth/social-a
 
 setuptools = "*"
 
-# for displaying pretty json in django-admin
-pygments = "^2.14"
-
 # only needed for ixctl now, compare vs django-inet?
 django-netfields = "<2"
 
