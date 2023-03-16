@@ -9,6 +9,7 @@ __all__ = [
     "Setting",
     "SettingUnset",
     "ConcurrencyLimit",
+    "Dynamic",
 ]
 
 
@@ -21,6 +22,12 @@ class Base:
     """
 
     def check(self, task):
+        raise NotImplementedError()
+
+
+class Dynamic(Base):
+    
+    def set(self, *args, **kwargs):
         raise NotImplementedError()
 
 

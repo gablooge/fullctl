@@ -15,6 +15,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 import fullctl.django.tasks
+from fullctl.django.tasks.qualifiers import Dynamic
 from fullctl.django.models.abstract.base import HandleRefModel
 from fullctl.django.tasks.util import worker_id
 
@@ -312,10 +313,21 @@ class Task(HandleRefModel):
         qualifiers = getattr(task_meta, "qualifiers", [])
 
         for qualifier in qualifiers:
+
+            if isinstance(qualifier, Dynamic):
+                qualifier.set(self.dynamic_qualifier_id(qualifier))
+
             if not qualifier.check(self):
                 raise WorkerUnqualified(self, qualifier)
 
         return True
+
+    @property
+    def name(self):
+        return self.__class__.__name__
+
+    def dynamic_qualifier_id(self, qualifier):
+        return self.generate_limit_id
 
     def __str__(self):
         return f"{self.__class__.__name__}({self.id}): {self.param['args']}"
