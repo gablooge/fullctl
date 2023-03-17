@@ -225,8 +225,12 @@ div.header .app-switcher .others a {
 }
 
 header .dropdown-item,
+header .dropdown-item:hover,
+header .dropdown-item:focus,
 header .dropdown-menu {
   background-color: #0F1317;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  color: var(--theme-toolbar-color);
 }
 
 header .dropdown-item.selected:hover,
@@ -234,11 +238,8 @@ header .dropdown-item.selected {
   background-color: #000;
 }
 
-header .dropdown-menu {
-  color: #BCBEC0;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
-}
-
+header .dropdown-item:focus,
+header .dropdown-item:hover,
 header .dropdown-item {
   color: var(--clr-accent-400);
 }
@@ -520,30 +521,6 @@ div.menu div.menu-deco-border {
 
 .alert-info a {
   color: var(--theme-alert-info-link-color);
-}
-
-.dropdown-item,
-.dropdown-menu {
-  background-color: #0F1317 !important;
-}
-
-.dropdown-item.selected:hover,
-.dropdown-item.selected {
-  background-color: #000;
-}
-
-.dropdown-menu {
-  color: #BCBEC0;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
-}
-
-.dropdown-item {
-  color: #D1FF27;
-}
-
-.dropdown-item:hover {
-  color: #D1FF27;
-  background-color: #0F1317;
 }
 
 tbody.list-footer button {
