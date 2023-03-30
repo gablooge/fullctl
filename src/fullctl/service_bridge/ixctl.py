@@ -89,6 +89,7 @@ class RouteserverObject(IxctlEntity):
         "ix": {"bridge": InternetExchange, "filter": ("ix", "ix_id")},
     }
 
+
 class Routeserver(Ixctl):
     class Meta(Ixctl.Meta):
         ref_tag = "routeserver"

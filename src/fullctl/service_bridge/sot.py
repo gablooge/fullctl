@@ -197,6 +197,7 @@ class InternetExchange(SourceOfTruth):
 
         return filtered
 
+
 class InternetExchangeMember(SourceOfTruth):
 
     """
