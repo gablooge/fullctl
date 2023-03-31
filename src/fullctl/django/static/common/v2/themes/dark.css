@@ -198,6 +198,17 @@ main .dropdown-item:hover {
   background-image: var(--dropdown-svg-url);
 }
 
+.alert-warning {
+  --bs-alert-color: var(--foreground);
+  --bs-alert-bg: var(--box-bg);
+  --bs-alert-border-color: var(--clr-accent-600);
+}
+
+.alert-warning .btn-warning {
+  background-color: var(--primary-btn-bg);
+  color: var(--primary-btn-clr);
+}
+
 /**
  * header
  */
