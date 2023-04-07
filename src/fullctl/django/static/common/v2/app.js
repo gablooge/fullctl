@@ -638,7 +638,7 @@ fullctl.application.Toolbar = $tc.extend(
 
 /**
  * Start-Trial button widget
- * 
+ *
  * @class TrialButton
  * @extends twentyc.rest.Button
  * @constructor
