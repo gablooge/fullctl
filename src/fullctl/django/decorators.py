@@ -5,6 +5,8 @@ from django.urls import reverse
 import fullctl.django.context as context
 from fullctl.django.models import Instance, Organization
 
+from functools import wraps
+from django.http import JsonResponse
 
 class require_auth:
 
@@ -91,3 +93,27 @@ class service_bridge_sync:
 
         wrapped.__name__ = fn.__name__
         return wrapped
+
+
+def origin_allowed(origins):
+
+    """
+    Origin white-labeling for CORS enabled views.
+    """
+
+    def decorator(view_func):
+        @wraps(view_func)
+        def _wrapped_view(request, *args, **kwargs):
+            origin = request.META.get('HTTP_ORIGIN')
+            print("ORIGIN", origin, origins)
+            if origin not in origins:
+                response_data = {
+                    'status': 'error',
+                    'message': 'Origin not allowed'
+                }
+                return JsonResponse(response_data, status=403)
+
+            return view_func(request, *args, **kwargs)
+        return _wrapped_view
+    return decorator
+

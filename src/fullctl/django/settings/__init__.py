@@ -33,6 +33,17 @@ def read_file(name):
     with open(name) as fh:
         return fh.read()
 
+class exposed_list(str):
+
+    """
+    Allows setting a list using a comma delimited string
+    TODO: move to confu
+    """
+
+    def __list__(self):
+        if not self:
+            return []
+        return self.split(",")
 
 # TODO : add dict access and logging
 class SettingsManager(confu.util.SettingsManager):
