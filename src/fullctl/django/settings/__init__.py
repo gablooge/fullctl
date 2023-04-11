@@ -33,6 +33,7 @@ def read_file(name):
     with open(name) as fh:
         return fh.read()
 
+
 class exposed_list(str):
 
     """
@@ -44,6 +45,7 @@ class exposed_list(str):
         if not self:
             return []
         return self.split(",")
+
 
 # TODO : add dict access and logging
 class SettingsManager(confu.util.SettingsManager):
@@ -285,7 +287,6 @@ class SettingsManager(confu.util.SettingsManager):
 
         self.set_rest_throttles()
 
-    
     def set_rest_throttles(self):
         """
         Sets up rest api throttling
@@ -300,12 +301,10 @@ class SettingsManager(confu.util.SettingsManager):
 
         # set up env vars for throttling
 
-        self.set_option("THROTTLE_CONTACT_MESSAGE",  "10/minute")
-            
+        self.set_option("THROTTLE_CONTACT_MESSAGE", "10/minute")
+
         REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"].update(
-            {
-                "contact_message" : self.get("THROTTLE_CONTACT_MESSAGE")
-            }
+            {"contact_message": self.get("THROTTLE_CONTACT_MESSAGE")}
         )
 
     def set_service_bridges(self):

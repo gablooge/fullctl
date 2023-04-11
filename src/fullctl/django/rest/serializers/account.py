@@ -1,12 +1,10 @@
+from django.conf import settings
 from rest_framework import serializers
 
-from django.conf import settings
-
 import fullctl.django.models as models
+import fullctl.service_bridge.aaactl as aaactl
 from fullctl.django.rest.decorators import serializer_registry
 from fullctl.django.rest.serializers import ModelSerializer
-
-import fullctl.service_bridge.aaactl as aaactl
 
 Serializers, register = serializer_registry()
 
@@ -52,9 +50,9 @@ class ASN(serializers.Serializer):
             return obj["pdb_net"].name
         return ""
 
+
 @register
 class ContactMessage(serializers.Serializer):
-
     message = serializers.JSONField()
     type = serializers.ChoiceField(choices=["support", "feature-request", "general"])
 
@@ -62,7 +60,6 @@ class ContactMessage(serializers.Serializer):
 
     class Meta:
         fields = ["name", "email", "message"]
-
 
     def save(self):
         message = self.validated_data["message"]
@@ -76,11 +73,13 @@ class ContactMessage(serializers.Serializer):
 
         service = aaactl.ServiceApplication().first(slug=settings.SERVICE_TAG).id
 
-        aaactl.ContactMessage().create(dict(
-            name=name,
-            email=email,
-            message=message,
-            service=service,
-            user=user,
-            type=typ,
-        ))
+        aaactl.ContactMessage().create(
+            dict(
+                name=name,
+                email=email,
+                message=message,
+                service=service,
+                user=user,
+                type=typ,
+            )
+        )

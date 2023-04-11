@@ -101,6 +101,7 @@ class Impersonation(Aaactl):
 
         self.destroy(impersonation)
 
+
 class ContactMessage(Aaactl):
     class Meta(Aaactl.Meta):
         ref_tag = "contact_message"
