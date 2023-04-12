@@ -98,14 +98,13 @@ class service_bridge_sync:
 
 def origin_allowed(origins):
     """
-    Origin white-labeling for CORS enabled views.
+    Origin white listing for CORS enabled views.
     """
 
     def decorator(view_func):
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):
             origin = request.META.get("HTTP_ORIGIN")
-            print("ORIGIN", origin, origins)
             if origin not in origins:
                 response_data = {"status": "error", "message": "Origin not allowed"}
                 return JsonResponse(response_data, status=403)
