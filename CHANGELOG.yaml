@@ -1,11 +1,13 @@
 Unreleased:
-  added:
-  - contact form interface
+  added: []
   fixed: []
   changed: []
   deprecated: []
   removed: []
   security: []
+1.2.0:
+  added:
+  - contact form interface
 1.0.0:
   added:
   - all 1.0 changes!
