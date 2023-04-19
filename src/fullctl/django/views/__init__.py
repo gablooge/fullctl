@@ -3,6 +3,7 @@ import re
 import sys
 
 from django.conf import settings
+from django.db import connection
 
 # from django.conf import settings
 from django.http import Http404, HttpResponse
@@ -11,8 +12,6 @@ from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
 from fullctl.django.decorators import require_auth
-
-from django.db import connection
 
 
 @require_auth()
@@ -34,6 +33,7 @@ def diag(request):
 
     return HttpResponse(mark_safe(f"<div><pre>Meta:\n{escape(txt)}</pre></div>"))
 
+
 def healthcheck(request):
     """
     Performs a simple database version query
@@ -43,6 +43,7 @@ def healthcheck(request):
         cursor.execute("SELECT version()")
 
     return HttpResponse("")
+
 
 @require_auth()
 def login(request):
