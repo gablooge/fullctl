@@ -433,7 +433,9 @@ class Response(HandleRefModel):
 
         if not had_entries:
             # no entries were written, write an empty entry
-            self._write_meta_data(req, timezone.now(), {}, target, target_field, source_name)
+            self._write_meta_data(
+                req, timezone.now(), {}, target, target_field, source_name
+            )
 
     def _write_meta_data(self, request, date, data, target, target_field, source_name):
         meta_data_cls = self.meta_data_cls
