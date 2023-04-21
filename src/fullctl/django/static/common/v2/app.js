@@ -601,7 +601,7 @@ fullctl.application.Header = $tc.extend(
       const service_list_order = ["ixctl", "peerctl", "devicectl", "prefixctl", "pdbctl", "aclctl", "aaactl"];
       const service_list = {};
       $(this.$e.app_switcher).find(".others .list-item").each(function() {
-        service_list[$(this).data("slug")] = $(this);
+        service_list[$(this).attr("data-slug")] = $(this);
       })
 
       service_list_order.reverse().forEach((value, index) => {
