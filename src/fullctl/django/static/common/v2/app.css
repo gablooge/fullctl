@@ -106,6 +106,10 @@ main {
   flex: 1;
 }
 
+.nowrap {
+  white-space: nowrap;
+}
+
 .btn.primary,
 .btn[data-btn-type="delete"] {
   text-transform: uppercase;
