@@ -132,7 +132,7 @@ class TokenValidationMiddleware:
 
             if not aaactl_token or aaactl_token.expired:
                 # token no longer valid on aaactl side, invalidate session
-                # TODO: logout the session
+                # TODO: possibly extend token expiry on certain actions
                 logout(request)
 
         response = self.get_response(request)
