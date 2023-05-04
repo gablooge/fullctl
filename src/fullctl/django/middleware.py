@@ -1,11 +1,10 @@
 from django.contrib.auth import get_user_model, logout
 from django.http import Http404
 
+import fullctl.service_bridge.aaactl as aaactl
 from fullctl.django.auth import permissions
 from fullctl.django.context import current_request
 from fullctl.django.models import Organization
-import fullctl.service_bridge.aaactl as aaactl
-
 
 
 class CurrentRequestContext:
@@ -120,7 +119,7 @@ class TokenValidationMiddleware:
     def __call__(self, request):
         user = request.user
         if user.is_authenticated:
-            social_auth = user.social_auth.filter(provider='twentyc').first()
+            social_auth = user.social_auth.filter(provider="twentyc").first()
 
             if not social_auth:
                 # user does not have a social auth record,
@@ -128,7 +127,7 @@ class TokenValidationMiddleware:
                 # manually through create_superuser or via django-admin
                 return self.get_response(request)
 
-            access_token = social_auth.extra_data['access_token']
+            access_token = social_auth.extra_data["access_token"]
             aaactl_token = aaactl.OauthAccessToken().first(token=access_token)
 
             if not aaactl_token or aaactl_token.expired:

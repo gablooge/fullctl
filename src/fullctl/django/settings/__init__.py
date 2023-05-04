@@ -386,7 +386,6 @@ class SettingsManager(confu.util.SettingsManager):
         MIDDLEWARE = self.get("MIDDLEWARE")
         MIDDLEWARE.append("fullctl.django.middleware.TokenValidationMiddleware")
 
-
     def set_twentyc_service(self, billing_integration=True, propagate_user_fields=True):
         """
         Sets up everything needed for a twentyc service.
