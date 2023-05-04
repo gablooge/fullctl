@@ -44,6 +44,7 @@ def healthcheck(request):
 
     return HttpResponse("")
 
+
 def authcheck(request):
     """
     Checks if the user's access token is still valid
@@ -53,7 +54,7 @@ def authcheck(request):
     """
 
     if not request.user.is_authenticated:
-        return HttpResponse("",status=401)
+        return HttpResponse("", status=401)
 
     return HttpResponse("")
 
