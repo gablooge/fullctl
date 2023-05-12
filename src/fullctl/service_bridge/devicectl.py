@@ -60,16 +60,16 @@ class Device(Devicectl):
         return device[0]
 
     def set_operational_status(
-            self, 
-            device_id, 
-            status, 
-            error_message=None, 
-            event=None, 
-            url_current=None, 
-            url_reference=None, 
-            config_current=None, 
-            config_reference=None
-        ):
+        self,
+        device_id,
+        status,
+        error_message=None,
+        event=None,
+        url_current=None,
+        url_reference=None,
+        config_current=None,
+        config_reference=None,
+    ):
         """
         Updates the device's operational status
 
