@@ -350,6 +350,10 @@ div.loading-anim {
   font-weight: 800;
 }
 
+.filter-hidden {
+  display: none;
+}
+
 /**
  * page
  */
