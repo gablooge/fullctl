@@ -101,7 +101,7 @@ fullctl.auth.start_check = function() {
         });
       }
       fullctl.session_expired = true;
-      
+
     });
   }, 15000);
 }
