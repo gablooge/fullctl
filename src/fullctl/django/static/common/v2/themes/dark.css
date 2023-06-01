@@ -707,6 +707,11 @@ div.oauth-backend.twentyc>a.btn {
 }
 
 
+.fullctl-inner-tabs .nav .nav-link.active {
+  background-color: transparent;
+  color: var(--foreground);
+}
+
 /* loading spinner */
 
 
@@ -808,3 +813,9 @@ div.autocomplete-item .autocomplete-primary {
 }
 
 
+/**
+ * syntax hl
+*/
+.syntax-highlight-transparent-bg pre {
+  background-color: transparent !important;
+}

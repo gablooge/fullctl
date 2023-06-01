@@ -56,6 +56,10 @@ body {
 body {
   text-rendering: optimizeSpeed;
   line-height: 1.5;
+  /* always show body scroll bar so we dont get jittery widths between cotent
+   * that overflows and content that doesn't
+   */
+  overflow-y: scroll;
 }
 
 /* A elements that don't have a class get default styles */
@@ -901,6 +905,23 @@ a.nav-link.active {
   border-bottom: 2px solid;
 }
 
+.fullctl-inner-tabs .nav .nav-item {
+  margin-right: 10px;
+}
+
+.fullctl-inner-tabs .nav {
+  border: none;
+  margin-bottom: 25px;
+}
+
+.fullctl-inner-tabs .nav .nav-link {
+  border: 0px;
+  border-bottom: 1px solid;
+  border-radius: 0px;
+}
+
+
+
 /**
  * menu
  */
@@ -1669,8 +1690,9 @@ span.fullctl-sot {
   padding-left: 5px;
 }
 
+.notification.bg-info,
 .cross-promotion .alert-info {
-  background-color: #2b2e39;
+  background-color: #2b2e39 !important;
   border-color: #d1ff27;
 }
 
@@ -1751,4 +1773,27 @@ div.autocomplete-item .autocomplete-extra {
 
 .table-cell-disp {
   display: table-cell;
+}
+
+div.notifications {
+  position: fixed;
+  top: 75px;
+  left: 50%;
+  transform: translate(-50%);
+  padding: 5px;
+  z-index: 100;
+}
+
+div.notifications .badge.notification {
+  padding: 10px;
+  display: block;
+  margin-bottom: 10px;
+  cursor: pointer;
+  min-width: 200px;
+  max-width: 600px;
+}
+
+div.notifications .badge.notification.bg-info {
+  border-width: 1px;
+  border-style: solid;
 }
