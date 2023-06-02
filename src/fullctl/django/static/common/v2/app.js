@@ -211,6 +211,23 @@ fullctl.formatters.seconds_to_wdhms = (seconds) => {
 }
 
 /**
+ * Shortens numbers by prefixing K for thousands and M for millions
+ */
+fullctl.formatters.shorten_number = (value) => {
+  value = Number(value);
+  const millions = (value / 1000000).toPrecision(3);
+  if (millions>1) {
+    return millions+"M";
+  }
+
+  const thousands = (value / 1000).toPrecision(3);
+  if (thousands>1)
+    return thousands+"K";
+
+  return String(value);
+}
+
+/**
  * Formats `True` and `False` as checkmark and cross
  * @method pretty_bool
  * @param {String} value value of cell
