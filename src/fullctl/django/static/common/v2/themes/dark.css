@@ -125,6 +125,7 @@ input[type="checkbox"] {
   --bs-btn-hover-bg: var(--primary-btn-bg);
   --bs-btn-active-color: var(--primary-btn-clr);
   --bs-btn-active-bg: var(--primary-btn-bg);
+  --bs-btn-active-border-color: var(--primary-btn-bg);
 }
 
 .btn.primary .icon {
@@ -221,6 +222,8 @@ input:focus + .slider {
 .form-select {
   color: var(--foreground);
   background-image: var(--dropdown-svg-url);
+  background-color: transparent;
+  border-color: var(--theme-secondary-border-color);
 }
 
 
