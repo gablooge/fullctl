@@ -1803,11 +1803,11 @@ twentyc.rest.List = twentyc.cls.extend(
           // use the insert the new row at the correct location
           //
           // note, we can't use the old row itself because it introduces
-          // weird behaviour in the DOM rendering, to invistage at a later
+          // weird behaviour in the DOM rendering, to investigate at a later
           // point if necessary
           var next = row.next();
           var prev = row.prev();
-          
+
           if(next.length) {
             new_row.insertBefore(next);
           } else if(prev.length) {
