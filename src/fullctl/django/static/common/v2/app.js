@@ -1390,6 +1390,29 @@ fullctl.theme_switching = document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+/**
+ * Dropdown button widget for selecting options.
+ * should follow a strcuture as follows:
+ *
+ *      <div class="dropdown-btn">
+ *        <button data-option-text="Option 1 text">
+ *          Option 1
+ *        </button>
+ *
+ *        <button data-option-text="Option 2 text">
+ *          Option 1
+ *        </button>
+ *
+ *        <details>
+ *          <summary><span class="visually-hidden">Description of choice</span></summary>
+ *        </details>
+ *      </div>
+ *
+ * @class DropdownBtn
+ * @namespace fullctl.application
+ * @constructor
+ * @param {jQuery} jq - the element to use as the dropdown button
+ */
 
 fullctl.application.DropdownBtn = $tc.define(
   "DropdownBtn",
@@ -1399,7 +1422,8 @@ fullctl.application.DropdownBtn = $tc.define(
       const element = jq[0];
       this.dropdown_expand_btn = element.querySelector('details');
 
-      this.menu = jq.find('.dropdown-btn-menu');
+      this.menu = $('<div class="dropdown-btn-menu">');
+      this.dropdown_expand_btn.append(this.menu.get(0));
       this.dropdown_buttons = this.get_dropdown_buttons();
 
       this.render_dropdown();
@@ -1475,14 +1499,14 @@ fullctl.application.DropdownBtn = $tc.define(
       this.render_dropdown();
     },
 
-    remove_option: function (index){
+    remove_option: function(index) {
       this.dropdown_buttons.eq(index).remove();
       this.dropdown_buttons = this.get_dropdown_buttons();
       if (!this.dropdown_buttons.hasClass('active')) {
         this.dropdown_buttons.first().addClass('active');
       }
       this.render_dropdown();
-    }
+    },
   }
 );
 
