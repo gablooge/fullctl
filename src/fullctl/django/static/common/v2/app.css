@@ -218,6 +218,11 @@ button:focus {
   font-weight: bold;
 }
 
+.dotted-underline {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
 .sortable-button {
   cursor: pointer;
 }
