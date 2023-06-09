@@ -1419,23 +1419,6 @@ div.controls label {
   margin-bottom: 12px;
 }
 
-div.controls input[type="checkbox"] {
-  outline: none;
-  box-sizing: border-box;
-  height: 16px;
-  width: 16px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-
-div.controls input[type="checkbox"]:checked:before {
-  content: '\2713';
-  position: relative;
-  top: -5px;
-  left: 2px;
-}
-
 div.controls .form-check {
   margin-bottom: 15px;
 }
