@@ -1638,7 +1638,7 @@ fullctl.ext.select2 = {
             results: data.results
           }
         },
-      
+
       },
       width: '20em',
       placeholder: opt.placeholder,
