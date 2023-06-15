@@ -1372,49 +1372,78 @@ fullctl.help_box = document.addEventListener("DOMContentLoaded", () => {
  * @namespace fullctl.application
  * @constructor
  * @param {(str) => undefined} filter_function function to call when filtering
- * @param {(str) => undefined} clear_filter_function function to reverse what happens in the `filter_function`
+ * @param {() => undefined} clear_filter_function function to reverse what happens in the `filter_function`
  */
 
-fullctl.application.Searchbar = function(jq, filter_function, clear_filter_function) {
-  const filter_input = jq.find('[data-element="filter"]');
-  const search_btn = jq.find('[data-element="filter_submit"]');
-  const clear_search_btn = jq.find('[data-element="filter_clear"]');
+fullctl.application.Searchbar = $tc.define(
+  "Searchbar",
+  {
+    Searchbar : function(jq, filter_function, clear_filter_function) {
+      const filter_input =
+      this.filter_input =
+      this.element =
+        jq.find('[data-role="filter"]') ||
+        jq.find('[data-element="filter"]');
 
-  const search_prefix = (prefix) => {
-    filter_function(prefix.toLowerCase());
-    search_btn.removeClass("curved");
-    clear_search_btn.show();
-  }
+      const search_btn =
+      this.search_btn =
+        jq.find('[data-role="filter_submit"]') ||
+        jq.find('[data-element="filter_submit"]');
 
-  const clear_search = () => {
-    clear_filter_function();
-    search_btn.addClass("curved");
-    clear_search_btn.hide();
-    filter_input.val("")
-  }
+      const clear_search_btn =
+      this.clear_search_btn =
+        jq.find('[data-role="filter_clear"]') ||
+        jq.find('[data-element="filter_clear"]');
 
-  filter_input.on("keyup", function(event) {
-    if (event.key === "Enter") {
-      if ($(this).val() != "") {
-        search_prefix($(this).val())
-      } else {
-        clear_search();
-      }
+      this.filter_function = filter_function;
+      this.clear_filter_function = clear_filter_function;
+
+      const searchbar = this;
+      filter_input.on("keyup", function(event) {
+        if (event.key === "Enter") {
+          if ($(this).val() != "") {
+            searchbar.search($(this).val())
+          } else {
+            searchbar.clear_search();
+          }
+        }
+      });
+
+      search_btn.on("click", () => {
+        if (filter_input.val() != "") {
+          this.search(filter_input.val())
+        } else {
+          this.clear_search();
+        }
+      });
+
+      clear_search_btn.on("click", () => {
+        this.clear_search();
+      });
+    },
+
+    search : function(prefix) {
+      this.filter_function(prefix);
+      this.show_clear_button();
+    },
+
+    clear_search : function() {
+      this.filter_input.val("");
+      this.clear_filter_function();
+      this.hide_clear_button();
+    },
+
+    show_clear_button : function() {
+      this.search_btn.removeClass("curved");
+      this.clear_search_btn.show();
+    },
+
+    hide_clear_button : function() {
+      this.search_btn.addClass("curved");
+      this.clear_search_btn.hide();
     }
-  });
-
-  search_btn.click(() => {
-    if (filter_input.val() != "") {
-      search_prefix(filter_input.val())
-    } else {
-      clear_search();
-    }
-  });
-
-  clear_search_btn.click(() => {
-    clear_search();
-  })
-}
+  }
+);
 
 fullctl.theme_switching = document.addEventListener("DOMContentLoaded", () => {
   function toggle_theme() {
