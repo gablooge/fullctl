@@ -225,11 +225,11 @@ main .dropdown-item:hover {
   background-color: var(--clr-primary-500);
 }
 
-input:checked + .slider:before {
+input:checked ~ .slider:before {
   background-color: var(--clr-accent-400);
 }
 
-input:focus + .slider {
+input:focus ~ .slider {
   box-shadow: 0 0 1px var(--clr-accent-400);
 }
 
