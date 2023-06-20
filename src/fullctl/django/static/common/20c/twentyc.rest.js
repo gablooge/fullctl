@@ -852,9 +852,8 @@ twentyc.rest.Widget = twentyc.cls.extend(
      */
 
     render_non_field_errors : function(errors) {
-      var error_node = $('<div>').addClass("alert alert-danger validation-error non-field-errors");
-      let i;
-      for(i = 0; i < errors.length; i++) {
+      error_node = $('<div>').addClass("alert alert-danger validation-error non-field-errors");
+      for(let i = 0; i < errors.length; i++) {
         $(twentyc.rest).trigger("non-field-error", [errors[i], errors, i, error_node, this]);
         if(errors[i])
           error_node.append($('<div>').addClass("non-field-error").text(errors[i]));
@@ -1249,7 +1248,6 @@ twentyc.rest.Input = twentyc.cls.extend(
     },
 
     post_failure : function(response) {
-      console.error(response);
       response.field_errors(this.render_error.bind(this));
       response.non_field_errors(this.render_non_field_errors.bind(this))
     },
@@ -1309,6 +1307,7 @@ twentyc.rest.Checkbox = twentyc.cls.extend(
       pl[this.element.attr('name')] = (this.element.prop("checked") ? true : false);
       return pl;
     },
+
     bind : function(jq) {
       this.Widget_bind(jq);
       this.method = jq.data("api-method") || "POST";
@@ -1330,7 +1329,15 @@ twentyc.rest.Checkbox = twentyc.cls.extend(
         );
       }.bind(this));
 
-    }
+    },
+
+    post_failure : function(field, error) {
+      this.Input_post_failure(field, error);
+
+      // reset checkbox to previous state
+      this.element.prop("checked", !this.element.prop("checked"));
+    },
+
   },
   twentyc.rest.Input
 );
