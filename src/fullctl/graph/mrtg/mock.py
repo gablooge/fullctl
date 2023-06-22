@@ -1,9 +1,8 @@
 import random
 import time
 
-__all__ = [
-    "port_traffic"
-]
+__all__ = ["port_traffic"]
+
 
 def generate_natural_traffic(min_value, max_value, num_points, peak_indices):
     """
@@ -20,6 +19,7 @@ def generate_natural_traffic(min_value, max_value, num_points, peak_indices):
 
     return traffic_data
 
+
 def port_traffic(num_points, step=3600):
     """
     Generate natural looking data points for port traffic and output a dict.
@@ -35,11 +35,13 @@ def port_traffic(num_points, step=3600):
         timestamp = current_time
         bps_in = bps_in_data[i]
         bps_out = bps_out_data[i]
-        result.append({
-            "timestamp": timestamp,
-            "bps_in": bps_in,
-            "bps_out": bps_out,
-        })
+        result.append(
+            {
+                "timestamp": timestamp,
+                "bps_in": bps_in,
+                "bps_out": bps_out,
+            }
+        )
         current_time -= step
 
     return result
