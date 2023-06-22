@@ -26,6 +26,7 @@ def load_rrd_file(file_path, start_time=None, duration=86400):
     # Fetch data from the RRD file for the specified time range
     data_avg = rrdtool.fetch(file_path, "AVERAGE", "-s", str(end_time), "-e", str(start_time))
     data_max = rrdtool.fetch(file_path, "MAX", "-s", str(end_time), "-e", str(start_time))
+
     start_avg, end_avg, step_avg = data_avg[0]
     start_max, end_max, step_max = data_max[0]
     values_avg = data_avg[2]
@@ -34,7 +35,6 @@ def load_rrd_file(file_path, start_time=None, duration=86400):
     result = []
     for row_avg, row_max in zip(values_avg, values_max):
         timestamp = start_avg
-        print(row_avg)
         bps_in, bps_out, _, _ = row_avg
         _, _, bps_in_max, bps_out_max = row_max
         result.append({
@@ -54,12 +54,27 @@ def rrd_data_to_json(rrd_data):
     """
     return json.dumps(rrd_data)
 
-def update_rrd_from_log(file_path, log_file_path):
+def get_last_update_time(file_path):
+    """
+    Get the most recent timestamp in the RRD file.
+
+    :param file_path: Path to the RRD file.
+    :return: The most recent timestamp in the RRD file.
+    """
+
+    if not os.path.exists(file_path):
+        return None
+
+    rrd_info = rrdtool.info(file_path)
+    return int(rrd_info["last_update"])
+
+def update_rrd_from_log(file_path, log_file_path, last_update_time=None):
     """
     Update an RRD file with data from a plain text log file.
 
     :param file_path: Path to the RRD file.
     :param log_file_path: Path to the plain text log file.
+    :param last_update_time: The most recent timestamp in the RRD file. If not provided, the function will fetch it automatically.
     """
     # Read log lines from the log file
     with open(log_file_path, 'r') as log_file:
@@ -77,17 +92,22 @@ def update_rrd_from_log(file_path, log_file_path):
         # Create the RRD file with the first timestamp as the start time
         create_rrd_file(file_path, first_timestamp)
 
+    # Fetch the most recent timestamp in the RRD file if not provided
+    if last_update_time is None:
+        last_update_time = get_last_update_time(file_path)
+
     # Process each log line and update the RRD file
     for log_line in log_lines:
-        update_rrd(file_path, log_line)
+        update_rrd(file_path, log_line, last_update_time)
 
 
-def stream_log_lines_to_rrd(file_path, log_stream):
+def stream_log_lines_to_rrd(file_path, log_stream, last_update_time=None):
     """
     Stream log lines from a file-like object and update the RRD file.
 
     :param file_path: Path to the RRD file.
     :param log_stream: A file-like object that yields log lines.
+    :param last_update_time: The most recent timestamp in the RRD file. If not provided, the function will fetch it automatically.
     """
     # Check if RRD file exists, if not create it
     if not os.path.exists(file_path):
@@ -95,12 +115,16 @@ def stream_log_lines_to_rrd(file_path, log_stream):
     else:
         create_rrd = False
         
+    # Fetch the most recent timestamp in the RRD file if not provided
+    if last_update_time is None:
+        last_update_time = get_last_update_time(file_path)
+
     # Process each log line from the stream and update the RRD file
     for log_line in log_stream:
         if create_rrd:
             create_rrd_file(file_path, int(log_line.split()[0]))
             create_rrd = False
-        
+         
         update_rrd(file_path, log_line)    
 
 
@@ -147,52 +171,24 @@ def create_rrd_file(file_path, start_time):
     )
 
 
-def update_rrd(file_path, log_line):
+def update_rrd(file_path, log_line, last_update_time=None):
     """
     Update the RRD file with data from a log line.
 
     :param file_path: Path to the RRD file.
     :param log_line: A single log line containing the data.
+    :param last_update_time: The most recent timestamp in the RRD file. If not provided, the function will update the RRD file without checking the timestamp.
     """
     # Parse log line
     timestamp, avg_bytes_in, avg_bytes_out, max_bytes_in, max_bytes_out = map(int, log_line.split()[:5])
 
-    # Update RRD file with parsed data
-    rrdtool.update(
-        file_path,
-        f"{timestamp}:{avg_bytes_in}:{avg_bytes_out}:{max_bytes_in}:{max_bytes_out}"
-    )
-
-def log_file_to_list(log_file_path, limit=100):
-    """
-    :param log_file_path: Path to the plain text log file.
-    """
-    # Read log lines from the log file
-    with open(log_file_path, 'r') as log_file:
-        log_lines = log_file.readlines()
-
-    # reverse the log lines so that the oldest log line is first
-    log_lines.reverse()
-
-    result = []
-    count = 0
-
-    for log_line in log_lines:
-        timestamp, avg_bytes_in, avg_bytes_out, max_bytes_in, max_bytes_out = map(int, log_line.split())
-
-        result.append(
-            {
-                "timestamp": timestamp,
-                "bps_in": avg_bytes_in,
-                "bps_out": avg_bytes_out,
-                "bps_in_max": max_bytes_in,
-                "bps_out_max": max_bytes_out,
-            }
+    # Check if the timestamp is newer than the most recent data in the RRD file
+    if last_update_time is None or timestamp > last_update_time:
+        #print(f"Updating RRD file with data from {timestamp}, avg_bytes_in={avg_bytes_in}, avg_bytes_out={avg_bytes_out}, max_bytes_in={max_bytes_in}, max_bytes_out={max_bytes_out}")
+        # Update RRD file with parsed data
+        rrdtool.update(
+            file_path,
+            f"{timestamp}:{avg_bytes_in}:{avg_bytes_out}:{max_bytes_in}:{max_bytes_out}"
         )
 
-        count += 1
 
-        if count == limit:
-            break
-
-    return result
