@@ -28,10 +28,25 @@
         return {bps_in_peak, bps_out_peak};
     }
 
-    fullctl.graphs.render_graph = function(data, titleLabel = "") {
+    fullctl.graphs.render_graph = function(data, selector="#graph", titleLabel = "") {
+
+        if (data && data.length && data[0].bps_in == null) {
+            data.unshift();
+        }
+
+        if(!data || !data.length) {
+            return;
+        }
+
+        console.log(data)
+
         // Set up dimensions and margins for the graph
         const margin = {top: 20, right: 20, bottom: 50, left: 80}; // Increase left margin for traffic numbers and bottom margin for legend
-        const width = 768 - margin.left - margin.right;
+        // Get the width of the parent container
+        const parentWidth = d3.select(selector).node().getBoundingClientRect().width;
+
+        // Adjust the width of the graph to the width of the parent container
+        const width = parentWidth - margin.left - margin.right;
         const height = 256 - margin.top - margin.bottom;
 
         // Set up x and y scales
@@ -40,10 +55,12 @@
 
         // Set up line generators for bps_in and bps_out
         const line_in = d3.line()
+            .defined(d => d.bps_in !== null) // Ignore data points with null bps_in values
             .x(function(d) { return x(d.timestamp * 1000); }) // Multiply by 1000 to convert unix timestamp to JavaScript timestamp
             .y(function(d) { return y(d.bps_in); });
 
         const line_out = d3.line()
+            .defined(d => d.bps_out !== null) // Ignore data points with null bps_out values
             .x(function(d) { return x(d.timestamp * 1000); }) // Multiply by 1000 to convert unix timestamp to JavaScript timestamp
             .y(function(d) { return y(d.bps_out); });
 
@@ -51,7 +68,7 @@
         const {bps_in_peak, bps_out_peak} = calculate_peak(data);
 
         // Set up SVG container for the graph
-        const svg = d3.select("#graph").append("svg")
+        const svg = d3.select(selector).append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -82,11 +99,6 @@
             .y0(height)
             .y1(function(d) { return y(Math.max(d.bps_in, 0)); });
 
-        svg.append("path")
-            .datum(data)
-            .attr("fill", "#d1ff27")
-            .attr("d", area_in_updated);
-
         // Add lines for bps_in and bps_out
         svg.append("path")
             .datum(data)
@@ -95,12 +107,20 @@
             .attr("stroke-width", 1.5)
             .attr("d", line_in);
 
+        // Move the area_in plot to the bottom, so it doesn't cover the bps_out plot
+        svg.append("path")
+            .datum(data)
+            .attr("fill", "#d1ff27")
+            .attr("d", area_in_updated);
+
+        // Add the bps_out path after the bps_in path to ensure it is rendered above the bps_in plot
         svg.append("path")
             .datum(data)
             .attr("fill", "none")
             .attr("stroke", "#0d6efd")
             .attr("stroke-width", 1.5)
             .attr("d", line_out);
+
 
         // Add horizontal lines for bps_in_peak and bps_out_peak
         svg.append("line")
@@ -162,12 +182,17 @@
 
         // Add logo
         const logoPath = document.querySelector("img.app-logo").getAttribute("src");
-        svg.append("image")
+        const logo = svg.append("image")
             .attr("xlink:href", logoPath)
-            .attr("x", width - 100) // Adjust x position to place the logo in the upper right corner
-            .attr("y", -25)
-            .attr("width", 100) // Adjust width of the logo
-            .attr("height", 50); // Adjust height of the logo
+            .attr("x", width) // Temporarily set x position to the width of the graph
+            .attr("y", -((height * 0.15) * 0.5))
+            .attr("height", height * 0.15); // Adjust height of the logo
+
+        // Get the width of the logo after it has been appended to the SVG
+        const logoWidth = logo.node().getBBox().width;
+
+        // Update the x position of the logo to sit snug against the right border of the graph
+        logo.attr("x", width - logoWidth - 10);
 
         // Add title label
         if (titleLabel) {
@@ -183,9 +208,10 @@
 
     },
 
-    fullctl.graphs.render_graph_from_file = function(path, titleLabel = "") {
-        d3.json(path).then(function(data) {
-            fullctl.graphs.render_graph(data.data[0].traffic, titleLabel);
+    fullctl.graphs.render_graph_from_file = function(path, selector="#graph", titleLabel = "") {
+        return d3.json(path).then(function(data) {
+            $(selector).empty();
+            fullctl.graphs.render_graph(data.data, selector=selector, titleLabel);
         });
     }
 })();

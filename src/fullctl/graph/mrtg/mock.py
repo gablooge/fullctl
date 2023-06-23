@@ -40,6 +40,8 @@ def port_traffic(num_points, step=3600):
                 "timestamp": timestamp,
                 "bps_in": bps_in,
                 "bps_out": bps_out,
+                "bps_in_max": bps_in,
+                "bps_out_max": bps_out,
             }
         )
         current_time -= step
