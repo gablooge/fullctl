@@ -1065,7 +1065,7 @@ twentyc.rest.Form = twentyc.cls.extend(
     },
 
     post_success : function(result) {
-
+      this.element.attr("data-submitted", "true")
     },
 
     post_failure : function(response) {

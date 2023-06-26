@@ -535,25 +535,56 @@ fullctl.application.Modal = $tc.extend(
       this.set_title(title);
       this.set_content(content);
 
-      var modal = this;
+      const modal = this;
 
       content.find('.modal-action-note-text').each(function() {
         $(this).appendTo(modal.jquery.find('.modal-action-note'))
       });
 
       this.show();
+
+      const on_modal_close = (e) => {
+        if(modal.jquery.find('form').attr('data-submitted') == 'true') {
+          modal.jquery.find('form').attr('data-submitted', 'false');
+        } else if (this.changed) {
+          const conrimation = confirm("Are you sure you want to close this modal? Any unsaved changes will be lost.");
+          if (!conrimation) {
+            e.preventDefault();
+            return;
+          }
+        }
+        this.jquery.off('hide.bs.modal', on_modal_close);
+      }
+      this.jquery.on('hide.bs.modal', on_modal_close);
     },
+
     show : function() {
       this.jquery.modal('show');
     },
+
     hide : function() {
       this.jquery.modal('hide');
     },
+
     set_title : function(title) {
       this.jquery.find('.modal-title').text(title);
     },
+
     set_content : function(content) {
       this.jquery.find('.modal-body').empty().append(content);
+      this.track_form_changes();
+    },
+
+    track_form_changes : function() {
+      const modal = this;
+      modal.changed = false;
+
+      const form_inputs = this.jquery.find('form :input');
+      const change_setter = function() {
+        modal.changed = true;
+        form_inputs.off('change', change_setter);
+      }
+      form_inputs.on('change', change_setter);
     }
   },
   fullctl.application.Component
