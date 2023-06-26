@@ -1628,7 +1628,7 @@ twentyc.rest.Select = twentyc.cls.extend(
     /**
      * if there is a localstorage_key applies values stored in localstorage on
      * inital load and attaches change listener to update localstorage.
-     * 
+     *
      * @method init_localstorage
      */
 
@@ -1648,9 +1648,9 @@ twentyc.rest.Select = twentyc.cls.extend(
     /**
      * if localstorage_key is set, sets localstorage of localstorage_key to
      * data
-     * 
-     * @method localstorage_set 
-     * @param {String} data 
+     *
+     * @method localstorage_set
+     * @param {String} data
      */
     localstorage_set : function(data) {
       if(!this.localstorage_key)
@@ -1664,9 +1664,9 @@ twentyc.rest.Select = twentyc.cls.extend(
 
     /**
      * if localstorage_key is set, returns localstorage of localstorage_key
-     * 
+     *
      * @method localstorage_get
-     * @returns {String} 
+     * @returns {String}
      */
 
     localstorage_get : function() {
@@ -1678,7 +1678,7 @@ twentyc.rest.Select = twentyc.cls.extend(
 
     /**
      * if localstorage_key is set, removes localstorage_key from localstorage
-     * 
+     *
      * @method localstorage_remove
      */
 
@@ -1692,7 +1692,7 @@ twentyc.rest.Select = twentyc.cls.extend(
     /**
      * if localstorage_key is set, sets the option with the same value as
      * localstorage as the selected option if the option exists.
-     * 
+     *
      * @method localstorage_apply
      */
 
