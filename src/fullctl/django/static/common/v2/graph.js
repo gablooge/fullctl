@@ -76,7 +76,7 @@
 
         // Set up domains for x and y scales
         const extent = d3.extent(data, function(d) { return d.timestamp * 1000; }); // Multiply by 1000 to convert unix timestamp to JavaScript timestamp
-        x.domain(extent);        
+        x.domain(extent);
         y.domain([0, d3.max(data, function(d) { return Math.max(d.bps_in, d.bps_out); }) * 1.1]); // Add 10% padding to the maximum value
 
         // Calculate the difference in hours between the maximum and minimum dates
@@ -84,7 +84,7 @@
 
         // Set the number of ticks based on the date range
         let ticks;
-        if (diffHours <= 1) {    
+        if (diffHours <= 1) {
             ticks = d3.timeMinute.every(5);
         } else if (diffHours <= 12) {
             ticks = d3.timeHour.every(2);
