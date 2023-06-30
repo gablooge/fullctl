@@ -1666,6 +1666,7 @@ fullctl.ext.select2 = {
    * @param {jQuery} jq - the select2 element
    * @param {jQuery} parent - the parent element to attach the dropdown to
    * @param {Object} opt - options
+   * @param {Boolean} opt.controls - whether to show controls to remove the selected element
    * @param {String} opt.url - the url to fetch the autocomplete data from
    * @param {String} opt.placeholder - the placeholder text
    * @param {Function} opt.process - a function to process the autocomplete data
@@ -1674,27 +1675,11 @@ fullctl.ext.select2 = {
 
   init_autocomplete: function(jq, parent, opt) {
 
-
-    // controls that allow removal of selected autocomplete element.
-
-    let controls = $('<div>').addClass('autocomplete-controls').append(
-      $('<a>').addClass('action').text('remove')
-    ).hide().click(() => {
-      jq.val(null).trigger("change");
-      controls.hide();
-    })
-
-    jq.on("change", function(e) {
-      if($(this).val()) {
-        controls.show();
-      } else {
-        controls.hide();
-      }
-    });
-
+    this.element = jq;
 
     jq.select2({
       dropdownParent : parent,
+      allowClear: false,
       ajax: {
         url: opt.url,
         dataType: 'json',
@@ -1768,9 +1753,31 @@ fullctl.ext.select2 = {
 
     }
 
-    // add autocomplete controls to bottom
-    jq.parent().append(controls);
+    if (opt.controls !== false)
+      this.setup_controls();
 
+    return this
+  },
+
+  setup_controls: function() {
+    // controls that allow removal of selected autocomplete element.
+    let controls = $('<div>').addClass('autocomplete-controls').append(
+      $('<a>').addClass('action').text('remove')
+    ).hide().on("click", () => {
+      this.element.val(null).trigger("change");
+      controls.hide();
+    });
+
+    this.element.on("change", function(e) {
+      if($(this).val()) {
+        controls.show();
+      } else {
+        controls.hide();
+      }
+    });
+
+    // add autocomplete controls to bottom
+    this.element.parent().append(controls);
   }
 }
 
