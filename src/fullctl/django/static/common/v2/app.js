@@ -1671,6 +1671,7 @@ fullctl.ext.select2 = {
    * @param {String} opt.placeholder - the placeholder text
    * @param {Function} opt.process - a function to process the autocomplete data
    * @param {Object} opt.initial - the initial value (object containing id,primary,secondary and extra)
+   * @param {Object} opt.localstorage_key - the key that is used to store the selected value in localstorage
    */
 
   init_autocomplete: function(jq, parent, opt) {
@@ -1756,6 +1757,9 @@ fullctl.ext.select2 = {
     if (opt.controls !== false)
       this.setup_controls();
 
+    if (opt.localstorage_key)
+      this.localstorage_key = opt.localstorage_key;
+
     return this
   },
 
@@ -1778,7 +1782,84 @@ fullctl.ext.select2 = {
 
     // add autocomplete controls to bottom
     this.element.parent().append(controls);
-  }
+  },
+
+  /**
+   *
+   * if there is a localstorage_key applies values stored in localstorage on
+   * inital load and attaches change listener to update localstorage.
+   *
+   * @method init_localstorage
+   */
+
+  init_localstorage : function() {
+    if(!this.localstorage_key)
+      return;
+
+    this.element.on("change", () => {
+      this.localstorage_set(this.element.val());
+    });
+  },
+
+  /**
+   * if localstorage_key is set, sets localstorage of localstorage_key to
+   * data
+   *
+   * @method localstorage_set
+   * @param {String} data
+   */
+  localstorage_set : function(data) {
+    if(!this.localstorage_key)
+      return;
+
+    if (this.localstorage_get() == data)
+      return;
+
+    localStorage.setItem(this.localstorage_key, data);
+  },
+
+  /**
+   * if localstorage_key is set, returns localstorage of localstorage_key
+   *
+   * @method localstorage_get
+   * @returns {String}
+   */
+
+  localstorage_get : function() {
+    if(!this.localstorage_key)
+      return;
+
+    return localStorage.getItem(this.localstorage_key);
+  },
+
+  /**
+   * if localstorage_key is set, removes localstorage_key from localstorage
+   *
+   * @method localstorage_remove
+   */
+
+  localstorage_remove : function() {
+    if(!this.localstorage_key)
+      return;
+
+    localStorage.removeItem(this.localstorage_key);
+  },
+
+  /**
+   * if localstorage_key is set, sets the option with the same value as
+   * localstorage as the selected option if the option exists.
+   *
+   * @method localstorage_apply
+   */
+
+  localstorage_apply : function() {
+    if(!this.localstorage_key)
+      return;
+
+    const val = this.localstorage_get();
+    if(val && this.element.find("option[value='" + val + "']").length > 0)
+      this.element.val(val);
+  },
 }
 
 
