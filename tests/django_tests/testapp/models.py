@@ -3,9 +3,11 @@ Contains a bunch of concrete models to help testing
 """
 
 from django.db import models
+
+import fullctl.django.models.abstract.meta as meta
 from fullctl.django.models import Task
 from fullctl.django.tasks import qualifiers, register
-import fullctl.django.models.abstract.meta as meta
+
 
 @register
 class TestTask(Task):
@@ -131,6 +133,7 @@ class Data(meta.Data):
     class HandleRef:
         tag = "data"
 
+
 class Response(meta.Response):
 
     """
@@ -169,7 +172,7 @@ class Request(meta.Request):
 
     class HandleRef:
         tag = "request"
-    
+
     class Config:
         meta_data_cls = Data
         source_name = "test"
