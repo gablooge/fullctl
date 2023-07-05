@@ -121,7 +121,6 @@
 
         // Calculate the number of ticks for the x and y axes based on the width of the graph
         const numXTicks = Math.max(Math.floor(width / 100), 2); // At least 2 ticks
-        const numYTicks = Math.max(Math.floor(height / 50), 4); // At least 4 ticks
 
         // Set up line generators for bps_in and bps_out
         const line_in = d3.line()
@@ -137,6 +136,32 @@
         // Calculate bps_in_peak and bps_out_low
         const {bps_in_peak, bps_out_peak} = calculate_peak(data);
 
+        // Calculate the maximum data value
+        const maxDataValue = d3.max(data, function(d) { return Math.max(d.bps_in, d.bps_out); });
+
+        // Check if the peak values are within 300% of the maximum data value
+        const adjustedBpsInPeak = bps_in_peak <= maxDataValue * 3 ? bps_in_peak : maxDataValue;
+        const adjustedBpsOutPeak = bps_out_peak <= maxDataValue * 3 ? bps_out_peak : maxDataValue;
+
+
+        // Calculate the range of the y-axis values
+        const yAxisRange = d3.max([maxDataValue, adjustedBpsInPeak, adjustedBpsOutPeak]) * 1.1;
+
+        // Calculate the minimum increment between ticks based on the range of the y-axis values
+        let minTickIncrement;
+        if (yAxisRange >= 1000000000000) {
+            minTickIncrement = 1000000000000; // 1T
+        } else if (yAxisRange >= 1000000000) {
+            minTickIncrement = 1000000000; // 1G
+        } else if (yAxisRange >= 1000000) {
+            minTickIncrement = 1000000; // 1M
+        } else if (yAxisRange >= 1000) {
+            minTickIncrement = 1000; // 1K
+        } else {
+            minTickIncrement = 1;
+        }
+        const numYTicks = Math.min(Math.floor(yAxisRange / minTickIncrement), 4);
+
         // Set up SVG container for the graph
         const svg = d3.select(selector).append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -147,7 +172,7 @@
         // Set up domains for x and y scales
         const extent = d3.extent(data, function(d) { return d.timestamp * 1000; }); // Multiply by 1000 to convert unix timestamp to JavaScript timestamp
         x.domain(extent);
-        y.domain([0, d3.max([d3.max(data, function(d) { return Math.max(d.bps_in, d.bps_out); }), bps_in_peak, bps_out_peak]) * 1.1]); // Add 10% padding to the maximum value
+        y.domain([0, d3.max([maxDataValue, adjustedBpsInPeak, adjustedBpsOutPeak]) * 1.1]); // Add 10% padding to the maximum value
 
         // Calculate the difference in hours between the maximum and minimum dates
         const diffHours = (extent[1] - extent[0]) / 1000 / 60 / 60;
@@ -178,7 +203,7 @@
         } else {
             dateFormat = yearFormat;
         }
-    
+
         // Add x-axis to the graph
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
@@ -253,11 +278,12 @@
             .data([
                 {key: "bps_in", label: "Bps IN"},
                 {key: "bps_out", label: "Bps OUT"},
-                {key: "bps_in_peak", label: "IN Peak"},
-                {key: "bps_out_peak", label: "OUT Peak"}
+                {key: "bps_in_peak", label: "IN Peak: " + format_y_axis(bps_in_peak)},
+                {key: "bps_out_peak", label: "OUT Peak: " + format_y_axis(bps_out_peak)}
             ])
             .enter().append("g")
-            .attr("transform", function(d, i) { return "translate(" + (i * 100) + ",0)"; }); // Make legend horizontal
+            .attr("transform", function(d, i) { return "translate(" + (i * 120) + ",0)"; }); // Make legend horizontal
+
 
         legend.append("rect")
             .attr("x", 0) // Change x position to 0 for left alignment
