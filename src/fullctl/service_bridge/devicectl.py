@@ -129,11 +129,10 @@ class VirtualPort(Devicectl):
         ref_tag = "virtual_port"
 
     def traffic(self, pk, start_time=None, duration=None):
-
         params = {}
         if start_time:
             params["start_time"] = start_time
-        
+
         if duration:
             params["duration"] = duration
 

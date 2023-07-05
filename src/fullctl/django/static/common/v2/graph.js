@@ -36,7 +36,7 @@
             let { end_date, duration } = fullctl.graphs.calculate_end_date_and_duration(container);
             callback_reload(end_date,duration);
         });
-    
+
         // Initialize the datepicker
         container.find('.datepicker').datepicker({
             dateFormat: 'yy-mm-dd',
@@ -49,18 +49,18 @@
             }
             }
         });
-    
+
         // Change event for date range select
         container.find('#date_range_select').change(function() {
             let selected_value = $(this).val();
-    
+
             if (selected_value === 'custom') {
                 // Show the date input fields
                 container.find('#custom_date_range').show();
             } else {
                 // Hide the date input fields
                 container.find('#custom_date_range').hide();
-        
+
                 let { end_date, duration } = fullctl.graphs.calculate_end_date_and_duration(container);
                 callback_reload(end_date,duration);
             }
