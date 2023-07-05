@@ -28,6 +28,72 @@
         return {bps_in_peak, bps_out_peak};
     }
 
+    fullctl.graphs.init_controls = function(container, tool, callback_reload = (end_date,duration) => {}) {
+
+        container.find('.graph-controls').show();
+        // Refresh traffic graph when clicked
+        container.find('[data-element=refresh_traffic_graph]').click(function() {
+            let { end_date, duration } = fullctl.graphs.calculate_end_date_and_duration(container);
+            callback_reload(end_date,duration);
+        });
+    
+        // Initialize the datepicker
+        container.find('.datepicker').datepicker({
+            dateFormat: 'yy-mm-dd',
+            onSelect: function() {
+            // When a date is selected, check if both dates are selected
+            if (container.find('#custom_start_date').val() && container.find('#custom_end_date').val()) {
+                // If both dates are selected, calculate the end date and duration and show the graphs
+                let { end_date, duration } = fullctl.graphs.calculate_end_date_and_duration(container);
+                callback_reload(end_date,duration);
+            }
+            }
+        });
+    
+        // Change event for date range select
+        container.find('#date_range_select').change(function() {
+            let selected_value = $(this).val();
+    
+            if (selected_value === 'custom') {
+                // Show the date input fields
+                container.find('#custom_date_range').show();
+            } else {
+                // Hide the date input fields
+                container.find('#custom_date_range').hide();
+        
+                let { end_date, duration } = fullctl.graphs.calculate_end_date_and_duration(container);
+                callback_reload(end_date,duration);
+            }
+        });
+
+    },
+
+    fullctl.graphs.calculate_end_date_and_duration = function(container) {
+      let end_date = Math.floor(new Date().getTime() / 1000);
+      let duration;
+      let selected_value = container.find('#date_range_select').val();
+
+      if (selected_value === 'custom') {
+        let start_date = new Date(container.find('#custom_start_date').val()).getTime() / 1000;
+        end_date = new Date(container.find('#custom_end_date').val()).getTime() / 1000;
+        duration = end_date - start_date;
+      } else if (selected_value === 'current_month') {
+        let now = new Date();
+        let start_of_month = new Date(now.getFullYear(), now.getMonth(), 1);
+        duration = end_date - start_of_month.getTime() / 1000;
+      } else if (selected_value === 'last_month') {
+        let now = new Date();
+        let start_of_last_month = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        let end_of_last_month = new Date(now.getFullYear(), now.getMonth(), 0);
+        duration = end_of_last_month.getTime() / 1000 - start_of_last_month.getTime() / 1000;
+        end_date = end_of_last_month.getTime() / 1000;
+      } else {
+        duration = selected_value * 60 * 60;
+      }
+
+      return { end_date, duration };
+    },
+
     fullctl.graphs.render_graph = function(data, selector="#graph", titleLabel = "") {
 
         if (data && data.length && data[0].bps_in == null) {
@@ -38,20 +104,24 @@
             return;
         }
 
-        console.log(data)
-
         // Set up dimensions and margins for the graph
         const margin = {top: 20, right: 20, bottom: 50, left: 80}; // Increase left margin for traffic numbers and bottom margin for legend
         // Get the width of the parent container
         const parentWidth = d3.select(selector).node().getBoundingClientRect().width;
+        const parentHeight = d3.select(selector).node().getBoundingClientRect().height;
 
         // Adjust the width of the graph to the width of the parent container
         const width = parentWidth - margin.left - margin.right;
-        const height = 256 - margin.top - margin.bottom;
+        //const height = parentHeight - margin.top - margin.bottom;
+        const height = parentHeight - margin.top - margin.bottom;
 
         // Set up x and y scales
         const x = d3.scaleTime().range([0, width]);
         const y = d3.scaleLinear().range([height, 0]);
+
+        // Calculate the number of ticks for the x and y axes based on the width of the graph
+        const numXTicks = Math.max(Math.floor(width / 100), 2); // At least 2 ticks
+        const numYTicks = Math.max(Math.floor(height / 50), 4); // At least 4 ticks
 
         // Set up line generators for bps_in and bps_out
         const line_in = d3.line()
@@ -77,38 +147,16 @@
         // Set up domains for x and y scales
         const extent = d3.extent(data, function(d) { return d.timestamp * 1000; }); // Multiply by 1000 to convert unix timestamp to JavaScript timestamp
         x.domain(extent);
-        y.domain([0, d3.max(data, function(d) { return Math.max(d.bps_in, d.bps_out); }) * 1.1]); // Add 10% padding to the maximum value
-
-        // Calculate the difference in hours between the maximum and minimum dates
-        const diffHours = (extent[1] - extent[0]) / 1000 / 60 / 60;
-
-        // Set the number of ticks based on the date range
-        let ticks;
-        if (diffHours <= 1) {
-            ticks = d3.timeMinute.every(5);
-        } else if (diffHours <= 12) {
-            ticks = d3.timeHour.every(2);
-        } else if (diffHours <= 24) {
-            ticks = d3.timeHour.every(5);
-        } else if (diffHours <= 10 * 24) {
-            ticks = d3.timeDay.every(1);
-        } else if (diffHours <= 90 * 24) {
-            ticks = d3.timeWeek.every(2);
-        } else if (diffHours <= 365 * 24) {
-            ticks = d3.timeMonth.every(2);
-        } else  {
-            ticks = d3.timeMonth.every(1);
-        }
+        y.domain([0, d3.max([d3.max(data, function(d) { return Math.max(d.bps_in, d.bps_out); }), bps_in_peak, bps_out_peak]) * 1.1]); // Add 10% padding to the maximum value
 
         // Add x-axis to the graph
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x).ticks(ticks)); // Set the number of ticks on the x-axis
-
+            .call(d3.axisBottom(x).ticks(numXTicks)); // Set the number of ticks on the x-axis
 
         // Add y-axis to the graph
         svg.append("g")
-            .call(d3.axisLeft(y).tickFormat(format_y_axis).ticks(8)); // Format y-axis using pretty_speed formatter
+            .call(d3.axisLeft(y).tickFormat(format_y_axis).ticks(numYTicks)); // Format y-axis using pretty_speed formatter
 
         // Add area for bps_in
         const area_in = d3.area()
