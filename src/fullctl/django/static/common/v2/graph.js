@@ -108,7 +108,7 @@
         const margin = {top: 20, right: 20, bottom: 50, left: 80}; // Increase left margin for traffic numbers and bottom margin for legend
         // Get the width of the parent container
         const parentWidth = d3.select(selector).node().getBoundingClientRect().width;
-        const parentHeight = d3.select(selector).node().getBoundingClientRect().height;
+        const parentHeight = (d3.select(selector).node().getBoundingClientRect().height || 250);
 
         // Adjust the width of the graph to the width of the parent container
         const width = parentWidth - margin.left - margin.right;
@@ -149,10 +149,42 @@
         x.domain(extent);
         y.domain([0, d3.max([d3.max(data, function(d) { return Math.max(d.bps_in, d.bps_out); }), bps_in_peak, bps_out_peak]) * 1.1]); // Add 10% padding to the maximum value
 
+        // Calculate the difference in hours between the maximum and minimum dates
+        const diffHours = (extent[1] - extent[0]) / 1000 / 60 / 60;
+        const diffDays = diffHours / 24;
+
+        // Define date formats for different ranges
+        const hourFormat = d3.timeFormat("%H:%M");
+        const dayFormat = d3.timeFormat("%b %d");
+        const weekFormat = d3.timeFormat("%b %d");
+        const monthFormat = d3.timeFormat("%b %d");
+        const quarterFormat = d3.timeFormat("%b '%y");
+        const yearFormat = d3.timeFormat("%Y");
+
+        // Choose the date format based on the range
+        let dateFormat;
+        if (diffHours <= 1) {
+            dateFormat = hourFormat;
+        } else if (diffHours <= 24) {
+            dateFormat = hourFormat;
+        } else if (diffDays <= 7) {
+            dateFormat = dayFormat;
+        } else if (diffDays <= 30) {
+            dateFormat = weekFormat;
+        } else if (diffDays <= 90) {
+            dateFormat = monthFormat;
+        } else if (diffDays <= 365) {
+            dateFormat = quarterFormat;
+        } else {
+            dateFormat = yearFormat;
+        }
+    
         // Add x-axis to the graph
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x).ticks(numXTicks)); // Set the number of ticks on the x-axis
+            .call(d3.axisBottom(x)
+                .ticks(numXTicks)
+                .tickFormat(dateFormat)); // Set the number of ticks on the x-axis and format the date
 
         // Add y-axis to the graph
         svg.append("g")
