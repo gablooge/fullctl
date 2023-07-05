@@ -271,7 +271,7 @@
         // Add legend
         const legend = svg.append("g")
             .attr("font-family", "sans-serif")
-            .attr("font-size", 10)
+            .style("font-size", "11px")
             .attr("text-anchor", "start") // Change text-anchor to "start" for left alignment
             .attr("transform", "translate(0," + (height + margin.bottom - 20) + ")") // Move legend to the bottom
             .selectAll("g")
@@ -287,8 +287,8 @@
 
         legend.append("rect")
             .attr("x", 0) // Change x position to 0 for left alignment
-            .attr("width", 19)
-            .attr("height", 19)
+            .attr("width", 15)
+            .attr("height", 15)
             .attr("fill", function(d) {
                 switch (d.key) {
                     case "bps_in":
