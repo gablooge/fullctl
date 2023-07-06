@@ -8,6 +8,7 @@ only exists on the internal api key used for service bridging
 
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 import fullctl.django.models as models
@@ -16,8 +17,6 @@ from fullctl.django.rest.decorators import grainy_endpoint
 from fullctl.django.rest.mixins import CachedObjectMixin
 from fullctl.django.rest.route.service_bridge import route
 from fullctl.django.rest.serializers.aaactl_sync import Serializers
-
-from rest_framework.decorators import action
 
 
 @route
@@ -44,7 +43,6 @@ class User(CachedObjectMixin, viewsets.GenericViewSet):
     @action(detail=False, methods=["put"], url_path="(?P<aaactl_id>[^/.]+)")
     @grainy_endpoint("aaactl_sync.user")
     def create_or_update(self, request, aaactl_id, *args, **kwargs):
-
         """
         Creates / Updates user by their aaactl id (social_auth__uid)
         """
@@ -53,8 +51,10 @@ class User(CachedObjectMixin, viewsets.GenericViewSet):
             user = get_user_model().objects.get(social_auth__uid=aaactl_id)
         except get_user_model().DoesNotExist:
             user = None
-        
-        serializer = self.serializer_class(instance=user, data=request.data, context={"remote_id": aaactl_id})
+
+        serializer = self.serializer_class(
+            instance=user, data=request.data, context={"remote_id": aaactl_id}
+        )
         if not serializer.is_valid():
             print(serializer.errors)
             return BadRequest(serializer.errors)
