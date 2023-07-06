@@ -17,6 +17,8 @@ from fullctl.django.rest.mixins import CachedObjectMixin
 from fullctl.django.rest.route.service_bridge import route
 from fullctl.django.rest.serializers.aaactl_sync import Serializers
 
+from rest_framework.decorators import action
+
 
 @route
 class User(CachedObjectMixin, viewsets.GenericViewSet):
@@ -39,11 +41,22 @@ class User(CachedObjectMixin, viewsets.GenericViewSet):
     lookup_field = "social_auth__uid"
     lookup_url_kwarg = "remote_id"
 
+    @action(detail=False, methods=["put"], url_path="(?P<aaactl_id>[^/.]+)")
     @grainy_endpoint("aaactl_sync.user")
-    def update(self, request, remote_id, *args, **kwargs):
-        user = self.get_object()
-        serializer = self.serializer_class(instance=user, data=request.data)
+    def create_or_update(self, request, aaactl_id, *args, **kwargs):
+
+        """
+        Creates / Updates user by their aaactl id (social_auth__uid)
+        """
+
+        try:
+            user = get_user_model().objects.get(social_auth__uid=aaactl_id)
+        except get_user_model().DoesNotExist:
+            user = None
+        
+        serializer = self.serializer_class(instance=user, data=request.data, context={"remote_id": aaactl_id})
         if not serializer.is_valid():
+            print(serializer.errors)
             return BadRequest(serializer.errors)
         serializer.save()
         return Response(serializer.data)
