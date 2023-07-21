@@ -52,6 +52,9 @@ def render_graph(data, selector="#graph", title_label="", service=None, save_pat
     # Convert timestamp to datetime
     df["timestamp"] = pd.to_datetime(df["timestamp"], unit="s")
 
+    # Calculate the duration in days
+    duration = (df["timestamp"].max() - df["timestamp"].min()).days
+
     # Set up dimensions and margins for the graph
     fig, ax = plt.subplots(figsize=(10, 4))
 
@@ -100,8 +103,18 @@ def render_graph(data, selector="#graph", title_label="", service=None, save_pat
     ax.yaxis.set_major_formatter(FuncFormatter(format_y_axis))
 
     # Format x-axis
-    ax.xaxis.set_major_locator(mdates.AutoDateLocator())
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
+    if duration <= 2:
+        ax.xaxis.set_major_locator(mdates.AutoDateLocator())
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
+    elif duration <= 7:  # for 7 days, use day ticks
+        ax.xaxis.set_major_locator(mdates.DayLocator())
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%a"))
+    elif duration <= 30:  # for 30 days, use week ticks
+        ax.xaxis.set_major_locator(mdates.WeekdayLocator())
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("Week %W"))
+    elif duration <= 365:  # for 365 days, use month ticks
+        ax.xaxis.set_major_locator(mdates.MonthLocator())
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%b"))
 
     # Add legend
     legend_elements = [
