@@ -444,8 +444,8 @@ semver = "<=3"
 [package.source]
 type = "git"
 url = "https://github.com/20c/ctl.git"
-reference = "prep-release"
-resolved_reference = "cd97077da753a6cb38b5ebaef9fe7684ac845097"
+reference = "main"
+resolved_reference = "d3879e032a7bde92cf74d38e6e74d88557df79d7"
 
 [[package]]
 name = "defusedxml"
@@ -1919,4 +1919,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "60b985ec0903abc6765918f6bfb27d550566ce8537414f903fdac8afa4a7a813"
+content-hash = "5cb4b01cc0b5ee609ca67e3d6c8abf92a69909f6a66a2fe4d8f8b05712e06ff2"
