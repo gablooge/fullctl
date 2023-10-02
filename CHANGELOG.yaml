@@ -1,6 +1,9 @@
 Unreleased:
-  added: []
+  added:
+  - per ix billing
+  - Devicectl referee reports (#183)
   fixed: []
+  - dont remake aggregated graphs every attempt (#177)
   changed: []
   deprecated: []
   removed: []
