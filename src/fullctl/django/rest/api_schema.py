@@ -4,8 +4,6 @@ from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.schemas.openapi import SchemaGenerator as BaseSchemaGenerator
 from rest_framework.schemas.openapi import is_list_view
 
-from fullctl.django.rest.serializers import ModelSerializer
-
 
 class SchemaGenerator(BaseSchemaGenerator):
     def has_view_permissions(self, path, method, view):
